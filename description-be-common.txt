@@ -1,0 +1,56 @@
+be-common library description
+
+Overview
+- Java 17 Spring Boot 3.2.3 library packaged as a jar (`com.theanh:be-common:0.0.2`) intended to be added as a shared dependency across services.
+- Focus areas: JPA base entity + auditing + soft delete, generic repository/service helpers, standardized API responses, global exception handling, message/i18n wiring (Vietnamese and English), and a pluggable current-user provider for auditing.
+
+Build and dependencies
+- Spring Boot starters: core (no web), data-jpa, validation, security; Spring Cloud OpenFeign.
+- Utility deps: Auth0 java-jwt (4.4.0), ModelMapper (3.1.1) with STRICT matching, Gson, Guava (33.1.0-jre); Lombok is provided scope.
+- Spring Cloud BOM 2023.0.4; compiler release 17. Published target in pom is GitHub Packages (`maven.pkg.github.com/NguuyenTheAnh/be-common`).
+
+Key modules (src/main/java/com/theanh/common)
+- Base entity and DTO: `BaseEntity` adds `id`, `isActive`, `isDeleted`, `createdUser`, `updatedUser`, `createdDate`, `updatedDate` with auditing via `AuditingEntityListener`; `BaseDto` exposes `id`.
+- Generic persistence layer:
+  - `BaseRepository<T, ID>` extends `JpaRepository` + `JpaSpecificationExecutor`.
+  - `BaseService` interface covers CRUD plus soft vs hard delete variants.
+  - `BaseServiceImpl` implements common logic with `ModelMapper` conversion, reads filtered by `isDeleted=false`, soft-delete methods set `isDeleted` then save, hard-delete removes rows. Uses JPA Specifications for filtering.
+- Auditing:
+  - `AuditingConfig` enables JPA auditing and wires `AuditorAware<String>` using a `CurrentUserProvider`.
+  - Default `CurrentUserProvider` bean is `SecurityContextCurrentUserProvider`, reading username from Spring Security `SecurityContextHolder` (String principal or `UserDetails`). Custom beans override via `@Bean CurrentUserProvider`.
+- Security helper: `CurrentUserProvider` interface for supplying the current username to auditing logic.
+- Exception and response handling:
+  - `BusinessException` carries an error code and optional data; logs at error level.
+  - `ExceptionHandlingController` (`@RestControllerAdvice`) handles BusinessException (400), validation errors (400 with field map), access denied (403), constraint violations (406), and uncaught exceptions (500). Messages are resolved through `MessageCommon`.
+  - `ResponseDto` standard payload (code, message, data) and `ResponseConfig` builders for success/error responses and file downloads (headers preset for attachment).
+- Message/i18n:
+  - `MessageConfig` exposes `MessageSource` with basename `classpath:messages/messages`, UTF-8, reloadable.
+  - Bundles under `src/main/resources/messages`: default, `messages_en.properties`, `messages_vi.properties` with common error/success strings. Note: the Vietnamese files are stored in escaped form; consider ensuring encoding if overriding.
+  - `MessageCommon` convenience component for resolving messages with locale support.
+- Mapping: `MapperConfig` registers a STRICT `ModelMapper` bean.
+- Utilities: `DataUtil` (object/list converters, null-or-empty checks); `MessageConstants` central keys; `ResponseConfig` also includes download helpers.
+
+Integration guide for other services
+- Dependency: add to your pom after publishing to your artifact repository:
+  ```
+  <dependency>
+    <groupId>com.theanh</groupId>
+    <artifactId>be-common</artifactId>
+    <version>0.0.2</version>
+  </dependency>
+  ```
+- Component scan: ensure `com.theanh.common` is scanned or explicitly `@Import` configs so that auditing, mapper, message source, and `ExceptionHandlingController` load.
+- JPA auditing: keep `@EnableJpaAuditing` from `AuditingConfig`. Provide a `CurrentUserProvider` bean if you do not use Spring Security’s `SecurityContextHolder`.
+- Extending base types:
+  - Entities extend `BaseEntity`; DTOs extend `BaseDto`.
+  - Repositories extend `BaseRepository<Entity, ID>`.
+  - Services extend `BaseServiceImpl<Entity, Dto, ID>`, implement `getEntityClass()` and `getDtoClass()`, and inject the repository plus `ModelMapper`.
+- API responses and errors: use `ResponseConfig.success/error(...)` in controllers; throw `BusinessException` with message codes from `MessageConstants` or your own; validation errors (`@Valid`) and access/constraint/system errors are handled globally.
+- Messages: reuse provided keys or add the same keys in your app’s `messages_*.properties` to override/extend translations.
+- Downloads: use `ResponseConfig.downloadFile(...)` for streaming byte arrays/InputStreamResource with proper headers.
+
+Notes and conventions
+- Soft-deleted records (`isDeleted=true`) are excluded from reads in `BaseServiceImpl` but still persisted; `deleteDataBy*` permanently removes.
+- `isActive` flag exists on `BaseEntity` but no built-in filtering is applied—services can add their own Specification if needed.
+- Default success code is `"00"` in `ResponseConfig`; other codes come from message keys (e.g., `data.not_found`, `access.denied`).
+- If using OpenFeign and security, add your own security configuration; this library only provides the current-user lookup hook.

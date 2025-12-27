@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: lms
+  datasource:
+    url: "jdbc:mysql://localhost:3306/project3"
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+server:
+  servlet:
+    context-path: /api/v1
+
+security:
+  jwt:
+    secret: change-me-please-32-chars-min
+    access-token-expiration-ms: 900000   # 15 minutes
+    refresh-token-expiration-ms: 1209600000 # 14 days
+    issuer: lms-service
+  role-mapping:
+    location: classpath:role.properties
+
+file:
+  storage:
+    base-path: ./storage
+    public-base-url: http://localhost:8080/api/v1/files/
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

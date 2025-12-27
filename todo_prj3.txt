@@ -1,0 +1,114 @@
+## TODO list phát triển LMS kiểu Udemy (module hoá, payment làm sau)
+
+### Phase 0 — Setup nền tảng
+
+* [ ] Backend: Spring Boot 3 + Java 17, cấu trúc package theo module
+* [ ] MySQL + Flyway: tạo schema (script SQL bạn dùng)
+* [ ] BaseEntity + auditing (created/updated/by + soft delete)
+* [ ] Chuẩn hoá response/error, pagination, validation, logging
+* [ ] Local storage (chuẩn hoá `uploaded_file`) - chỉ tôi sử dụng và tích hợp storage nào đó free, dùng để BE upload file, đồng thời FE có thể truy cập qua url
+
+---
+
+### Phase 1 — Identity & Access (Đăng nhập/Phân quyền)
+
+**Mục tiêu:** có auth để chặn/mở API theo role.
+
+* [ ] User model + CRUD tối thiểu
+* [ ] JWT Access Token + Refresh Token (rotation) + bảng `refresh_token`
+* [ ] RBAC: role/permission + gán role cho user
+* [ ] API: `/auth/login`, `/auth/refresh`, `/auth/logout`, `/me`
+* [ ] Guard endpoints theo role (ADMIN/INSTRUCTOR/STUDENT)
+
+---
+
+### Phase 2 — Catalog (Duyệt khoá học giống Udemy)
+
+**Mục tiêu:** user browse/search khóa học.
+
+* [ ] Category CRUD (admin)
+* [ ] Tag CRUD + `course_tag`
+* [ ] Course listing: search + filter + sort (newest, rating, popular)
+* [ ] Course detail: overview + curriculum preview + rating summary
+
+---
+
+### Phase 3 — Instructor & Course Authoring (Tạo khoá học)
+
+**Mục tiêu:** instructor tạo course dạng draft và publish.
+
+* [ ] Instructor quản lý course của mình
+* [ ] Course lifecycle: DRAFT → PUBLISHED → ARCHIVED
+* [ ] Course landing page fields (title, desc, level, thumbnail, intro video)
+* [ ] `course_instructor` (owner/co-instructor)
+
+---
+
+### Phase 4 — Content / Curriculum (Nội dung học)
+
+**Mục tiêu:** xây dựng chương trình học như Udemy.
+
+* [ ] Section CRUD (`course_section`)
+* [ ] Lesson CRUD (`lesson`)
+* [ ] Mapping `course_lesson` (position, preview)
+* [ ] Upload video/doc + gắn `course_document` / `lesson_document`
+* [ ] API xem lesson + download/stream cơ bản (auth)
+
+---
+
+### Phase 5 — Learning (Enroll + Progress)
+
+**Mục tiêu:** học được thật.
+
+* [ ] Enroll FREE (tạm thời để payment làm sau)
+* [ ] My Learning: list khóa đã enroll
+* [ ] Progress: completed + last_position_seconds
+* [ ] Access control: chỉ enrolled mới xem full, preview mở cho all
+
+---
+
+### Phase 6 — Quiz (Assessment)
+
+**Mục tiêu:** làm bài kiểm tra trong lesson.
+
+* [ ] CRUD quiz/question/answer (instructor)
+* [ ] Attempt flow: start → submit → chấm điểm
+* [ ] Hiển thị kết quả + explanation
+
+---
+
+### Phase 7 — Reviews & Ratings
+
+**Mục tiêu:** giống marketplace Udemy.
+
+* [ ] Mỗi user-course 1 review
+* [ ] Moderation status (tuỳ)
+* [ ] Update `rating_avg/rating_count` (cache)
+
+---
+
+### Phase 8 — Q&A (Hỏi đáp theo course/lesson)
+
+* [ ] Question theo course/lesson
+* [ ] Answer + accept answer
+* [ ] Vote question
+
+---
+
+### Phase 9 — Moderation/Report (Quản trị nội dung)
+
+* [ ] Report review/question/answer/course/lesson
+* [ ] Admin moderation queue + action log
+* [ ] (Tuỳ) blacklist words/rate limit
+
+---
+
+### Phase 10 — Commerce (làm sau)
+
+**Mục tiêu:** bán khóa học.
+
+* [ ] Pricing
+* [ ] Order + order_item
+* [ ] Payment transaction (tích hợp cổng sau)
+* [ ] Paid success → create enrollment
+* [ ] Refund request
