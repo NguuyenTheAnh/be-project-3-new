@@ -38,8 +38,24 @@ public class CategoryController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDto<CategoryDto>> update(@PathVariable Long id, @Valid @RequestBody CategoryDto dto) {
-        dto.setId(id);
-        return ResponseConfig.success(categoryService.saveObject(dto));
+        CategoryDto existing = categoryService.findById(id);
+        if (dto.getName() != null && !dto.getName().isBlank()) {
+            existing.setName(dto.getName());
+        }
+        if (dto.getSlug() != null && !dto.getSlug().isBlank()) {
+            existing.setSlug(dto.getSlug());
+        }
+        if (dto.getParentId() != null) {
+            existing.setParentId(dto.getParentId());
+        }
+        if (dto.getDescription() != null) {
+            existing.setDescription(dto.getDescription());
+        }
+        if (dto.getPosition() != null) {
+            existing.setPosition(dto.getPosition());
+        }
+        existing.setId(id);
+        return ResponseConfig.success(categoryService.saveObject(existing));
     }
 
     @DeleteMapping("/{id}")

@@ -38,8 +38,15 @@ public class TagController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDto<TagDto>> update(@PathVariable Long id, @Valid @RequestBody TagDto dto) {
-        dto.setId(id);
-        return ResponseConfig.success(tagService.saveObject(dto));
+        TagDto existing = tagService.findById(id);
+        if (dto.getName() != null && !dto.getName().isBlank()) {
+            existing.setName(dto.getName());
+        }
+        if (dto.getSlug() != null && !dto.getSlug().isBlank()) {
+            existing.setSlug(dto.getSlug());
+        }
+        existing.setId(id);
+        return ResponseConfig.success(tagService.saveObject(existing));
     }
 
     @DeleteMapping("/{id}")

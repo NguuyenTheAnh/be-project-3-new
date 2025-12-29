@@ -26,7 +26,7 @@ server:
 security:
   jwt:
     secret: change-me-please-32-chars-min
-    access-token-expiration-ms: 900000   # 15 minutes
+    access-token-expiration-ms: 10800000   # 3 hours
     refresh-token-expiration-ms: 1209600000 # 14 days
     issuer: lms-service
   role-mapping:
