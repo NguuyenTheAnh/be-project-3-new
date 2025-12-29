@@ -77,6 +77,8 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
                 .avatarFileId(request.getAvatarFileId())
                 .status(UserStatus.ACTIVE)
                 .build();
+        user.setIsActive(Boolean.TRUE);
+        user.setIsDeleted(Boolean.FALSE);
         User saved = userRepository.save(user);
         Set<String> roles = assignRoles(saved.getId(), request.getRoles());
         return toDto(saved, roles);
@@ -144,7 +146,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
 
     @Override
     public Page<UserDto> search(String keyword, Pageable pageable) {
-        Specification<User> spec = notDeletedSpec();
+        Specification<User> spec = notDeletedOrNullSpec();
         if (StringUtils.hasText(keyword)) {
             spec = spec.and((root, query, cb) -> cb.or(
                     cb.like(cb.lower(root.get("email")), "%" + keyword.toLowerCase() + "%"),
@@ -160,8 +162,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
 
     @Override
     public UserDto findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new BusinessException("data.not_found"));
-        return toDto(user, findRoles(id));
+        UserDto dto = super.findById(id);
+        dto.setRoles(findRoles(id));
+        return dto;
     }
 
     @Override
@@ -196,5 +199,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
         UserDto dto = mapper.map(user, UserDto.class);
         dto.setRoles(roles);
         return dto;
+    }
+
+    private Specification<User> notDeletedOrNullSpec() {
+        return (root, query, cb) -> cb.or(
+                cb.isFalse(root.get("isDeleted")),
+                cb.isNull(root.get("isDeleted"))
+        );
     }
 }
