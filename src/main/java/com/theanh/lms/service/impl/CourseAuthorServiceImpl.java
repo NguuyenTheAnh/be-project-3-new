@@ -4,6 +4,9 @@ import com.theanh.common.exception.BusinessException;
 import com.theanh.lms.dto.CourseDetailResponse;
 import com.theanh.lms.dto.request.*;
 import com.theanh.lms.entity.*;
+import com.theanh.lms.enums.CourseStatus;
+import com.theanh.lms.enums.InstructorRole;
+import com.theanh.lms.enums.LessonType;
 import com.theanh.lms.repository.*;
 import com.theanh.lms.service.CourseAuthorService;
 import com.theanh.lms.service.CatalogService;
@@ -29,7 +32,12 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     private final LessonRepository lessonRepository;
     private final CatalogService catalogService;
 
-    private static final Set<String> ALLOWED_STATUS = Set.of("DRAFT", "REVIEW", "PUBLISHED", "ARCHIVED");
+    private static final Set<String> ALLOWED_STATUS = Arrays.stream(CourseStatus.values())
+            .map(Enum::name)
+            .collect(Collectors.toSet());
+    private static final Set<String> ALLOWED_LESSON_TYPES = Arrays.stream(LessonType.values())
+            .map(Enum::name)
+            .collect(Collectors.toSet());
 
     @Override
     @Transactional
@@ -45,7 +53,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
                 .language(request.getLanguage())
                 .thumbnailFileId(request.getThumbnailFileId())
                 .introVideoFileId(request.getIntroVideoFileId())
-                .status("DRAFT")
+                .status(CourseStatus.DRAFT.name())
                 .ratingAvg(null)
                 .ratingCount(0)
                 .build();
@@ -60,7 +68,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             CourseInstructor owner = CourseInstructor.builder()
                     .courseId(course.getId())
                     .userId(creatorUserId)
-                    .instructorRole("OWNER")
+                    .instructorRole(InstructorRole.OWNER.name())
                     .build();
             courseInstructorRepository.save(owner);
         }
@@ -188,6 +196,9 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Transactional
     public CourseDetailResponse addLesson(Long courseId, LessonCreateRequest request) {
         getCourseOrThrow(courseId);
+        if (request.getLessonType() != null && !ALLOWED_LESSON_TYPES.contains(request.getLessonType())) {
+            throw new BusinessException("data.fail");
+        }
         Lesson lesson = Lesson.builder()
                 .title(request.getTitle())
                 .lessonType(request.getLessonType())
@@ -224,6 +235,9 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             lesson.setTitle(request.getTitle());
         }
         if (StringUtils.hasText(request.getLessonType())) {
+            if (!ALLOWED_LESSON_TYPES.contains(request.getLessonType())) {
+                throw new BusinessException("data.fail");
+            }
             lesson.setLessonType(request.getLessonType());
         }
         if (request.getContentText() != null) {

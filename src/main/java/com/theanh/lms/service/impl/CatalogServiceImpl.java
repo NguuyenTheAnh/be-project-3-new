@@ -3,6 +3,8 @@ package com.theanh.lms.service.impl;
 import com.theanh.common.exception.BusinessException;
 import com.theanh.lms.dto.*;
 import com.theanh.lms.entity.*;
+import com.theanh.lms.enums.CourseStatus;
+import com.theanh.lms.enums.LessonType;
 import com.theanh.lms.repository.*;
 import com.theanh.lms.service.CatalogService;
 import com.theanh.lms.service.CategoryService;
@@ -61,7 +63,7 @@ public class CatalogServiceImpl implements CatalogService {
                                                       String sort,
                                                       Pageable pageable) {
         Specification<Course> spec = notDeletedOrNull();
-        spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), "PUBLISHED"));
+        spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), CourseStatus.PUBLISHED.name()));
         if (StringUtils.hasText(keyword)) {
             String kw = "%" + keyword.toLowerCase() + "%";
             spec = spec.and((root, query, cb) -> cb.or(
