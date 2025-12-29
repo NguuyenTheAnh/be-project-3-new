@@ -1,0 +1,108 @@
+package com.theanh.lms.controller;
+
+import com.theanh.common.dto.ResponseDto;
+import com.theanh.common.util.ResponseConfig;
+import com.theanh.lms.dto.CourseDetailResponse;
+import com.theanh.lms.dto.request.*;
+import com.theanh.lms.service.CourseAuthorService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/instructor/courses")
+@RequiredArgsConstructor
+public class CourseAuthorController {
+
+    private final CourseAuthorService courseAuthorService;
+
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> create(@Valid @RequestBody CourseCreateRequest request) {
+        Long userId = currentUserId();
+        return ResponseConfig.success(courseAuthorService.createCourse(userId, request));
+    }
+
+    @PutMapping("/{courseId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> update(@PathVariable Long courseId,
+                                                                    @Valid @RequestBody CourseUpdateRequest request) {
+        return ResponseConfig.success(courseAuthorService.updateCourse(courseId, request));
+    }
+
+    @PatchMapping("/{courseId}/status")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> updateStatus(@PathVariable Long courseId,
+                                                                          @Valid @RequestBody CourseStatusUpdateRequest request) {
+        return ResponseConfig.success(courseAuthorService.updateStatus(courseId, request));
+    }
+
+    @PutMapping("/{courseId}/tags")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> updateTags(@PathVariable Long courseId,
+                                                                        @RequestBody List<Long> tagIds) {
+        return ResponseConfig.success(courseAuthorService.updateTags(courseId, tagIds));
+    }
+
+    @PutMapping("/{courseId}/instructors")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> updateInstructors(@PathVariable Long courseId,
+                                                                               @RequestBody List<CourseInstructorRequest> instructors) {
+        return ResponseConfig.success(courseAuthorService.updateInstructors(courseId, instructors));
+    }
+
+    @PostMapping("/{courseId}/sections")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> addSection(@PathVariable Long courseId,
+                                                                        @Valid @RequestBody CourseSectionRequest request) {
+        return ResponseConfig.success(courseAuthorService.addSection(courseId, request));
+    }
+
+    @PutMapping("/{courseId}/sections/{sectionId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> updateSection(@PathVariable Long courseId,
+                                                                           @PathVariable Long sectionId,
+                                                                           @Valid @RequestBody CourseSectionRequest request) {
+        return ResponseConfig.success(courseAuthorService.updateSection(courseId, sectionId, request));
+    }
+
+    @DeleteMapping("/{courseId}/sections/{sectionId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> deleteSection(@PathVariable Long courseId,
+                                                                           @PathVariable Long sectionId) {
+        return ResponseConfig.success(courseAuthorService.deleteSection(courseId, sectionId));
+    }
+
+    @PostMapping("/{courseId}/lessons")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> addLesson(@PathVariable Long courseId,
+                                                                       @Valid @RequestBody LessonCreateRequest request) {
+        return ResponseConfig.success(courseAuthorService.addLesson(courseId, request));
+    }
+
+    @PutMapping("/{courseId}/lessons/{lessonId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> updateLesson(@PathVariable Long courseId,
+                                                                          @PathVariable Long lessonId,
+                                                                          @Valid @RequestBody LessonUpdateRequest request) {
+        return ResponseConfig.success(courseAuthorService.updateLesson(courseId, lessonId, request));
+    }
+
+    @DeleteMapping("/{courseId}/lessons/{lessonId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> deleteLesson(@PathVariable Long courseId,
+                                                                          @PathVariable Long lessonId) {
+        return ResponseConfig.success(courseAuthorService.deleteLesson(courseId, lessonId));
+    }
+
+    private Long currentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return Long.parseLong(auth.getPrincipal().toString());
+    }
+}
