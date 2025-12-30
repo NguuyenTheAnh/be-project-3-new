@@ -35,11 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwtService.isTokenValid(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 DecodedJWT decoded = com.auth0.jwt.JWT.decode(token);
                 String subject = decoded.getSubject();
+                String email = decoded.getClaim("email").asString();
                 List<String> roles = decoded.getClaim("roles").asList(String.class);
                 List<SimpleGrantedAuthority> authorities = roles == null ? Collections.emptyList()
                         : roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(subject, null, authorities);
+                authentication.setDetails(email); // expose email for auditing
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
