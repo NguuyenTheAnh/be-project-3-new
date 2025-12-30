@@ -34,8 +34,20 @@ security:
 
 file:
   storage:
+    provider: MINIO # LOCAL | MINIO | S3
     base-path: ./storage
-    public-base-url: http://localhost:8080/api/v1/files/
+    public-base-url: http://localhost:9000/lms-files/
+    s3:
+      endpoint: http://localhost:9000
+      region: us-east-1
+      access-key: minioadmin
+      secret-key: minioadmin123
+      bucket: lms-files
+      path-style-access: true
+      public-base-url: http://localhost:9000/lms-files/
+    presign:
+      put-expiry-seconds: 600
+      get-expiry-seconds: 300
 
 logging:
   level:

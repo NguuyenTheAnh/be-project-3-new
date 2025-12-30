@@ -1,0 +1,235 @@
+﻿## A) MinIO: nhá»¯ng gÃ¬ Ä‘Ã£ cáº¥u hÃ¬nh Ä‘Æ°á»£c rá»“i
+
+### 1) MinIO Server cháº¡y OK
+
+* **S3 API endpoint**: `http://localhost:9000`
+* **Console UI**: `http://localhost:9001`
+
+âœ… Báº±ng chá»©ng: báº¡n dÃ¹ng `mc`/Console upload object OK.
+
+---
+
+### 2) Credentials (root)
+
+* `accessKey = minioadmin`
+* `secretKey = minioadmin123`
+
+âœ… DÃ¹ng Ä‘Æ°á»£c Ä‘á»ƒ BE kÃ½ presigned URL vÃ  Ä‘á»ƒ ops/debug.
+
+---
+
+### 3) Alias `local` trÃªn mÃ¡y dev
+
+* `./mc.exe alias set local http://localhost:9000 minioadmin minioadmin123`
+* `./mc.exe ls local` tháº¥y bucket
+
+âœ… Alias Ä‘Ãºng, tiá»‡n debug.
+
+---
+
+### 4) Bucket cho LMS Ä‘Ã£ táº¡o
+
+* Bucket: `lms-files`
+* Hiá»‡n Ä‘ang `PRIVATE`
+* Upload báº±ng `mc cp ... local/lms-files/...` OK
+
+âœ… Bucket tá»“n táº¡i, sáºµn Ä‘á»ƒ lÆ°u thumbnail/video/tÃ i liá»‡u.
+
+---
+
+### 5) CORS Ä‘Ã£ báº­t theo kiá»ƒu **GLOBAL** (cáº¥p server)
+
+* `cors_allow_origin=*` (Ä‘Ã£ kiá»ƒm tra báº±ng `./mc.exe admin config get local api`)
+
+âœ… Äiá»u nÃ y cho phÃ©p **Browser FE** gá»i trá»±c tiáº¿p MinIO (PUT/GET) mÃ  khÃ´ng bá»‹ cháº·n CORS (trong mÃ´i trÆ°á»ng dev).
+
+> Ghi chÃº: bucket-level CORS (`mc cors set`) bá»‹ lá»—i `decoding xml: EOF` trÃªn setup Windows/CE, nÃªn báº¡n Ä‘Ã£ chá»n cÃ¡ch **Global CORS**.
+
+---
+
+## B) YÃªu cáº§u & viá»‡c BE pháº£i thá»±c hiá»‡n
+
+### B1) Má»¥c tiÃªu kiáº¿n trÃºc upload chuáº©n LMS
+
+**FE upload trá»±c tiáº¿p lÃªn MinIO báº±ng Presigned URL** (khÃ´ng Ä‘áº©y file qua BE), BE chá»‰:
+
+1. cáº¥p presigned URL
+2. lÆ°u metadata (uploaded_file)
+3. xÃ¡c nháº­n hoÃ n táº¥t upload (optional)
+
+---
+
+## B2) Cáº¥u hÃ¬nh BE cáº§n cÃ³ (application.yml)
+
+Codex pháº£i thÃªm cÃ¡c config sau (khÃ´ng hardcode):
+
+* `storage.provider = MINIO` (hoáº·c `S3`)
+* `storage.s3.endpoint = http://localhost:9000`
+* `storage.s3.accessKey = minioadmin`
+* `storage.s3.secretKey = minioadmin123`
+* `storage.s3.bucket = lms-files`
+* `storage.s3.region = us-east-1` (MinIO váº«n cáº§n field nÃ y khi dÃ¹ng AWS SDK v2)
+* `storage.s3.publicBaseUrl` (optional) vÃ­ dá»¥: `http://localhost:9000/lms-files` hoáº·c domain CDN sau nÃ y
+* `storage.presign.putExpirySeconds = 600` (10 phÃºt)
+* `storage.presign.getExpirySeconds = 300` (5 phÃºt)
+
+**Acceptance**: Ä‘á»•i config lÃ  cháº¡y Ä‘Æ°á»£c á»Ÿ mÃ´i trÆ°á»ng khÃ¡c (khÃ´ng sá»­a code).
+
+---
+
+## B3) BE: triá»ƒn khai client MinIO/S3
+
+Codex chá»n 1 trong 2 hÆ°á»›ng (khuyáº¿n nghá»‹ AWS SDK v2):
+
+### HÆ°á»›ng 1 (khuyáº¿n nghá»‹): AWS SDK v2
+
+* Táº¡o `S3Client` (náº¿u cáº§n thao tÃ¡c bucket/object)
+* Táº¡o `S3Presigner` (báº¯t buá»™c Ä‘á»ƒ kÃ½ presigned URL)
+* Báº­t `endpointOverride` trá» MinIO
+* DÃ¹ng `StaticCredentialsProvider`
+* DÃ¹ng `Region.US_EAST_1`
+* (Quan trá»ng) cáº¥u hÃ¬nh **path-style access** náº¿u cáº§n (tÃ¹y SDK/config) Ä‘á»ƒ tÆ°Æ¡ng thÃ­ch MinIO.
+
+**Acceptance**: BE cÃ³ thá»ƒ generate presigned PUT/GET URL dÃ¹ng Ä‘Æ°á»£c vá»›i MinIO local.
+
+---
+
+## B4) BE: API cáº¥p Presigned PUT URL (cho FE upload)
+
+### Endpoint Ä‘á» xuáº¥t
+
+`POST /api/files/presign/put`
+
+### Request body
+
+* `filename` (string)
+* `contentType` (string)
+* `size` (long) (optional nhÆ°ng nÃªn cÃ³)
+* `purpose` (enum/string): `THUMBNAIL | INTRO_VIDEO | LESSON_VIDEO | DOCUMENT`
+
+### BE xá»­ lÃ½ báº¯t buá»™c
+
+1. **AuthZ**: chá»‰ role há»£p lá»‡ (vÃ­ dá»¥ INSTRUCTOR/ADMIN) má»›i Ä‘Æ°á»£c upload.
+2. **Validate**:
+
+   * whitelist content-type (vd: image/png, image/jpeg, video/mp4, application/pdf)
+   * size limit theo purpose (vd thumbnail <= 5MB, video <= 2GB,â€¦)
+   * filename sanitize (trÃ¡nh path traversal)
+3. Sinh `objectKey` theo convention:
+
+   * `thumbnails/{courseId}/{uuid}.png`
+   * `intro/{courseId}/{uuid}.mp4`
+   * `videos/{courseId}/{lessonId}/{uuid}.mp4`
+   * `docs/{courseId}/{lessonId}/{uuid}.pdf`
+4. Táº¡o presigned PUT URL vá»›i expiry cáº¥u hÃ¬nh.
+5. Tráº£ vá» response:
+
+   * `uploadUrl`
+   * `objectKey`
+   * `bucket`
+   * `expiresAt`
+   * `method = PUT`
+   * (optional) `headersRequired` (náº¿u BE yÃªu cáº§u Content-Type pháº£i khá»›p)
+
+**Acceptance**:
+
+* FE dÃ¹ng `fetch(uploadUrl, {method:'PUT', headers:{'Content-Type':...}, body:file})` upload thÃ nh cÃ´ng.
+* Object xuáº¥t hiá»‡n trong `lms-files` Ä‘Ãºng `objectKey`.
+
+---
+
+## B5) BE: API cáº¥p Presigned GET URL (xem/stream file private)
+
+### Endpoint Ä‘á» xuáº¥t
+
+`GET /api/files/presign/get?fileId=...` hoáº·c `GET /api/files/{id}/url`
+
+BE xá»­ lÃ½:
+
+1. AuthZ theo quyá»n xem khÃ³a há»c/bÃ i há»c.
+2. Láº¥y metadata tá»« DB (bucket/objectKey/provider/isPublicâ€¦)
+3. Náº¿u `isPublic=true` â†’ tráº£ luÃ´n public URL (khÃ´ng cáº§n kÃ½)
+4. Náº¿u private â†’ sinh presigned GET URL TTL ngáº¯n (vd 60â€“300s)
+
+**Acceptance**:
+
+* NgÆ°á»i cÃ³ quyá»n xem má»Ÿ video/tÃ i liá»‡u bÃ¬nh thÆ°á»ng.
+* NgÆ°á»i khÃ´ng quyá»n â†’ 403.
+
+---
+
+## B6) BE: DB metadata table & luá»“ng lÆ°u
+
+Codex cáº§n dÃ¹ng/thiáº¿t káº¿ báº£ng `uploaded_file` (báº¡n nÃ³i Ä‘Ã£ cÃ³ cá»™t provider/bucket/object_key/is_public -> reuse).
+
+**TrÆ°á»ng tá»‘i thiá»ƒu cáº§n lÆ°u**:
+
+* `id`
+* `provider` (MINIO/S3/LOCAL)
+* `bucket`
+* `object_key`
+* `original_filename`
+* `content_type`
+* `size`
+* `checksum` (optional)
+* `is_public`
+* `owner_user_id`
+* `created_date`
+
+### Luá»“ng lÆ°u Ä‘á» xuáº¥t
+
+* Khi cáº¥p presigned PUT: táº¡o row `uploaded_file` tráº¡ng thÃ¡i `PENDING`
+* Sau khi FE upload xong: FE gá»i `POST /api/files/complete` gá»­i `objectKey`/`etag`/`size`
+* BE verify object tá»“n táº¡i (HEAD) + cáº­p nháº­t `COMPLETED`
+
+**Acceptance**:
+
+* KhÃ´ng cÃ³ file â€œmá»“ cÃ´iâ€: PENDING quÃ¡ lÃ¢u -> cron cleanup (optional).
+
+---
+
+## B7) CORS phÃ­a BE/FE cáº§n lÆ°u Ã½
+
+* VÃ¬ báº¡n Ä‘Ã£ báº­t **global CORS á»Ÿ MinIO**, FE gá»i MinIO Ä‘Æ°á»£c.
+* BE váº«n cáº§n CORS cho FE gá»i API cá»§a BE (náº¿u FE khÃ¡c origin), nhÆ°ng Ä‘Ã³ lÃ  CORS cá»§a Spring Boot, tÃ¡ch biá»‡t vá»›i MinIO.
+
+**Acceptance**:
+
+* FE gá»i `POST /presign/put` tá»›i BE OK
+* FE gá»i `PUT presignedUrl` tá»›i MinIO OK
+
+---
+## C) Khac phuc AccessDenied khi mo accessUrl
+
+Ly do: bucket `lms-files` dang PRIVATE. Object upload khong co quyen public-read nen truy cap thang `http://localhost:9000/lms-files/...` bi tu choi.
+
+### C1) Giu bucket private (khuyen nghi)
+- Dung presigned GET: goi API `GET /files/{id}/url` de lay link tam cho file private.
+- Chi set `isPublic=true` cho file can public; con lai de private.
+
+### C2) Mo quyen doc cong khai mot phan bucket
+- Public chi folder images/ (vi du):
+  ```bash
+  cat > policy-public-images.json <<'EOF'
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {"AWS": ["*"]},
+        "Action": ["s3:GetObject"],
+        "Resource": ["arn:aws:s3:::lms-files/images/*"]
+      }
+    ]
+  }
+  EOF
+  ./mc.exe anonymous set-json policy-public-images.json local/lms-files
+  ```
+- Public toan bucket (it khuyen khich):
+  ```bash
+  ./mc.exe anonymous set download local/lms-files
+  ```
+- Sau khi dat policy, `accessUrl` dang `http://localhost:9000/lms-files/images/<objectKey>` se truy cap duoc.
+
+Ghi chu: MinIO khong dung ACL per-object nhu S3; quyen doc phu thuoc bucket policy. An toan nhat van la private bucket + presigned GET cho file nhay cam.
+
