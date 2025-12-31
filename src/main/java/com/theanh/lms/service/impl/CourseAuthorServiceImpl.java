@@ -7,9 +7,11 @@ import com.theanh.lms.entity.*;
 import com.theanh.lms.enums.CourseStatus;
 import com.theanh.lms.enums.InstructorRole;
 import com.theanh.lms.enums.LessonType;
+import com.theanh.lms.enums.UploadPurpose;
 import com.theanh.lms.repository.*;
 import com.theanh.lms.service.CourseAuthorService;
 import com.theanh.lms.service.CatalogService;
+import com.theanh.lms.service.UploadedFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +33,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     private final CourseLessonRepository courseLessonRepository;
     private final LessonRepository lessonRepository;
     private final CatalogService catalogService;
+    private final UploadedFileService uploadedFileService;
 
     private static final Set<String> ALLOWED_STATUS = Arrays.stream(CourseStatus.values())
             .map(Enum::name)
@@ -60,6 +63,12 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         course.setIsActive(Boolean.TRUE);
         course.setIsDeleted(Boolean.FALSE);
         course = courseRepository.save(course);
+        if (request.getThumbnailFileId() != null) {
+            uploadedFileService.markAttached(request.getThumbnailFileId(), course.getId(), null, UploadPurpose.THUMBNAIL);
+        }
+        if (request.getIntroVideoFileId() != null) {
+            uploadedFileService.markAttached(request.getIntroVideoFileId(), course.getId(), null, UploadPurpose.INTRO_VIDEO);
+        }
         syncTags(course.getId(), request.getTagIds());
         if (!CollectionUtils.isEmpty(request.getInstructors())) {
             syncInstructors(course.getId(), request.getInstructors());
@@ -102,9 +111,11 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         }
         if (request.getThumbnailFileId() != null) {
             course.setThumbnailFileId(request.getThumbnailFileId());
+            uploadedFileService.markAttached(request.getThumbnailFileId(), courseId, null, UploadPurpose.THUMBNAIL);
         }
         if (request.getIntroVideoFileId() != null) {
             course.setIntroVideoFileId(request.getIntroVideoFileId());
+            uploadedFileService.markAttached(request.getIntroVideoFileId(), courseId, null, UploadPurpose.INTRO_VIDEO);
         }
         courseRepository.save(course);
         if (request.getTagIds() != null) {
@@ -210,6 +221,9 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         lesson.setIsActive(Boolean.TRUE);
         lesson.setIsDeleted(Boolean.FALSE);
         lesson = lessonRepository.save(lesson);
+        if (request.getVideoFileId() != null) {
+            uploadedFileService.markAttached(request.getVideoFileId(), courseId, lesson.getId(), UploadPurpose.LESSON_VIDEO);
+        }
 
         CourseLesson mapping = CourseLesson.builder()
                 .courseId(courseId)
@@ -245,6 +259,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         }
         if (request.getVideoFileId() != null) {
             lesson.setVideoFileId(request.getVideoFileId());
+            uploadedFileService.markAttached(request.getVideoFileId(), courseId, lessonId, UploadPurpose.LESSON_VIDEO);
         }
         if (request.getDurationSeconds() != null) {
             lesson.setDurationSeconds(request.getDurationSeconds());

@@ -15,4 +15,5 @@ public class PresignUrlResponse {
     private String bucket;
     private String objectKey;
     private Map<String, String> headers;
+    private Long fileId;
 }

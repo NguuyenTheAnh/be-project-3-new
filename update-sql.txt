@@ -1,0 +1,20 @@
+-- Patch for uploaded_file lifecycle fields (MinIO-only flow)
+-- Run on MySQL 8+ (idempotent thanks to IF NOT EXISTS)
+
+ALTER TABLE uploaded_file
+    ADD COLUMN IF NOT EXISTS status      VARCHAR(50)  NULL COMMENT 'Lifecycle: PENDING/READY/ATTACHED/DELETED',
+    ADD COLUMN IF NOT EXISTS purpose     VARCHAR(50)  NULL COMMENT 'Purpose: THUMBNAIL/INTRO_VIDEO/LESSON_VIDEO/DOCUMENT/GENERIC',
+    ADD COLUMN IF NOT EXISTS course_id   BIGINT       NULL COMMENT 'Context course for file',
+    ADD COLUMN IF NOT EXISTS lesson_id   BIGINT       NULL COMMENT 'Context lesson for file';
+
+-- Optional: add lookup indexes for context
+ALTER TABLE uploaded_file
+    ADD INDEX IF NOT EXISTS idx_uploaded_file_course (course_id),
+    ADD INDEX IF NOT EXISTS idx_uploaded_file_lesson (lesson_id);
+
+-- Backfill existing rows so lifecycle checks work
+UPDATE uploaded_file
+SET
+    status  = COALESCE(status, 'READY'),
+    purpose = COALESCE(purpose, 'GENERIC')
+WHERE status IS NULL OR purpose IS NULL;

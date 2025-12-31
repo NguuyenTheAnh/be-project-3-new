@@ -7,6 +7,8 @@ import com.theanh.lms.dto.UploadedFileDto;
 import com.theanh.lms.dto.request.PresignPutRequest;
 import com.theanh.lms.dto.response.PresignUrlResponse;
 import com.theanh.lms.enums.UploadPurpose;
+import com.theanh.lms.enums.UploadedFileStatus;
+import com.theanh.lms.constants.MessageCode;
 import com.theanh.lms.service.PresignService;
 import com.theanh.lms.service.UploadedFileService;
 import lombok.RequiredArgsConstructor;
@@ -59,15 +61,17 @@ public class PresignServiceImpl implements PresignService {
         Instant expiresAt = Instant.now().plusSeconds(presignProperties.getPutExpirySeconds());
 
         // Create metadata row in uploaded_file as PENDING
-        UploadedFileDto meta = UploadedFileDto.builder()
-                .storageProvider("MINIO")
-                .bucket(s3Props.getBucket())
-                .objectKey(objectKey)
-                .originalName(request.getFilename())
-                .contentType(request.getContentType())
-                .isPublic(request.getIsPublic())
-                .build();
-        uploadedFileService.saveObject(meta);
+        UploadedFileDto meta = uploadedFileService.createPending(
+                purpose,
+                s3Props.getBucket(),
+                objectKey,
+                request.getFilename(),
+                request.getContentType(),
+                request.getSize(),
+                request.getIsPublic(),
+                request.getCourseId(),
+                request.getLessonId()
+        );
 
         Map<String, String> headers = toSingleValueHeaders(presigned.signedHeaders());
 
@@ -78,12 +82,19 @@ public class PresignServiceImpl implements PresignService {
                 .bucket(s3Props.getBucket())
                 .objectKey(objectKey)
                 .headers(headers)
+                .fileId(meta.getId())
                 .build();
     }
 
     @Override
     public PresignUrlResponse generateGetUrl(Long fileId) {
         UploadedFileDto file = uploadedFileService.findById(fileId);
+        if (file == null) {
+            throw new BusinessException(MessageCode.FILE_NOT_FOUND);
+        }
+        if (UploadedFileStatus.PENDING.name().equals(file.getStatus())) {
+            throw new BusinessException(MessageCode.FILE_NOT_READY);
+        }
         return generateGetUrl(file);
     }
 

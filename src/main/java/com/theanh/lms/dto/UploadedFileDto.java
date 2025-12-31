@@ -22,4 +22,8 @@ public class UploadedFileDto extends BaseDto {
     private String checksumSha256;
     private Boolean isPublic;
     private String accessUrl;
+    private String status;
+    private String purpose;
+    private Long courseId;
+    private Long lessonId;
 }

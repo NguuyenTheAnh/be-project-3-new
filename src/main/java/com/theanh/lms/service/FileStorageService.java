@@ -11,4 +11,8 @@ public interface FileStorageService {
     Resource loadAsResource(String objectKey);
 
     String buildPublicUrl(String objectKey);
+
+    StoredFile getMetadata(String objectKey);
+
+    void delete(String objectKey);
 }

@@ -24,7 +24,9 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
@@ -147,6 +149,42 @@ public class S3FileStorageService implements FileStorageService {
             return null;
         }
         return baseUrl.endsWith("/") ? baseUrl + objectKey : baseUrl + "/" + objectKey;
+    }
+
+    @Override
+    public StoredFile getMetadata(String objectKey) {
+        try {
+            HeadObjectRequest head = HeadObjectRequest.builder()
+                    .bucket(s3Props.getBucket())
+                    .key(objectKey)
+                    .build();
+            var resp = s3Client.headObject(head);
+            return StoredFile.builder()
+                    .storageProvider(StorageProvider.MINIO.name())
+                    .bucket(s3Props.getBucket())
+                    .objectKey(objectKey)
+                    .contentType(resp.contentType())
+                    .sizeBytes(resp.contentLength())
+                    .checksumSha256(resp.eTag())
+                    .isPublic(false)
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to head object {} in bucket {}", objectKey, s3Props.getBucket(), e);
+            throw new BusinessException(MessageCode.FILE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public void delete(String objectKey) {
+        try {
+            DeleteObjectRequest del = DeleteObjectRequest.builder()
+                    .bucket(s3Props.getBucket())
+                    .key(objectKey)
+                    .build();
+            s3Client.deleteObject(del);
+        } catch (Exception e) {
+            log.error("Failed to delete object {} in bucket {}", objectKey, s3Props.getBucket(), e);
+        }
     }
 
     private byte[] toBytes(MultipartFile file) {

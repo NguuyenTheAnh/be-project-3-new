@@ -1,0 +1,56 @@
+# File API curl collection (MinIO only, full lifecycle)
+
+# Base variables
+BASE_URL=http://localhost:8080/api/v1
+AUTH_HEADER="Authorization: Bearer ${ACCESS_TOKEN}"
+
+# 1) Upload nhỏ qua BE (multipart) -> status READY ngay
+curl -X POST "{{baseURL}}/files" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@/path/to/file.jpg" \
+  -F "public=false"
+# Response: {id, storageProvider, bucket, objectKey, status=READY, accessUrl (presigned GET), ...}
+
+# 2) Presign PUT (video/lớn) -> tạo record PENDING, trả fileId + upload URL
+# purpose: THUMBNAIL | INTRO_VIDEO | LESSON_VIDEO | DOCUMENT | GENERIC
+curl -X POST "{{baseURL}}/files/presign/put" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filename":"intro.mp4",
+    "contentType":"video/mp4",
+    "size":104857600,
+    "purpose":"INTRO_VIDEO",
+    "courseId":123,
+    "lessonId":null,
+    "isPublic":false
+  }'
+# Response: {fileId, url, method=PUT, expiresAt, bucket, objectKey, headers}
+# Upload trực tiếp lên MinIO với URL trên:
+# curl -X PUT "<url>" -H "Content-Type: video/mp4" --upload-file intro.mp4
+
+# 3) Complete upload (PENDING -> READY) sau khi PUT thành công
+curl -X POST "{{baseURL}}/files/complete" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{"fileId":123}'
+# Response: file metadata + accessUrl (presigned GET)
+
+# 4) Abort/cancel upload (dọn file rác, chỉ khi chưa ATTACHED)
+curl -X POST "{{baseURL}}/files/abort" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{"fileId":123}'
+# Hoặc:
+curl -X DELETE "{{baseURL}}/files/{id}" -H "$AUTH_HEADER"
+
+# 5) Get file metadata by id
+curl -X GET "{{baseURL}}/files/meta/{id}" -H "$AUTH_HEADER"
+
+# 6) Presign GET (xem/stream file private; chặn nếu PENDING/DELETED)
+curl -X GET "{{baseURL}}/files/{fileId}/url" -H "$AUTH_HEADER"
+
+# 7) Download/serve by objectKey (tự 302 sang presigned; dùng -L)
+# objectKey ví dụ: images/53bf8c6c49234050acf525c681424b63.jpg
+curl -L -X GET "{{baseURL}}/files/{objectKey}" -OJ
+

@@ -10,6 +10,7 @@ import com.theanh.lms.entity.Role;
 import com.theanh.lms.entity.User;
 import com.theanh.lms.entity.UserRole;
 import com.theanh.lms.enums.UserStatus;
+import com.theanh.lms.enums.UploadPurpose;
 import com.theanh.lms.repository.RoleRepository;
 import com.theanh.lms.repository.UserRepository;
 import com.theanh.lms.repository.UserRoleRepository;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.theanh.lms.service.UploadedFileService;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,13 +42,15 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
     private final RoleService roleService;
     private final ModelMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final UploadedFileService uploadedFileService;
 
     public UserServiceImpl(UserRepository userRepository,
                            UserRoleRepository userRoleRepository,
                            RoleRepository roleRepository,
                            RoleService roleService,
                            ModelMapper mapper,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           UploadedFileService uploadedFileService) {
         super(userRepository, mapper);
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
@@ -54,6 +58,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
         this.roleService = roleService;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
+        this.uploadedFileService = uploadedFileService;
     }
 
     @Override
@@ -80,6 +85,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
         user.setIsActive(Boolean.TRUE);
         user.setIsDeleted(Boolean.FALSE);
         User saved = userRepository.save(user);
+        if (request.getAvatarFileId() != null) {
+            uploadedFileService.markAttached(request.getAvatarFileId(), null, null, UploadPurpose.DOCUMENT);
+        }
         Set<String> roles = assignRoles(saved.getId(), request.getRoles());
         return toDto(saved, roles);
     }
@@ -99,6 +107,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
         }
         if (request.getAvatarFileId() != null) {
             user.setAvatarFileId(request.getAvatarFileId());
+            uploadedFileService.markAttached(request.getAvatarFileId(), null, null, UploadPurpose.DOCUMENT);
         }
         if (request.getIsActive() != null) {
             user.setIsActive(request.getIsActive());
@@ -126,6 +135,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
         }
         if (request.getAvatarFileId() != null) {
             user.setAvatarFileId(request.getAvatarFileId());
+            uploadedFileService.markAttached(request.getAvatarFileId(), null, null, UploadPurpose.DOCUMENT);
         }
         User saved = userRepository.save(user);
         Set<String> roles = findRoles(saved.getId());

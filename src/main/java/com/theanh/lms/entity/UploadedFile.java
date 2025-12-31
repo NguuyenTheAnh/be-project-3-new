@@ -42,4 +42,16 @@ public class UploadedFile extends BaseAuditEntity {
 
     @Column(name = "is_public")
     private Boolean isPublic;
+
+    @Column(name = "status", length = 50)
+    private String status;
+
+    @Column(name = "purpose", length = 50)
+    private String purpose;
+
+    @Column(name = "course_id")
+    private Long courseId;
+
+    @Column(name = "lesson_id")
+    private Long lessonId;
 }

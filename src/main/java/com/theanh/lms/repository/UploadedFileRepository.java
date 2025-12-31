@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface UploadedFileRepository extends BaseRepository<UploadedFile, Long> {
 
     Optional<UploadedFile> findByObjectKey(String objectKey);
+
+    Optional<UploadedFile> findByIdAndIsDeletedFalse(Long id);
 }
