@@ -38,6 +38,7 @@ public class LocalFileStorageService implements FileStorageService {
 
     @PostConstruct
     public void init() {
+        log.info("init LocalFileStorageService");
         Path baseDir = storageProperties.resolvedBasePath();
         try {
             Files.createDirectories(baseDir);

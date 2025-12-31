@@ -8,14 +8,10 @@ import com.theanh.lms.dto.response.PresignUrlResponse;
 import com.theanh.lms.service.FileStorageService;
 import com.theanh.lms.service.PresignService;
 import com.theanh.lms.service.UploadedFileService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -46,7 +42,7 @@ public class FileController {
     }
 
     @PostMapping("/presign/put")
-    public ResponseEntity<ResponseDto<PresignUrlResponse>> presignPut(@org.springframework.web.bind.annotation.RequestBody @jakarta.validation.Valid PresignPutRequest request) {
+    public ResponseEntity<ResponseDto<PresignUrlResponse>> presignPut(@RequestBody @Valid PresignPutRequest request) {
         return ResponseConfig.success(presignService.generatePutUrl(request));
     }
 

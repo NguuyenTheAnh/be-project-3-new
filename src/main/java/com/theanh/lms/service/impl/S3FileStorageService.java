@@ -43,6 +43,7 @@ public class S3FileStorageService implements FileStorageService {
 
     @PostConstruct
     public void init() {
+        log.info("init S3FileStorageService");
         S3Configuration s3Config = S3Configuration.builder()
                 .pathStyleAccessEnabled(s3Props.isPathStyleAccess())
                 .build();
