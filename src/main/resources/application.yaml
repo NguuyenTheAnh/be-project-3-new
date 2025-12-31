@@ -35,7 +35,6 @@ security:
 file:
   storage:
     provider: MINIO # LOCAL | MINIO | S3
-    base-path: ./storage
     public-base-url: http://localhost:9000/lms-files/
     s3:
       endpoint: http://localhost:9000
