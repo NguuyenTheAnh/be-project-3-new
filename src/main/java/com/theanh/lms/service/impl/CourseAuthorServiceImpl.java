@@ -132,6 +132,10 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         if (!ALLOWED_STATUS.contains(target)) {
             throw new BusinessException("data.fail");
         }
+        String current = course.getStatus();
+        if (!isTransitionAllowed(current, target)) {
+            throw new BusinessException("data.fail");
+        }
         course.setStatus(target);
         courseRepository.save(course);
         return catalogService.getCourseDetail(courseId, null);
@@ -343,5 +347,29 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             throw new BusinessException("data.not_found");
         }
         return course;
+    }
+
+    private boolean isTransitionAllowed(String current, String target) {
+        if (target == null) {
+            return false;
+        }
+        if (Objects.equals(current, target)) {
+            return true;
+        }
+        // Allowed transitions:
+        // DRAFT -> REVIEW/PUBLISHED/ARCHIVED
+        // REVIEW -> PUBLISHED/DRAFT
+        // PUBLISHED -> DRAFT/ARCHIVED
+        // ARCHIVED -> (no further change)
+        return switch (CourseStatus.valueOf(current)) {
+            case DRAFT -> target.equals(CourseStatus.REVIEW.name())
+                    || target.equals(CourseStatus.PUBLISHED.name())
+                    || target.equals(CourseStatus.ARCHIVED.name());
+            case REVIEW -> target.equals(CourseStatus.PUBLISHED.name())
+                    || target.equals(CourseStatus.DRAFT.name());
+            case PUBLISHED -> target.equals(CourseStatus.DRAFT.name())
+                    || target.equals(CourseStatus.ARCHIVED.name());
+            case ARCHIVED -> false;
+        };
     }
 }

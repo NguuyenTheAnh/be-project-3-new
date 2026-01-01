@@ -1,0 +1,285 @@
+# TODO LIST PHÁT TRIỂN LMS (UDemy-like) – BẢN THỰC CHIẾN
+
+> Triết lý:
+>
+> * DB của bạn **đã đủ tốt** → không cần sửa schema lớn
+> * Thiếu chủ yếu là **lifecycle, rule, API orchestration**
+> * Module hoá, làm từng phase, **payment làm sau**
+
+---
+
+## PHASE 0 — NỀN TẢNG KỸ THUẬT (BẮT BUỘC)
+
+### 0.1 Backend foundation
+
+* [ ] Spring Boot 3 + Java 17
+* [ ] Cấu trúc module:
+
+  * auth
+  * user
+  * file
+  * course
+  * learning
+  * quiz
+  * review
+  * qna
+  * admin/moderation
+* [ ] BaseEntity:
+
+  * id
+  * is_active / is_deleted
+  * created_date / updated_date
+  * created_user / updated_user
+* [ ] AuditorAware (lấy user từ JWT)
+
+### 0.2 Global conventions
+
+* [ ] Response chuẩn (`ResponseDto`)
+* [ ] Error code enum
+* [ ] Validation + ExceptionHandler
+* [ ] Pagination + sorting chuẩn
+* [ ] Soft delete rule áp dụng toàn hệ thống
+
+---
+
+## PHASE 1 — FILE & STORAGE (MINIO – TRỤ CỘT)
+
+> **Phase này là prerequisite cho tạo course**
+
+### 1.1 Storage architecture
+
+* [ ] MinIO bucket: `lms-files`
+* [ ] Folder convention:
+
+  * `images/`
+  * `videos/`
+  * `other/`
+* [ ] Không dùng local storage
+
+### 1.2 File lifecycle (rất quan trọng)
+
+Trên bảng `uploaded_file`:
+
+* PENDING → READY → ATTACHED → (DELETED)
+* Rule:
+
+  * PENDING: presign PUT, chưa upload xong
+  * READY: upload xong, chưa dùng
+  * ATTACHED: đã gắn vào course/lesson
+  * DELETED: abort hoặc xoá
+
+### 1.3 File APIs (BE)
+
+* [x] `POST /files/presign/put`
+* [ ] `POST /files/complete`
+* [ ] `POST /files/abort`
+* [ ] `GET /files/{id}/url`
+* [ ] `GET /files/meta/{id}`
+* [ ] Permission:
+
+  * presign PUT → INSTRUCTOR / ADMIN
+  * GET URL → tuỳ is_public + enrollment
+
+### 1.4 File rules nghiệp vụ
+
+* [ ] Abort chỉ khi status ≠ ATTACHED
+* [ ] Attach chỉ khi status = READY
+* [ ] Không cho xoá file đang dùng
+* [ ] Cron dọn PENDING quá hạn
+
+---
+
+## PHASE 2 — AUTH & RBAC
+
+### 2.1 Auth
+
+* [ ] Login / Refresh / Logout
+* [ ] JWT Access Token (stateless)
+* [ ] Refresh token rotation (`refresh_token` table)
+* [ ] Multi-device support
+
+### 2.2 RBAC
+
+* [ ] Role: ADMIN / INSTRUCTOR / STUDENT
+* [ ] Permission:
+
+  * COURSE_CREATE
+  * COURSE_PUBLISH
+  * COURSE_EDIT
+  * COURSE_REVIEW
+* [ ] Guard API theo role + permission
+
+---
+
+## PHASE 3 — CATALOG (BROWSE)
+
+### 3.1 Category
+
+* [ ] CRUD category (admin)
+* [ ] Tree category (parent_id)
+* [ ] Slug + SEO
+
+### 3.2 Tag
+
+* [ ] CRUD tag
+* [ ] Gán tag cho course (`course_tag`)
+
+### 3.3 Public course listing
+
+* [ ] Search
+* [ ] Filter:
+
+  * category
+  * level
+  * language
+* [ ] Sort:
+
+  * newest
+  * rating
+  * popular
+
+---
+
+## PHASE 4 — COURSE AUTHORING (INSTRUCTOR)
+
+> **Đây là chỗ todo cũ bị thiếu nặng**
+
+### 4.1 Course lifecycle
+
+* [ ] Create course (status = DRAFT)
+* [ ] Update landing page
+* [ ] Publish / Unpublish
+* [ ] Archive
+
+### 4.2 Course landing page
+
+* [ ] Title / description
+* [ ] Level / language
+* [ ] Thumbnail (uploaded_file → ATTACHED)
+* [ ] Intro video (presign upload → ATTACHED)
+
+### 4.3 Instructor management
+
+* [ ] course_instructor:
+
+  * OWNER
+  * CO_INSTRUCTOR
+* [ ] Revenue share (sau dùng cho payment)
+
+---
+
+## PHASE 5 — CURRICULUM & CONTENT
+
+### 5.1 Section
+
+* [ ] CRUD `course_section`
+* [ ] Reorder section
+
+### 5.2 Lesson
+
+* [ ] Lesson type:
+
+  * VIDEO
+  * ARTICLE
+  * QUIZ
+* [ ] Video lesson:
+
+  * upload video (MinIO)
+  * duration
+* [ ] Article lesson:
+
+  * content_text
+
+### 5.3 Mapping course – lesson
+
+* [ ] `course_lesson`
+* [ ] Position
+* [ ] Preview flag
+
+### 5.4 Documents
+
+* [ ] Upload document
+* [ ] Gắn `course_document`
+* [ ] Gắn `lesson_document`
+
+---
+
+## PHASE 6 — LEARNING FLOW (STUDENT)
+
+### 6.1 Enrollment
+
+* [ ] Free enroll (tạm thời)
+* [ ] enrollment status
+
+### 6.2 Lesson access control
+
+* [ ] Preview → ai cũng xem
+* [ ] Full lesson → phải enrolled
+* [ ] Check permission khi gọi file URL
+
+### 6.3 Progress
+
+* [ ] completed
+* [ ] last_position_seconds
+* [ ] last_accessed_at
+
+---
+
+## PHASE 7 — QUIZ
+
+* [ ] Quiz CRUD
+* [ ] Question CRUD
+* [ ] Answer CRUD
+* [ ] Attempt:
+
+  * start
+  * submit
+  * grade
+* [ ] Store result (`quiz_attempt`, `quiz_attempt_answer`)
+
+---
+
+## PHASE 8 — REVIEW & RATING
+
+* [ ] Mỗi user 1 review / course
+* [ ] Moderation status
+* [ ] Update rating_avg / rating_count
+
+---
+
+## PHASE 9 — Q&A
+
+* [ ] Question theo course / lesson
+* [ ] Answer
+* [ ] Accept answer
+* [ ] Vote
+
+---
+
+## PHASE 10 — MODERATION / REPORT
+
+* [ ] Report content
+* [ ] Admin review queue
+* [ ] Moderation action log
+
+---
+
+## PHASE 11 — COMMERCE (LÀM SAU)
+
+* [ ] Pricing
+* [ ] Order / order_item
+* [ ] Payment integration
+* [ ] Paid → create enrollment
+* [ ] Refund
+
+---
+
+## PHASE 12 — NON-FUNCTIONAL (RẤT QUAN TRỌNG)
+
+* [ ] Rate limit upload
+* [ ] Virus scan (optional)
+* [ ] Logging upload/download
+* [ ] Analytics nhẹ:
+
+  * document_view
+* [ ] Backup MinIO + DB
