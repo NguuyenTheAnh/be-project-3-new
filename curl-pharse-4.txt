@@ -1,0 +1,120 @@
+# Phase 4 – Course Authoring (Instructor/Admin) cURL examples
+
+# Base variables
+BASE_URL=http://localhost:8080/api/v1
+AUTH_HEADER="Authorization: Bearer ${ACCESS_TOKEN}"
+
+# -------- Course lifecycle --------
+# 1) Create course (status = DRAFT). Requires role ADMIN/INSTRUCTOR.
+curl -X POST "{{baseURL}}/instructor/courses" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Java Spring Boot Masterclass",
+    "slug": "java-spring-boot-masterclass",
+    "categoryId": 1,
+    "shortDescription": "Learn Spring Boot end-to-end",
+    "description": "Full syllabus...",
+    "level": "BEGINNER",
+    "language": "EN",
+    "thumbnailFileId": 101,   // file READY + purpose THUMBNAIL
+    "introVideoFileId": 102,   // file READY + purpose INTRO_VIDEO
+    "tagIds": [3,5],
+    "instructors": [
+      {"userId": 4, "instructorRole": "OWNER", "revenueShare": 100}
+    ]
+  }'
+
+# 2) Update course landing page (partial). Only INSTRUCTOR/ADMIN.
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Java Spring Boot Masterclass (Updated)",
+    "shortDescription": "Updated short desc",
+    "description": "Updated full desc",
+    "level": "INTERMEDIATE",
+    "language": "VI",
+    "thumbnailFileId": 201,
+    "introVideoFileId": 202,
+    "tagIds": [3,7,9]
+  }'
+
+# 3) Publish/Unpublish/Archive course (transition rules enforced)
+# Allowed transitions: DRAFT -> REVIEW/PUBLISHED/ARCHIVED; REVIEW -> PUBLISHED/DRAFT; PUBLISHED -> DRAFT/ARCHIVED
+curl -X PATCH "{{baseURL}}/instructor/courses/{courseId}/status" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{"status":"PUBLISHED"}'
+
+# 4) Update tags separately
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}/tags" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '[3,5,9]'
+
+# 5) Update instructors
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}/instructors" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '[
+    {"userId": 4, "instructorRole": "OWNER", "revenueShare": 70},
+    {"userId": 8, "instructorRole": "CO_INSTRUCTOR", "revenueShare": 30}
+  ]'
+
+# -------- Sections --------
+# Create section
+curl -X POST "{{baseURL}}/instructor/courses/{courseId}/sections" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Section 1 - Introduction","position":1}'
+
+# Update section
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}/sections/{sectionId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Section 1 - Intro Updated","position":2}'
+
+# Delete section (also removes course_lesson mappings)
+curl -X DELETE "{{baseURL}}/instructor/courses/{courseId}/sections/{sectionId}" -H "$AUTH_HEADER"
+
+# -------- Lessons --------
+# Create lesson (VIDEO/ARTICLE/QUIZ) and map to section
+curl -X POST "{{baseURL}}/instructor/courses/{courseId}/lessons" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseSectionId": 10,
+    "title": "Lesson 1 - Getting Started",
+    "lessonType": "VIDEO",
+    "contentText": null,
+    "videoFileId": 301,      // READY + purpose LESSON_VIDEO
+    "durationSeconds": 600,
+    "isFreePreview": false,
+    "isPreview": false,
+    "position": 1
+  }'
+
+# Update lesson
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}/lessons/{lessonId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseSectionId": 11,
+    "title": "Lesson 1 - Updated",
+    "lessonType": "ARTICLE",
+    "contentText": "<p>Updated article content</p>",
+    "videoFileId": null,
+    "durationSeconds": 300,
+    "isFreePreview": true,
+    "isPreview": true,
+    "position": 2
+  }'
+
+# Delete lesson
+curl -X DELETE "{{baseURL}}/instructor/courses/{courseId}/lessons/{lessonId}" -H "$AUTH_HEADER"
+
+# -------- File attach expectations --------
+# - thumbnailFileId: READY + purpose THUMBNAIL, courseId set when attached
+# - introVideoFileId: READY + purpose INTRO_VIDEO
+# - lesson video: READY + purpose LESSON_VIDEO, courseId + lessonId set when attached

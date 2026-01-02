@@ -4,6 +4,8 @@ import com.theanh.common.exception.BusinessException;
 import com.theanh.lms.dto.CourseDetailResponse;
 import com.theanh.lms.dto.request.*;
 import com.theanh.lms.entity.*;
+import com.theanh.lms.enums.CourseLevel;
+import com.theanh.lms.enums.CourseLanguage;
 import com.theanh.lms.enums.CourseStatus;
 import com.theanh.lms.enums.InstructorRole;
 import com.theanh.lms.enums.LessonType;
@@ -41,10 +43,17 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     private static final Set<String> ALLOWED_LESSON_TYPES = Arrays.stream(LessonType.values())
             .map(Enum::name)
             .collect(Collectors.toSet());
+    private static final Set<String> ALLOWED_LEVELS = Arrays.stream(CourseLevel.values())
+            .map(Enum::name)
+            .collect(Collectors.toSet());
+    private static final Set<String> ALLOWED_LANGUAGES = Arrays.stream(CourseLanguage.values())
+            .map(Enum::name)
+            .collect(Collectors.toSet());
 
     @Override
     @Transactional
     public CourseDetailResponse createCourse(Long creatorUserId, CourseCreateRequest request) {
+        validateLevelAndLanguage(request.getLevel(), request.getLanguage());
         Course course = Course.builder()
                 .creatorUserId(creatorUserId)
                 .categoryId(request.getCategoryId())
@@ -88,6 +97,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Transactional
     public CourseDetailResponse updateCourse(Long courseId, CourseUpdateRequest request) {
         Course course = getCourseOrThrow(courseId);
+        validateLevelAndLanguage(request.getLevel(), request.getLanguage());
         if (StringUtils.hasText(request.getTitle())) {
             course.setTitle(request.getTitle());
         }
@@ -371,5 +381,14 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
                     || target.equals(CourseStatus.ARCHIVED.name());
             case ARCHIVED -> false;
         };
+    }
+
+    private void validateLevelAndLanguage(String level, String language) {
+        if (level != null && StringUtils.hasText(level) && !ALLOWED_LEVELS.contains(level)) {
+            throw new BusinessException("data.fail");
+        }
+        if (language != null && StringUtils.hasText(language) && !ALLOWED_LANGUAGES.contains(language)) {
+            throw new BusinessException("data.fail");
+        }
     }
 }

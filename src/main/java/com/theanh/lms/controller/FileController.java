@@ -1,4 +1,4 @@
-﻿package com.theanh.lms.controller;
+package com.theanh.lms.controller;
 
 import com.theanh.common.dto.ResponseDto;
 import com.theanh.common.util.ResponseConfig;
