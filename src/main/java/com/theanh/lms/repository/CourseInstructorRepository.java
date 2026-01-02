@@ -10,4 +10,6 @@ import java.util.List;
 public interface CourseInstructorRepository extends BaseRepository<CourseInstructor, Long> {
 
     List<CourseInstructor> findByCourseId(Long courseId);
+
+    List<CourseInstructor> findByCourseIdAndIsDeletedFalse(Long courseId);
 }

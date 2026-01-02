@@ -5,4 +5,6 @@ import com.theanh.lms.dto.CourseInstructorDto;
 import com.theanh.lms.entity.CourseInstructor;
 
 public interface CourseInstructorService extends BaseService<CourseInstructor, CourseInstructorDto, Long> {
+
+    void deleteByCourseId(Long courseId);
 }

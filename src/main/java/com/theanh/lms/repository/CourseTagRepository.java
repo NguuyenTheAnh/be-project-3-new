@@ -12,4 +12,6 @@ public interface CourseTagRepository extends BaseRepository<CourseTag, Long> {
     List<CourseTag> findByCourseId(Long courseId);
 
     List<CourseTag> findByCourseIdIn(List<Long> courseIds);
+
+    List<CourseTag> findByCourseIdAndIsDeletedFalse(Long courseId);
 }

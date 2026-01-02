@@ -95,7 +95,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
     @Override
     @Transactional
     public UserDto updateUser(Long id, UserUpdateRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new BusinessException("data.not_found"));
+        User user = userRepository.findById(id)
+                .filter(u -> !Boolean.TRUE.equals(u.getIsDeleted()))
+                .orElseThrow(() -> new BusinessException("data.not_found"));
         if (StringUtils.hasText(request.getFullName())) {
             user.setFullName(request.getFullName());
         }
@@ -123,7 +125,9 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
     @Override
     @Transactional
     public UserDto updateProfile(Long id, ProfileUpdateRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new BusinessException("data.not_found"));
+        User user = userRepository.findById(id)
+                .filter(u -> !Boolean.TRUE.equals(u.getIsDeleted()))
+                .orElseThrow(() -> new BusinessException("data.not_found"));
         if (StringUtils.hasText(request.getFullName())) {
             user.setFullName(request.getFullName());
         }

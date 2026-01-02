@@ -8,6 +8,9 @@ import com.theanh.lms.service.CourseTagService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CourseTagServiceImpl extends BaseServiceImpl<CourseTag, CourseTagDto, Long> implements CourseTagService {
 
@@ -23,5 +26,14 @@ public class CourseTagServiceImpl extends BaseServiceImpl<CourseTag, CourseTagDt
     @Override
     protected Class<CourseTagDto> getDtoClass() {
         return CourseTagDto.class;
+    }
+
+    @Override
+    public void deleteByCourseId(Long courseId) {
+        List<Long> ids = ((CourseTagRepository) repository).findByCourseIdAndIsDeletedFalse(courseId)
+                .stream().map(CourseTag::getId).collect(Collectors.toList());
+        if (!ids.isEmpty()) {
+            this.deleteByIds(ids);
+        }
     }
 }

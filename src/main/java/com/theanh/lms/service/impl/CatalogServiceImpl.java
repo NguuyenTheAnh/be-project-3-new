@@ -104,16 +104,15 @@ public class CatalogServiceImpl implements CatalogService {
     public CourseDetailResponse getCourseDetail(Long idOrNull, String slugOrNull) {
         Optional<Course> courseOpt;
         if (idOrNull != null) {
-            courseOpt = courseRepository.findById(idOrNull);
+            courseOpt = courseRepository.findById(idOrNull)
+                    .filter(c -> !Boolean.TRUE.equals(c.getIsDeleted()));
         } else if (StringUtils.hasText(slugOrNull)) {
-            courseOpt = courseRepository.findBySlug(slugOrNull);
+            courseOpt = courseRepository.findBySlug(slugOrNull)
+                    .filter(c -> !Boolean.TRUE.equals(c.getIsDeleted()));
         } else {
             throw new BusinessException("data.not_found");
         }
         Course course = courseOpt.orElseThrow(() -> new BusinessException("data.not_found"));
-        if (Boolean.TRUE.equals(course.getIsDeleted())) {
-            throw new BusinessException("data.not_found");
-        }
         CourseDetailResponse response = new CourseDetailResponse();
         response.setId(course.getId());
         response.setTitle(course.getTitle());
@@ -128,16 +127,18 @@ public class CatalogServiceImpl implements CatalogService {
         response.setRatingCount(Optional.ofNullable(course.getRatingCount()).orElse(0));
 
         if (course.getCategoryId() != null) {
-            categoryRepository.findById(course.getCategoryId()).ifPresent(cat -> {
-                CategoryDto catDto = new CategoryDto();
-                catDto.setId(cat.getId());
-                catDto.setName(cat.getName());
-                catDto.setSlug(cat.getSlug());
-                catDto.setParentId(cat.getParentId());
-                catDto.setDescription(cat.getDescription());
-                catDto.setPosition(cat.getPosition());
-                response.setCategory(catDto);
-            });
+            categoryRepository.findById(course.getCategoryId())
+                    .filter(cat -> !Boolean.TRUE.equals(cat.getIsDeleted()))
+                    .ifPresent(cat -> {
+                        CategoryDto catDto = new CategoryDto();
+                        catDto.setId(cat.getId());
+                        catDto.setName(cat.getName());
+                        catDto.setSlug(cat.getSlug());
+                        catDto.setParentId(cat.getParentId());
+                        catDto.setDescription(cat.getDescription());
+                        catDto.setPosition(cat.getPosition());
+                        response.setCategory(catDto);
+                    });
         }
 
         response.setTags(resolveTagsForCourse(course.getId()));
@@ -302,8 +303,14 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     private List<CourseSectionResponse> buildSections(Long courseId) {
-        List<CourseSection> sections = courseSectionRepository.findByCourseIdOrderByPositionAsc(courseId);
-        List<CourseLesson> courseLessons = courseLessonRepository.findByCourseIdOrderByPositionAsc(courseId);
+        List<CourseSection> sections = courseSectionRepository.findByCourseIdOrderByPositionAsc(courseId)
+                .stream()
+                .filter(s -> !Boolean.TRUE.equals(s.getIsDeleted()))
+                .toList();
+        List<CourseLesson> courseLessons = courseLessonRepository.findByCourseIdOrderByPositionAsc(courseId)
+                .stream()
+                .filter(cl -> !Boolean.TRUE.equals(cl.getIsDeleted()))
+                .toList();
         if (CollectionUtils.isEmpty(courseLessons)) {
             courseLessons = List.of();
         }

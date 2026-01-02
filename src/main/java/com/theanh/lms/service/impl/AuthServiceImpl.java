@@ -88,6 +88,7 @@ public class AuthServiceImpl implements AuthService {
         );
         Long userId = rotated.getUserId();
         User user = userRepository.findById(userId)
+                .filter(u -> !Boolean.TRUE.equals(u.getIsDeleted()))
                 .orElseThrow(() -> new BusinessException("data.not_found"));
         Set<String> roles = userService.findRoles(userId);
         List<String> authorities = roles.stream().map(r -> "ROLE_" + r).toList();

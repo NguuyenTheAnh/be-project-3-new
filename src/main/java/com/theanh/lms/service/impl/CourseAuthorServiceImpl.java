@@ -2,6 +2,11 @@ package com.theanh.lms.service.impl;
 
 import com.theanh.common.exception.BusinessException;
 import com.theanh.lms.dto.CourseDetailResponse;
+import com.theanh.lms.dto.CourseInstructorDto;
+import com.theanh.lms.dto.CourseLessonDto;
+import com.theanh.lms.dto.CourseSectionDto;
+import com.theanh.lms.dto.CourseTagDto;
+import com.theanh.lms.dto.LessonDto;
 import com.theanh.lms.dto.request.*;
 import com.theanh.lms.entity.*;
 import com.theanh.lms.enums.CourseLevel;
@@ -10,9 +15,15 @@ import com.theanh.lms.enums.CourseStatus;
 import com.theanh.lms.enums.InstructorRole;
 import com.theanh.lms.enums.LessonType;
 import com.theanh.lms.enums.UploadPurpose;
-import com.theanh.lms.repository.*;
+import com.theanh.lms.repository.CourseRepository;
+import com.theanh.lms.repository.TagRepository;
+import com.theanh.lms.service.CourseInstructorService;
+import com.theanh.lms.service.CourseLessonService;
 import com.theanh.lms.service.CourseAuthorService;
+import com.theanh.lms.service.CourseSectionService;
+import com.theanh.lms.service.CourseTagService;
 import com.theanh.lms.service.CatalogService;
+import com.theanh.lms.service.LessonService;
 import com.theanh.lms.service.UploadedFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,12 +39,12 @@ import java.util.stream.Collectors;
 public class CourseAuthorServiceImpl implements CourseAuthorService {
 
     private final CourseRepository courseRepository;
-    private final CourseTagRepository courseTagRepository;
     private final TagRepository tagRepository;
-    private final CourseInstructorRepository courseInstructorRepository;
-    private final CourseSectionRepository courseSectionRepository;
-    private final CourseLessonRepository courseLessonRepository;
-    private final LessonRepository lessonRepository;
+    private final CourseTagService courseTagService;
+    private final CourseInstructorService courseInstructorService;
+    private final CourseSectionService courseSectionService;
+    private final CourseLessonService courseLessonService;
+    private final LessonService lessonService;
     private final CatalogService catalogService;
     private final UploadedFileService uploadedFileService;
 
@@ -83,12 +94,11 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             syncInstructors(course.getId(), request.getInstructors());
         } else {
             // Ensure creator is owner
-            CourseInstructor owner = CourseInstructor.builder()
-                    .courseId(course.getId())
-                    .userId(creatorUserId)
-                    .instructorRole(InstructorRole.OWNER.name())
-                    .build();
-            courseInstructorRepository.save(owner);
+            CourseInstructorDto owner = new CourseInstructorDto();
+            owner.setCourseId(course.getId());
+            owner.setUserId(creatorUserId);
+            owner.setInstructorRole(InstructorRole.OWNER.name());
+            courseInstructorService.saveObject(owner);
         }
         return catalogService.getCourseDetail(course.getId(), null);
     }
@@ -171,14 +181,11 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Transactional
     public CourseDetailResponse addSection(Long courseId, CourseSectionRequest request) {
         getCourseOrThrow(courseId);
-        CourseSection section = CourseSection.builder()
-                .courseId(courseId)
-                .title(request.getTitle())
-                .position(request.getPosition())
-                .build();
-        section.setIsActive(Boolean.TRUE);
-        section.setIsDeleted(Boolean.FALSE);
-        courseSectionRepository.save(section);
+        CourseSectionDto section = new CourseSectionDto();
+        section.setCourseId(courseId);
+        section.setTitle(request.getTitle());
+        section.setPosition(request.getPosition());
+        courseSectionService.saveObject(section);
         return catalogService.getCourseDetail(courseId, null);
     }
 
@@ -186,8 +193,10 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Transactional
     public CourseDetailResponse updateSection(Long courseId, Long sectionId, CourseSectionRequest request) {
         getCourseOrThrow(courseId);
-        CourseSection section = courseSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new BusinessException("data.not_found"));
+        CourseSectionDto section = courseSectionService.findById(sectionId);
+        if (section == null) {
+            throw new BusinessException("data.not_found");
+        }
         if (!courseId.equals(section.getCourseId())) {
             throw new BusinessException("data.fail");
         }
@@ -197,7 +206,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         if (request.getPosition() != null) {
             section.setPosition(request.getPosition());
         }
-        courseSectionRepository.save(section);
+        courseSectionService.saveObject(section);
         return catalogService.getCourseDetail(courseId, null);
     }
 
@@ -205,15 +214,15 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Transactional
     public CourseDetailResponse deleteSection(Long courseId, Long sectionId) {
         getCourseOrThrow(courseId);
-        CourseSection section = courseSectionRepository.findById(sectionId)
-                .orElseThrow(() -> new BusinessException("data.not_found"));
+        CourseSectionDto section = courseSectionService.findById(sectionId);
+        if (section == null) {
+            throw new BusinessException("data.not_found");
+        }
         if (!courseId.equals(section.getCourseId())) {
             throw new BusinessException("data.fail");
         }
-        courseSectionRepository.delete(section);
-        // also delete courseLesson referencing this section
-        List<CourseLesson> toDelete = courseLessonRepository.findByCourseSectionIdOrderByPositionAsc(sectionId);
-        courseLessonRepository.deleteAll(toDelete);
+        courseSectionService.deleteById(sectionId);
+        courseLessonService.deleteBySectionId(sectionId);
         return catalogService.getCourseDetail(courseId, null);
     }
 
@@ -224,31 +233,25 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         if (request.getLessonType() != null && !ALLOWED_LESSON_TYPES.contains(request.getLessonType())) {
             throw new BusinessException("data.fail");
         }
-        Lesson lesson = Lesson.builder()
-                .title(request.getTitle())
-                .lessonType(request.getLessonType())
-                .contentText(request.getContentText())
-                .videoFileId(request.getVideoFileId())
-                .durationSeconds(request.getDurationSeconds())
-                .isFreePreview(request.getIsFreePreview())
-                .build();
-        lesson.setIsActive(Boolean.TRUE);
-        lesson.setIsDeleted(Boolean.FALSE);
-        lesson = lessonRepository.save(lesson);
+        LessonDto lesson = new LessonDto();
+        lesson.setTitle(request.getTitle());
+        lesson.setLessonType(request.getLessonType());
+        lesson.setContentText(request.getContentText());
+        lesson.setVideoFileId(request.getVideoFileId());
+        lesson.setDurationSeconds(request.getDurationSeconds());
+        lesson.setIsFreePreview(request.getIsFreePreview());
+        LessonDto savedLesson = lessonService.saveObject(lesson);
         if (request.getVideoFileId() != null) {
-            uploadedFileService.markAttached(request.getVideoFileId(), courseId, lesson.getId(), UploadPurpose.LESSON_VIDEO);
+            uploadedFileService.markAttached(request.getVideoFileId(), courseId, savedLesson.getId(), UploadPurpose.LESSON_VIDEO);
         }
 
-        CourseLesson mapping = CourseLesson.builder()
-                .courseId(courseId)
-                .courseSectionId(request.getCourseSectionId())
-                .lessonId(lesson.getId())
-                .position(request.getPosition())
-                .isPreview(request.getIsPreview())
-                .build();
-        mapping.setIsActive(Boolean.TRUE);
-        mapping.setIsDeleted(Boolean.FALSE);
-        courseLessonRepository.save(mapping);
+        CourseLessonDto mapping = new CourseLessonDto();
+        mapping.setCourseId(courseId);
+        mapping.setCourseSectionId(request.getCourseSectionId());
+        mapping.setLessonId(savedLesson.getId());
+        mapping.setPosition(request.getPosition());
+        mapping.setIsPreview(request.getIsPreview());
+        courseLessonService.saveObject(mapping);
 
         return catalogService.getCourseDetail(courseId, null);
     }
@@ -257,8 +260,10 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Transactional
     public CourseDetailResponse updateLesson(Long courseId, Long lessonId, LessonUpdateRequest request) {
         getCourseOrThrow(courseId);
-        Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new BusinessException("data.not_found"));
+        LessonDto lesson = lessonService.findById(lessonId);
+        if (lesson == null) {
+            throw new BusinessException("data.not_found");
+        }
         if (StringUtils.hasText(request.getTitle())) {
             lesson.setTitle(request.getTitle());
         }
@@ -281,11 +286,11 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         if (request.getIsFreePreview() != null) {
             lesson.setIsFreePreview(request.getIsFreePreview());
         }
-        lessonRepository.save(lesson);
+        lessonService.saveObject(lesson);
 
-        List<CourseLesson> mappings = courseLessonRepository.findByCourseIdOrderByPositionAsc(courseId)
+        List<CourseLessonDto> mappings = courseLessonService.findByCourseId(courseId)
                 .stream().filter(cl -> cl.getLessonId().equals(lessonId)).toList();
-        for (CourseLesson cl : mappings) {
+        for (CourseLessonDto cl : mappings) {
             if (request.getCourseSectionId() != null) {
                 cl.setCourseSectionId(request.getCourseSectionId());
             }
@@ -295,8 +300,8 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             if (request.getIsPreview() != null) {
                 cl.setIsPreview(request.getIsPreview());
             }
+            courseLessonService.saveObject(cl);
         }
-        courseLessonRepository.saveAll(mappings);
         return catalogService.getCourseDetail(courseId, null);
     }
 
@@ -304,50 +309,42 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Transactional
     public CourseDetailResponse deleteLesson(Long courseId, Long lessonId) {
         getCourseOrThrow(courseId);
-        Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new BusinessException("data.not_found"));
-        courseLessonRepository.deleteAll(
-                courseLessonRepository.findByCourseIdOrderByPositionAsc(courseId).stream()
-                        .filter(cl -> cl.getLessonId().equals(lessonId))
-                        .toList()
-        );
-        lessonRepository.delete(lesson);
+        lessonService.findById(lessonId); // ensure exists
+        courseLessonService.deleteByCourseAndLesson(courseId, lessonId);
+        lessonService.deleteById(lessonId);
         return catalogService.getCourseDetail(courseId, null);
     }
 
     private void syncTags(Long courseId, List<Long> tagIds) {
-        courseTagRepository.deleteAll(courseTagRepository.findByCourseId(courseId));
+        courseTagService.deleteByCourseId(courseId);
         if (CollectionUtils.isEmpty(tagIds)) {
             return;
         }
         Set<Long> valid = new HashSet<>(tagRepository.findAllById(tagIds).stream().map(Tag::getId).toList());
-        for (Long tagId : valid) {
-            CourseTag ct = CourseTag.builder()
-                    .courseId(courseId)
-                    .tagId(tagId)
-                    .build();
-            ct.setIsActive(Boolean.TRUE);
-            ct.setIsDeleted(Boolean.FALSE);
-            courseTagRepository.save(ct);
-        }
+        List<CourseTagDto> dtoList = valid.stream()
+                .map(tagId -> {
+                    CourseTagDto dto = new CourseTagDto();
+                    dto.setCourseId(courseId);
+                    dto.setTagId(tagId);
+                    return dto;
+                }).toList();
+        courseTagService.saveListObject(dtoList);
     }
 
     private void syncInstructors(Long courseId, List<CourseInstructorRequest> instructors) {
-        courseInstructorRepository.deleteAll(courseInstructorRepository.findByCourseId(courseId));
+        courseInstructorService.deleteByCourseId(courseId);
         if (CollectionUtils.isEmpty(instructors)) {
             return;
         }
-        for (CourseInstructorRequest req : instructors) {
-            CourseInstructor ci = CourseInstructor.builder()
-                    .courseId(courseId)
-                    .userId(req.getUserId())
-                    .instructorRole(req.getInstructorRole())
-                    .revenueShare(req.getRevenueShare())
-                    .build();
-            ci.setIsActive(Boolean.TRUE);
-            ci.setIsDeleted(Boolean.FALSE);
-            courseInstructorRepository.save(ci);
-        }
+        List<CourseInstructorDto> dtoList = instructors.stream().map(req -> {
+            CourseInstructorDto dto = new CourseInstructorDto();
+            dto.setCourseId(courseId);
+            dto.setUserId(req.getUserId());
+            dto.setInstructorRole(req.getInstructorRole());
+            dto.setRevenueShare(req.getRevenueShare());
+            return dto;
+        }).toList();
+        courseInstructorService.saveListObject(dtoList);
     }
 
     private Course getCourseOrThrow(Long courseId) {
