@@ -8,6 +8,8 @@ import com.theanh.lms.enums.LessonType;
 import com.theanh.lms.repository.*;
 import com.theanh.lms.service.CatalogService;
 import com.theanh.lms.service.CategoryService;
+import com.theanh.lms.service.CourseDocumentService;
+import com.theanh.lms.service.LessonDocumentService;
 import com.theanh.lms.service.TagService;
 import com.theanh.lms.service.UploadedFileService;
 import com.theanh.lms.utils.UserViewMapper;
@@ -40,6 +42,8 @@ public class CatalogServiceImpl implements CatalogService {
     private final CourseInstructorRepository courseInstructorRepository;
     private final UserRepository userRepository;
     private final UploadedFileService uploadedFileService;
+    private final CourseDocumentService courseDocumentService;
+    private final LessonDocumentService lessonDocumentService;
     private final UserViewMapper userViewMapper;
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
@@ -157,6 +161,7 @@ public class CatalogServiceImpl implements CatalogService {
         }
 
         response.setInstructors(buildInstructorSummaries(course.getId()));
+        response.setCourseDocuments(buildCourseDocuments(course.getId()));
         response.setSections(buildSections(course.getId()));
         return response;
     }
@@ -322,6 +327,7 @@ public class CatalogServiceImpl implements CatalogService {
         Map<Long, Lesson> lessonMap = lessonRepository.findAllById(lessonIds).stream()
                 .filter(l -> !Boolean.TRUE.equals(l.getIsDeleted()))
                 .collect(Collectors.toMap(Lesson::getId, l -> l));
+        Map<Long, List<DocumentResponse>> lessonDocMap = buildLessonDocumentMap(lessonIds);
 
         List<CourseSectionResponse> responses = new ArrayList<>();
         for (CourseSection section : sections) {
@@ -330,7 +336,7 @@ public class CatalogServiceImpl implements CatalogService {
             sr.setTitle(section.getTitle());
             sr.setPosition(section.getPosition());
             List<CourseLesson> cls = lessonBySection.getOrDefault(section.getId(), List.of());
-            sr.setLessons(buildLessonPreviews(cls, lessonMap));
+            sr.setLessons(buildLessonPreviews(cls, lessonMap, lessonDocMap));
             responses.add(sr);
         }
         // orphan lessons not in section
@@ -342,14 +348,16 @@ public class CatalogServiceImpl implements CatalogService {
             pseudo.setId(0L);
             pseudo.setTitle("Ungrouped");
             pseudo.setPosition(Integer.MAX_VALUE);
-            pseudo.setLessons(buildLessonPreviews(orphan, lessonMap));
+            pseudo.setLessons(buildLessonPreviews(orphan, lessonMap, lessonDocMap));
             responses.add(pseudo);
         }
         responses.sort(Comparator.comparing(cs -> Optional.ofNullable(cs.getPosition()).orElse(Integer.MAX_VALUE)));
         return responses;
     }
 
-    private List<LessonPreviewDto> buildLessonPreviews(List<CourseLesson> cls, Map<Long, Lesson> lessonMap) {
+    private List<LessonPreviewDto> buildLessonPreviews(List<CourseLesson> cls,
+                                                       Map<Long, Lesson> lessonMap,
+                                                       Map<Long, List<DocumentResponse>> lessonDocMap) {
         if (CollectionUtils.isEmpty(cls)) {
             return List.of();
         }
@@ -367,10 +375,64 @@ public class CatalogServiceImpl implements CatalogService {
                     dto.setDurationSeconds(lesson.getDurationSeconds());
                     boolean preview = Boolean.TRUE.equals(lesson.getIsFreePreview()) || Boolean.TRUE.equals(cl.getIsPreview());
                     dto.setIsPreview(preview);
+                    dto.setDocuments(lessonDocMap.getOrDefault(lesson.getId(), List.of()));
                     return dto;
                 })
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    private List<DocumentResponse> buildCourseDocuments(Long courseId) {
+        List<CourseDocumentDto> docs = courseDocumentService.findByCourseId(courseId);
+        return mapCourseDocuments(docs);
+    }
+
+    private Map<Long, List<DocumentResponse>> buildLessonDocumentMap(Set<Long> lessonIds) {
+        if (CollectionUtils.isEmpty(lessonIds)) {
+            return Map.of();
+        }
+        Map<Long, List<DocumentResponse>> result = new HashMap<>();
+        for (Long lessonId : lessonIds) {
+            List<LessonDocumentDto> docs = lessonDocumentService.findByLessonId(lessonId);
+            result.put(lessonId, mapLessonDocuments(docs));
+        }
+        return result;
+    }
+
+    private List<DocumentResponse> mapCourseDocuments(List<CourseDocumentDto> docs) {
+        if (CollectionUtils.isEmpty(docs)) {
+            return List.of();
+        }
+        return docs.stream()
+                .sorted(Comparator.comparing(doc -> Optional.ofNullable(doc.getPosition()).orElse(Integer.MAX_VALUE)))
+                .map(doc -> buildDocumentResponse(doc.getId(), doc.getTitle(), doc.getPosition(), doc.getUploadedFileId()))
+                .toList();
+    }
+
+    private List<DocumentResponse> mapLessonDocuments(List<LessonDocumentDto> docs) {
+        if (CollectionUtils.isEmpty(docs)) {
+            return List.of();
+        }
+        return docs.stream()
+                .sorted(Comparator.comparing(doc -> Optional.ofNullable(doc.getPosition()).orElse(Integer.MAX_VALUE)))
+                .map(doc -> buildDocumentResponse(doc.getId(), doc.getTitle(), doc.getPosition(), doc.getUploadedFileId()))
+                .toList();
+    }
+
+    private DocumentResponse buildDocumentResponse(Long id, String title, Integer position, Long fileId) {
+        UploadedFileDto file = null;
+        if (fileId != null) {
+            try {
+                file = uploadedFileService.findById(fileId);
+            } catch (BusinessException ignored) {
+            }
+        }
+        return DocumentResponse.builder()
+                .id(id)
+                .title(title)
+                .position(position)
+                .file(file)
+                .build();
     }
 
     private Pageable applySort(String sort, Pageable pageable) {

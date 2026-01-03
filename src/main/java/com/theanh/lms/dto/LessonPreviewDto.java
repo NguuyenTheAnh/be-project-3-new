@@ -9,4 +9,5 @@ public class LessonPreviewDto {
     private String lessonType;
     private Integer durationSeconds;
     private Boolean isPreview;
+    private java.util.List<DocumentResponse> documents;
 }

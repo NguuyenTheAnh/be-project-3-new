@@ -101,6 +101,67 @@ public class CourseAuthorController {
         return ResponseConfig.success(courseAuthorService.deleteLesson(courseId, lessonId));
     }
 
+    @PatchMapping("/{courseId}/sections/reorder")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> reorderSections(@PathVariable Long courseId,
+                                                                             @Valid @RequestBody ReorderRequest request) {
+        return ResponseConfig.success(courseAuthorService.reorderSections(courseId, request));
+    }
+
+    @PatchMapping("/{courseId}/lessons/reorder")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> reorderLessons(@PathVariable Long courseId,
+                                                                            @Valid @RequestBody ReorderRequest request) {
+        return ResponseConfig.success(courseAuthorService.reorderLessons(courseId, request));
+    }
+
+    @PostMapping("/{courseId}/documents")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> addCourseDocument(@PathVariable Long courseId,
+                                                                               @Valid @RequestBody CourseDocumentRequest request) {
+        return ResponseConfig.success(courseAuthorService.addCourseDocument(courseId, request));
+    }
+
+    @PutMapping("/{courseId}/documents/{documentId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> updateCourseDocument(@PathVariable Long courseId,
+                                                                                  @PathVariable Long documentId,
+                                                                                  @Valid @RequestBody CourseDocumentRequest request) {
+        return ResponseConfig.success(courseAuthorService.updateCourseDocument(courseId, documentId, request));
+    }
+
+    @DeleteMapping("/{courseId}/documents/{documentId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> deleteCourseDocument(@PathVariable Long courseId,
+                                                                                  @PathVariable Long documentId) {
+        return ResponseConfig.success(courseAuthorService.deleteCourseDocument(courseId, documentId));
+    }
+
+    @PostMapping("/{courseId}/lessons/{lessonId}/documents")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> addLessonDocument(@PathVariable Long courseId,
+                                                                               @PathVariable Long lessonId,
+                                                                               @Valid @RequestBody LessonDocumentRequest request) {
+        return ResponseConfig.success(courseAuthorService.addLessonDocument(courseId, lessonId, request));
+    }
+
+    @PutMapping("/{courseId}/lessons/{lessonId}/documents/{documentId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> updateLessonDocument(@PathVariable Long courseId,
+                                                                                  @PathVariable Long lessonId,
+                                                                                  @PathVariable Long documentId,
+                                                                                  @Valid @RequestBody LessonDocumentRequest request) {
+        return ResponseConfig.success(courseAuthorService.updateLessonDocument(courseId, lessonId, documentId, request));
+    }
+
+    @DeleteMapping("/{courseId}/lessons/{lessonId}/documents/{documentId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> deleteLessonDocument(@PathVariable Long courseId,
+                                                                                  @PathVariable Long lessonId,
+                                                                                  @PathVariable Long documentId) {
+        return ResponseConfig.success(courseAuthorService.deleteLessonDocument(courseId, lessonId, documentId));
+    }
+
     private Long currentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return Long.parseLong(auth.getPrincipal().toString());

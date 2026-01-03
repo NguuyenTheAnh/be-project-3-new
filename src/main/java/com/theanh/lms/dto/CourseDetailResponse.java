@@ -25,4 +25,5 @@ public class CourseDetailResponse {
     private UploadedFileDto introVideo;
     private List<InstructorSummaryDto> instructors;
     private List<CourseSectionResponse> sections;
+    private List<DocumentResponse> courseDocuments;
 }

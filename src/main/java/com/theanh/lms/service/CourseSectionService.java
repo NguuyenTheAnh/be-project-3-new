@@ -5,4 +5,6 @@ import com.theanh.lms.dto.CourseSectionDto;
 import com.theanh.lms.entity.CourseSection;
 
 public interface CourseSectionService extends BaseService<CourseSection, CourseSectionDto, Long> {
+
+    java.util.List<CourseSectionDto> findByCourseId(Long courseId);
 }

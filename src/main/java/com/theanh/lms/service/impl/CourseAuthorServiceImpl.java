@@ -4,9 +4,11 @@ import com.theanh.common.exception.BusinessException;
 import com.theanh.lms.dto.CourseDetailResponse;
 import com.theanh.lms.dto.CourseInstructorDto;
 import com.theanh.lms.dto.CourseLessonDto;
+import com.theanh.lms.dto.CourseDocumentDto;
 import com.theanh.lms.dto.CourseSectionDto;
 import com.theanh.lms.dto.CourseTagDto;
 import com.theanh.lms.dto.LessonDto;
+import com.theanh.lms.dto.LessonDocumentDto;
 import com.theanh.lms.dto.request.*;
 import com.theanh.lms.entity.*;
 import com.theanh.lms.enums.CourseLevel;
@@ -23,7 +25,9 @@ import com.theanh.lms.service.CourseAuthorService;
 import com.theanh.lms.service.CourseSectionService;
 import com.theanh.lms.service.CourseTagService;
 import com.theanh.lms.service.CatalogService;
+import com.theanh.lms.service.CourseDocumentService;
 import com.theanh.lms.service.LessonService;
+import com.theanh.lms.service.LessonDocumentService;
 import com.theanh.lms.service.UploadedFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,6 +48,8 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     private final CourseInstructorService courseInstructorService;
     private final CourseSectionService courseSectionService;
     private final CourseLessonService courseLessonService;
+    private final CourseDocumentService courseDocumentService;
+    private final LessonDocumentService lessonDocumentService;
     private final LessonService lessonService;
     private final CatalogService catalogService;
     private final UploadedFileService uploadedFileService;
@@ -313,6 +319,176 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         courseLessonService.deleteByCourseAndLesson(courseId, lessonId);
         lessonService.deleteById(lessonId);
         return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse reorderSections(Long courseId, ReorderRequest request) {
+        getCourseOrThrow(courseId);
+        if (CollectionUtils.isEmpty(request.getItems())) {
+            throw new BusinessException("data.fail");
+        }
+        List<CourseSectionDto> sections = courseSectionService.findByCourseId(courseId);
+        Set<Long> validIds = sections.stream().map(CourseSectionDto::getId).collect(Collectors.toSet());
+        Map<Long, Integer> desired = request.getItems().stream()
+                .collect(Collectors.toMap(ReorderItemRequest::getId, ReorderItemRequest::getPosition, (a, b) -> b));
+        if (!validIds.containsAll(desired.keySet())) {
+            throw new BusinessException("data.fail");
+        }
+        for (CourseSectionDto section : sections) {
+            if (desired.containsKey(section.getId())) {
+                section.setPosition(desired.get(section.getId()));
+                courseSectionService.saveObject(section);
+            }
+        }
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse reorderLessons(Long courseId, ReorderRequest request) {
+        getCourseOrThrow(courseId);
+        if (CollectionUtils.isEmpty(request.getItems())) {
+            throw new BusinessException("data.fail");
+        }
+        List<CourseLessonDto> mappings = courseLessonService.findByCourseId(courseId);
+        Set<Long> validIds = mappings.stream().map(CourseLessonDto::getId).collect(Collectors.toSet());
+        Map<Long, Integer> desired = request.getItems().stream()
+                .collect(Collectors.toMap(ReorderItemRequest::getId, ReorderItemRequest::getPosition, (a, b) -> b));
+        if (!validIds.containsAll(desired.keySet())) {
+            throw new BusinessException("data.fail");
+        }
+        for (CourseLessonDto mapping : mappings) {
+            if (desired.containsKey(mapping.getId())) {
+                mapping.setPosition(desired.get(mapping.getId()));
+                courseLessonService.saveObject(mapping);
+            }
+        }
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse addCourseDocument(Long courseId, CourseDocumentRequest request) {
+        getCourseOrThrow(courseId);
+        uploadedFileService.markAttached(request.getUploadedFileId(), courseId, null, UploadPurpose.DOCUMENT);
+        List<CourseDocumentDto> existing = courseDocumentService.findByCourseId(courseId);
+        CourseDocumentDto dto = new CourseDocumentDto();
+        dto.setCourseId(courseId);
+        dto.setUploadedFileId(request.getUploadedFileId());
+        dto.setTitle(request.getTitle());
+        dto.setPosition(resolvePosition(request.getPosition(), existing.stream().map(CourseDocumentDto::getPosition).toList()));
+        courseDocumentService.saveObject(dto);
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse updateCourseDocument(Long courseId, Long documentId, CourseDocumentRequest request) {
+        getCourseOrThrow(courseId);
+        CourseDocumentDto doc = courseDocumentService.findActiveById(documentId);
+        if (doc == null || !courseId.equals(doc.getCourseId())) {
+            throw new BusinessException("data.not_found");
+        }
+        if (request.getUploadedFileId() != null) {
+            uploadedFileService.markAttached(request.getUploadedFileId(), courseId, null, UploadPurpose.DOCUMENT);
+            doc.setUploadedFileId(request.getUploadedFileId());
+        }
+        if (request.getTitle() != null) {
+            doc.setTitle(request.getTitle());
+        }
+        if (request.getPosition() != null) {
+            doc.setPosition(request.getPosition());
+        }
+        courseDocumentService.saveObject(doc);
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse deleteCourseDocument(Long courseId, Long documentId) {
+        getCourseOrThrow(courseId);
+        CourseDocumentDto doc = courseDocumentService.findActiveById(documentId);
+        if (doc == null || !courseId.equals(doc.getCourseId())) {
+            throw new BusinessException("data.not_found");
+        }
+        courseDocumentService.deleteById(documentId);
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse addLessonDocument(Long courseId, Long lessonId, LessonDocumentRequest request) {
+        getCourseOrThrow(courseId);
+        ensureLessonInCourse(courseId, lessonId);
+        uploadedFileService.markAttached(request.getUploadedFileId(), courseId, lessonId, UploadPurpose.DOCUMENT);
+        List<LessonDocumentDto> existing = lessonDocumentService.findByLessonId(lessonId);
+        LessonDocumentDto dto = new LessonDocumentDto();
+        dto.setLessonId(lessonId);
+        dto.setUploadedFileId(request.getUploadedFileId());
+        dto.setTitle(request.getTitle());
+        dto.setPosition(resolvePosition(request.getPosition(), existing.stream().map(LessonDocumentDto::getPosition).toList()));
+        lessonDocumentService.saveObject(dto);
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse updateLessonDocument(Long courseId, Long lessonId, Long documentId, LessonDocumentRequest request) {
+        getCourseOrThrow(courseId);
+        ensureLessonInCourse(courseId, lessonId);
+        LessonDocumentDto doc = lessonDocumentService.findActiveById(documentId);
+        if (doc == null || !lessonId.equals(doc.getLessonId())) {
+            throw new BusinessException("data.not_found");
+        }
+        if (request.getUploadedFileId() != null) {
+            uploadedFileService.markAttached(request.getUploadedFileId(), courseId, lessonId, UploadPurpose.DOCUMENT);
+            doc.setUploadedFileId(request.getUploadedFileId());
+        }
+        if (request.getTitle() != null) {
+            doc.setTitle(request.getTitle());
+        }
+        if (request.getPosition() != null) {
+            doc.setPosition(request.getPosition());
+        }
+        lessonDocumentService.saveObject(doc);
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse deleteLessonDocument(Long courseId, Long lessonId, Long documentId) {
+        getCourseOrThrow(courseId);
+        ensureLessonInCourse(courseId, lessonId);
+        LessonDocumentDto doc = lessonDocumentService.findActiveById(documentId);
+        if (doc == null || !lessonId.equals(doc.getLessonId())) {
+            throw new BusinessException("data.not_found");
+        }
+        lessonDocumentService.deleteById(documentId);
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    private void ensureLessonInCourse(Long courseId, Long lessonId) {
+        LessonDto lesson = lessonService.findById(lessonId);
+        if (lesson == null) {
+            throw new BusinessException("data.not_found");
+        }
+        boolean belongsToCourse = courseLessonService.findByCourseId(courseId).stream()
+                .anyMatch(cl -> lessonId.equals(cl.getLessonId()));
+        if (!belongsToCourse) {
+            throw new BusinessException("data.fail");
+        }
+    }
+
+    private Integer resolvePosition(Integer requested, List<Integer> existingPositions) {
+        if (requested != null) {
+            return requested;
+        }
+        int max = existingPositions.stream()
+                .filter(Objects::nonNull)
+                .max(Integer::compareTo)
+                .orElse(0);
+        return max + 1;
     }
 
     private void syncTags(Long courseId, List<Long> tagIds) {

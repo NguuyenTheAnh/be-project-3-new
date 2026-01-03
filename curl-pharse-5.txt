@@ -1,0 +1,148 @@
+########################################################################
+# PHASE 5 – Curriculum & Content (Sections, Lessons, Documents, Reorder)
+# Notes:
+# - Assume vars: baseURL="http://localhost:8080/api/v1"
+# - AUTH_HEADER="Authorization: Bearer <ACCESS_TOKEN>"
+# - Use fileIds that are READY with purpose DOCUMENT/LESSON_VIDEO/THUMBNAIL/etc.
+# - Placeholders: {courseId}, {sectionId}, {lessonId}, {documentId}, {fileId}
+########################################################################
+
+# ------------------------------------------------------------
+# Section CRUD (phase 4 recap if missing)
+# ------------------------------------------------------------
+curl -X POST "{{baseURL}}/instructor/courses/{courseId}/sections" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Module 1 - Fundamentals",
+    "position": 1
+  }'
+
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}/sections/{sectionId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Module 1 - Updated",
+    "position": 2
+  }'
+
+curl -X DELETE "{{baseURL}}/instructor/courses/{courseId}/sections/{sectionId}" \
+  -H "$AUTH_HEADER"
+
+# ------------------------------------------------------------
+# Lesson CRUD (phase 4 recap if missing)
+# ------------------------------------------------------------
+curl -X POST "{{baseURL}}/instructor/courses/{courseId}/lessons" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseSectionId": {sectionId},
+    "title": "Lesson 1 - Getting Started",
+    "lessonType": "VIDEO",
+    "contentText": null,
+    "videoFileId": {lessonVideoFileId},   // READY + purpose LESSON_VIDEO
+    "durationSeconds": 600,
+    "isFreePreview": false,
+    "isPreview": false,
+    "position": 1
+  }'
+
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}/lessons/{lessonId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseSectionId": {sectionId},
+    "title": "Lesson 1 - Updated",
+    "lessonType": "ARTICLE",
+    "contentText": "Updated article content",
+    "videoFileId": null,
+    "durationSeconds": 450,
+    "isFreePreview": true,
+    "isPreview": true,
+    "position": 2
+  }'
+
+curl -X DELETE "{{baseURL}}/instructor/courses/{courseId}/lessons/{lessonId}" \
+  -H "$AUTH_HEADER"
+
+# ------------------------------------------------------------
+# Reorder sections (NEW in phase 5)
+# ------------------------------------------------------------
+curl -X PATCH "{{baseURL}}/instructor/courses/{courseId}/sections/reorder" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [
+      {"id": {sectionId1}, "position": 1},
+      {"id": {sectionId2}, "position": 2},
+      {"id": {sectionId3}, "position": 3}
+    ]
+  }'
+
+# ------------------------------------------------------------
+# Reorder lessons (within a course; position field on course_lesson) (NEW)
+# ------------------------------------------------------------
+curl -X PATCH "{{baseURL}}/instructor/courses/{courseId}/lessons/reorder" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [
+      {"id": {courseLessonId1}, "position": 1},
+      {"id": {courseLessonId2}, "position": 2},
+      {"id": {courseLessonId3}, "position": 3}
+    ]
+  }'
+
+# ------------------------------------------------------------
+# Course documents (attach READY DOCUMENT files) (NEW)
+# ------------------------------------------------------------
+curl -X POST "{{baseURL}}/instructor/courses/{courseId}/documents" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "uploadedFileId": {fileId},   // READY, purpose DOCUMENT
+    "title": "Syllabus PDF",
+    "position": 1
+  }'
+
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}/documents/{documentId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "uploadedFileId": {fileIdNew},   // optional, READY DOCUMENT
+    "title": "Syllabus v2",
+    "position": 2
+  }'
+
+curl -X DELETE "{{baseURL}}/instructor/courses/{courseId}/documents/{documentId}" \
+  -H "$AUTH_HEADER"
+
+# ------------------------------------------------------------
+# Lesson documents (attach READY DOCUMENT files) (NEW)
+# ------------------------------------------------------------
+curl -X POST "{{baseURL}}/instructor/courses/{courseId}/lessons/{lessonId}/documents" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "uploadedFileId": {fileId},   // READY, purpose DOCUMENT
+    "title": "Lesson handout",
+    "position": 1
+  }'
+
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}/lessons/{lessonId}/documents/{documentId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "uploadedFileId": {fileIdNew},   // optional
+    "title": "Lesson handout v2",
+    "position": 2
+  }'
+
+curl -X DELETE "{{baseURL}}/instructor/courses/{courseId}/lessons/{lessonId}/documents/{documentId}" \
+  -H "$AUTH_HEADER"
+
+# ------------------------------------------------------------
+# Retrieve course detail to verify sections/lessons/documents ordering & files
+# ------------------------------------------------------------
+curl -X GET "{{baseURL}}/courses/{courseId}" \
+  -H "$AUTH_HEADER"
