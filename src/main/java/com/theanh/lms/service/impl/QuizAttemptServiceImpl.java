@@ -11,6 +11,7 @@ import com.theanh.lms.entity.QuizAttempt;
 import com.theanh.lms.entity.QuizAttemptAnswer;
 import com.theanh.lms.repository.QuizAttemptAnswerRepository;
 import com.theanh.lms.repository.QuizAttemptRepository;
+import com.theanh.lms.enums.QuestionType;
 import com.theanh.lms.service.AccessControlService;
 import com.theanh.lms.service.EnrollmentService;
 import com.theanh.lms.service.QuizAnswerService;
@@ -154,10 +155,16 @@ public class QuizAttemptServiceImpl extends BaseServiceImpl<QuizAttempt, QuizAtt
         if (options == null) {
             options = List.of();
         }
-        switch (question.getQuestionType()) {
-            case "TRUE_FALSE":
-            case "SINGLE":
-            case "MULTI":
+        QuestionType type;
+        try {
+            type = QuestionType.valueOf(question.getQuestionType());
+        } catch (Exception ex) {
+            return false;
+        }
+        switch (type) {
+            case TRUE_FALSE:
+            case SINGLE:
+            case MULTI:
                 if (ans.getAnswerId() == null) {
                     return false;
                 }
@@ -166,7 +173,7 @@ public class QuizAttemptServiceImpl extends BaseServiceImpl<QuizAttempt, QuizAtt
                         .findFirst()
                         .map(opt -> Boolean.TRUE.equals(opt.getIsCorrect()))
                         .orElse(false);
-            case "TEXT":
+            case TEXT:
                 return false;
             default:
                 return false;

@@ -8,6 +8,7 @@ import com.theanh.lms.dto.QuizQuestionDto;
 import com.theanh.lms.dto.request.QuizAnswerRequest;
 import com.theanh.lms.dto.request.QuizQuestionRequest;
 import com.theanh.lms.dto.request.QuizRequest;
+import com.theanh.lms.enums.QuestionType;
 import com.theanh.lms.service.QuizAnswerService;
 import com.theanh.lms.service.QuizQuestionService;
 import com.theanh.lms.service.QuizService;
@@ -68,10 +69,11 @@ public class QuizInstructorController {
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<ResponseDto<QuizQuestionDto>> createQuestion(@PathVariable Long quizId,
                                                                        @RequestBody @Valid QuizQuestionRequest request) {
+        QuestionType type = parseQuestionType(request.getQuestionType());
         QuizQuestionDto dto = new QuizQuestionDto();
         dto.setQuizId(quizId);
         dto.setQuestionText(request.getQuestionText());
-        dto.setQuestionType(request.getQuestionType());
+        dto.setQuestionType(type.name());
         dto.setPosition(request.getPosition());
         dto.setPoints(request.getPoints());
         dto.setExplanation(request.getExplanation());
@@ -82,9 +84,10 @@ public class QuizInstructorController {
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<ResponseDto<QuizQuestionDto>> updateQuestion(@PathVariable Long questionId,
                                                                        @RequestBody @Valid QuizQuestionRequest request) {
+        QuestionType type = parseQuestionType(request.getQuestionType());
         QuizQuestionDto dto = quizQuestionService.findById(questionId);
         dto.setQuestionText(request.getQuestionText());
-        dto.setQuestionType(request.getQuestionType());
+        dto.setQuestionType(type.name());
         dto.setPosition(request.getPosition());
         dto.setPoints(request.getPoints());
         dto.setExplanation(request.getExplanation());
@@ -138,5 +141,13 @@ public class QuizInstructorController {
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<ResponseDto<List<QuizAnswerDto>>> listAnswers(@PathVariable Long questionId) {
         return ResponseConfig.success(quizAnswerService.findByQuestion(questionId));
+    }
+
+    private QuestionType parseQuestionType(String raw) {
+        try {
+            return QuestionType.valueOf(raw);
+        } catch (Exception ex) {
+            throw new com.theanh.common.exception.BusinessException("data.fail");
+        }
     }
 }

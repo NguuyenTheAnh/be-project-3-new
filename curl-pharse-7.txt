@@ -11,6 +11,7 @@ curl -X POST "{{baseURL}}/instructor/lessons/{lessonId}/quiz" \
   -H "$AUTH_HEADER" \
   -H "Content-Type: application/json" \
   -d '{
+    "lessonId": {lessonId},          // lesson type should be QUIZ
     "title": "Lesson 5 Quiz",
     "timeLimitSeconds": 900,
     "passScore": 70,
@@ -22,6 +23,7 @@ curl -X PUT "{{baseURL}}/instructor/quizzes/{quizId}" \
   -H "$AUTH_HEADER" \
   -H "Content-Type: application/json" \
   -d '{
+    "lessonId": {lessonId},          // required by validation
     "title": "Lesson 5 Quiz - updated",
     "timeLimitSeconds": 1200,
     "passScore": 75,
