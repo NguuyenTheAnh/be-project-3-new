@@ -229,8 +229,8 @@ Trên bảng `uploaded_file`:
 ## PHASE 8 – REVIEW & RATING
 
 * [ ] Mỗi user 1 review / course
-* [ ] Moderation status
-* [ ] Update rating_avg / rating_count
+* [x] Moderation status
+* [x] Update rating_avg / rating_count
 
 ---
 

@@ -1,0 +1,37 @@
+########################################################################
+# PHASE 8 – Review & Rating
+# Assumptions:
+# - baseURL="http://localhost:8080/api/v1"
+# - AUTH_HEADER='Authorization: Bearer <ACCESS_TOKEN>'
+# - User must be enrolled to create/update review.
+# - Moderation endpoints require ADMIN.
+########################################################################
+
+# Create or update my review for a course (idempotent upsert, sets status=PENDING)
+curl -X POST "{{baseURL}}/courses/{courseId}/reviews" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "rating": 5,
+    "title": "Great course",
+    "content": "Very helpful"
+  }'
+
+# Get my review (auth)
+curl -X GET "{{baseURL}}/courses/{courseId}/reviews/me" \
+  -H "$AUTH_HEADER"
+
+# Delete my review (soft delete, recalculates rating)
+curl -X DELETE "{{baseURL}}/courses/{courseId}/reviews/{reviewId}" \
+  -H "$AUTH_HEADER"
+
+# Public list of approved reviews (paging)
+curl -X GET "{{baseURL}}/courses/{courseId}/reviews?page=0&size=10"
+
+# Admin moderate review (approve/reject)
+curl -X PATCH "{{baseURL}}/admin/reviews/{reviewId}/moderate" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "APPROVED"   // or REJECTED
+  }'
