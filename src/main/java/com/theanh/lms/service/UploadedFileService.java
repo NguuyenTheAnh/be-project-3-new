@@ -23,5 +23,7 @@ public interface UploadedFileService extends BaseService<UploadedFile, UploadedF
 
     UploadedFileDto markAttached(Long fileId, Long courseId, Long lessonId, UploadPurpose purpose);
 
+    UploadedFileDto markReadyIfAttached(Long fileId);
+
     UploadedFile ensureReady(Long fileId);
 }

@@ -19,6 +19,9 @@ import com.theanh.lms.enums.LessonType;
 import com.theanh.lms.enums.UploadPurpose;
 import com.theanh.lms.repository.CourseRepository;
 import com.theanh.lms.repository.TagRepository;
+import com.theanh.lms.repository.CourseDocumentRepository;
+import com.theanh.lms.repository.LessonDocumentRepository;
+import com.theanh.lms.repository.LessonRepository;
 import com.theanh.lms.service.CourseInstructorService;
 import com.theanh.lms.service.CourseLessonService;
 import com.theanh.lms.service.CourseAuthorService;
@@ -51,6 +54,9 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     private final CourseDocumentService courseDocumentService;
     private final LessonDocumentService lessonDocumentService;
     private final LessonService lessonService;
+    private final LessonRepository lessonRepository;
+    private final CourseDocumentRepository courseDocumentRepository;
+    private final LessonDocumentRepository lessonDocumentRepository;
     private final CatalogService catalogService;
     private final UploadedFileService uploadedFileService;
 
@@ -315,9 +321,13 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Transactional
     public CourseDetailResponse deleteLesson(Long courseId, Long lessonId) {
         getCourseOrThrow(courseId);
-        lessonService.findById(lessonId); // ensure exists
+        LessonDto lesson = lessonService.findById(lessonId); // ensure exists
+        Long videoFileId = lesson != null ? lesson.getVideoFileId() : null;
         courseLessonService.deleteByCourseAndLesson(courseId, lessonId);
         lessonService.deleteById(lessonId);
+        if (videoFileId != null && isFileFree(videoFileId)) {
+            uploadedFileService.markReadyIfAttached(videoFileId);
+        }
         return catalogService.getCourseDetail(courseId, null);
     }
 
@@ -489,6 +499,15 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
                 .max(Integer::compareTo)
                 .orElse(0);
         return max + 1;
+    }
+
+    private boolean isFileFree(Long fileId) {
+        long lessonUses = lessonRepository.countByVideoFileIdAndIsDeletedFalse(fileId);
+        long courseIntroUses = courseRepository.countByIntroVideoFileIdAndIsDeletedFalse(fileId);
+        long courseThumbUses = courseRepository.countByThumbnailFileIdAndIsDeletedFalse(fileId);
+        long courseDocUses = courseDocumentRepository.countByUploadedFileIdAndIsDeletedFalse(fileId);
+        long lessonDocUses = lessonDocumentRepository.countByUploadedFileIdAndIsDeletedFalse(fileId);
+        return (lessonUses + courseIntroUses + courseThumbUses + courseDocUses + lessonDocUses) == 0;
     }
 
     private void syncTags(Long courseId, List<Long> tagIds) {

@@ -163,6 +163,21 @@ public class UploadedFileServiceImpl extends BaseServiceImpl<UploadedFile, Uploa
     }
 
     @Override
+    public UploadedFileDto markReadyIfAttached(Long fileId) {
+        UploadedFile entity = findActive(fileId);
+        if (UploadedFileStatus.ATTACHED.name().equals(entity.getStatus())) {
+            entity.setCourseId(null);
+            entity.setLessonId(null);
+            entity.setStatus(UploadedFileStatus.READY.name());
+            UploadedFile saved = uploadedFileRepository.save(entity);
+            UploadedFileDto dto = modelMapper.map(saved, getDtoClass());
+            dto.setAccessUrl(fileStorageService.buildPublicUrl(dto.getObjectKey()));
+            return dto;
+        }
+        return modelMapper.map(entity, getDtoClass());
+    }
+
+    @Override
     public UploadedFile ensureReady(Long fileId) {
         UploadedFile entity = findActive(fileId);
         if (UploadedFileStatus.DELETED.name().equals(entity.getStatus())) {

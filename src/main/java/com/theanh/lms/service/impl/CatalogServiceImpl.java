@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -66,39 +65,18 @@ public class CatalogServiceImpl implements CatalogService {
                                                       String language,
                                                       String sort,
                                                       Pageable pageable) {
-        Specification<Course> spec = notDeletedOrNull();
-        spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), CourseStatus.PUBLISHED.name()));
-        if (StringUtils.hasText(keyword)) {
-            String kw = "%" + keyword.toLowerCase() + "%";
-            spec = spec.and((root, query, cb) -> cb.or(
-                    cb.like(cb.lower(root.get("title")), kw),
-                    cb.like(cb.lower(root.get("shortDescription")), kw)
-            ));
-        }
-        if (categoryId != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("categoryId"), categoryId));
-        }
-        if (StringUtils.hasText(level)) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("level"), level));
-        }
-        if (StringUtils.hasText(language)) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("language"), language));
-        }
-        if (!CollectionUtils.isEmpty(tagIds)) {
-            spec = spec.and((root, query, cb) -> {
-                query.distinct(true);
-                var sub = query.subquery(Long.class);
-                var ct = sub.from(CourseTag.class);
-                sub.select(ct.get("courseId")).where(cb.and(
-                        cb.equal(ct.get("courseId"), root.get("id")),
-                        ct.get("tagId").in(tagIds)
-                ));
-                return cb.exists(sub);
-            });
-        }
-
         Pageable sortedPageable = applySort(sort, pageable);
-        Page<Course> page = courseRepository.findAll(spec, sortedPageable);
+        int tagCount = CollectionUtils.isEmpty(tagIds) ? 0 : tagIds.size();
+        List<Long> tagFilter = tagCount == 0 ? List.of(-1L) : tagIds;
+        Page<Course> page = courseRepository.searchPublishedCourses(
+                StringUtils.hasText(keyword) ? keyword : null,
+                categoryId,
+                StringUtils.hasText(level) ? level : null,
+                StringUtils.hasText(language) ? language : null,
+                tagFilter,
+                tagCount,
+                sortedPageable
+        );
 
         List<CourseListItemResponse> content = mapCourseList(page.getContent());
         return new PageImpl<>(content, sortedPageable, page.getTotalElements());
@@ -450,12 +428,5 @@ public class CatalogServiceImpl implements CatalogService {
             default -> pageable.getSort();
         };
         return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortSpec);
-    }
-
-    private Specification<Course> notDeletedOrNull() {
-        return (root, query, cb) -> cb.or(
-                cb.isFalse(root.get("isDeleted")),
-                cb.isNull(root.get("isDeleted"))
-        );
     }
 }

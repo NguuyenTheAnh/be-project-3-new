@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LessonRepository extends BaseRepository<Lesson, Long> {
+
+    long countByVideoFileIdAndIsDeletedFalse(Long videoFileId);
 }

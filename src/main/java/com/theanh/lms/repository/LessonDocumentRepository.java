@@ -10,4 +10,6 @@ import java.util.List;
 public interface LessonDocumentRepository extends BaseRepository<LessonDocument, Long> {
 
     List<LessonDocument> findByLessonIdOrderByPositionAsc(Long lessonId);
+
+    long countByUploadedFileIdAndIsDeletedFalse(Long fileId);
 }
