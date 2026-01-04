@@ -243,11 +243,11 @@ Trên bảng `uploaded_file`:
 
 ---
 
-## PHASE 10 – MODERATION / REPORT
+## PHASE 10 - MODERATION / REPORT
 
-* [ ] Report content
-* [ ] Admin review queue
-* [ ] Moderation action log
+* [x] Report content
+* [x] Admin review queue
+* [x] Moderation action log
 
 ---
 

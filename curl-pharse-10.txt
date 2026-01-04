@@ -1,0 +1,34 @@
+########################################################################
+# PHASE 10 – Moderation / Report
+# Assumptions:
+# - baseURL="http://localhost:8080/api/v1"
+# - AUTH_HEADER='Authorization: Bearer <ACCESS_TOKEN>'
+# - Admin endpoints require role ADMIN.
+########################################################################
+
+# 1) User reports content
+curl -X POST "{{baseURL}}/reports" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "targetType": "REVIEW",   // REVIEW / QUESTION / ANSWER / COURSE / LESSON
+    "targetId": 123,
+    "reason": "Spam or inappropriate"
+  }'
+
+# 2) Admin list all reports (paged)
+curl -X GET "{{baseURL}}/admin/reports?page=0&size=10" \
+  -H "$AUTH_HEADER"
+
+# 3) Admin update report status
+curl -X PATCH "{{baseURL}}/admin/reports/{reportId}/status?status=IN_REVIEW" \
+  -H "$AUTH_HEADER"
+
+# 4) Admin add moderation action
+curl -X POST "{{baseURL}}/admin/reports/{reportId}/actions" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "action": "APPROVE",      // APPROVE / REJECT / HIDE / BLOCK_USER
+    "notes": "Reviewed and approved"
+  }'
