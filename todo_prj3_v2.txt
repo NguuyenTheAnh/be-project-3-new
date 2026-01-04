@@ -212,17 +212,17 @@ Trên bảng `uploaded_file`:
 
 ---
 
-## PHASE 7 – QUIZ
+## PHASE 7 - QUIZ
 
-* [ ] Quiz CRUD
-* [ ] Question CRUD
-* [ ] Answer CRUD
-* [ ] Attempt:
+* [x] Quiz CRUD
+* [x] Question CRUD
+* [x] Answer CRUD
+* [x] Attempt:
 
   * start
   * submit
   * grade
-* [ ] Store result (`quiz_attempt`, `quiz_attempt_answer`)
+* [x] Store result (`quiz_attempt`, `quiz_attempt_answer`)
 
 ---
 

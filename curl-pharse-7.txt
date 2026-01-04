@@ -1,0 +1,102 @@
+########################################################################
+# PHASE 7 – Quiz (authoring + attempts)
+# Assumptions:
+# - baseURL="http://localhost:8080/api/v1"
+# - AUTH_HEADER='Authorization: Bearer <ACCESS_TOKEN>'
+# - quiz belongs to a lesson (lessonType=QUIZ)
+########################################################################
+
+# Quiz authoring
+curl -X POST "{{baseURL}}/instructor/lessons/{lessonId}/quiz" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Lesson 5 Quiz",
+    "timeLimitSeconds": 900,
+    "passScore": 70,
+    "maxAttempts": 3,
+    "shuffleQuestions": true
+  }'
+
+curl -X PUT "{{baseURL}}/instructor/quizzes/{quizId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Lesson 5 Quiz - updated",
+    "timeLimitSeconds": 1200,
+    "passScore": 75,
+    "maxAttempts": 2,
+    "shuffleQuestions": false
+  }'
+
+curl -X DELETE "{{baseURL}}/instructor/quizzes/{quizId}" \
+  -H "$AUTH_HEADER"
+
+# Question authoring
+curl -X POST "{{baseURL}}/instructor/quizzes/{quizId}/questions" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "questionText": "What is Spring Boot?",
+    "questionType": "SINGLE",
+    "position": 1,
+    "points": 5,
+    "explanation": "Spring Boot is..."
+  }'
+
+curl -X PUT "{{baseURL}}/instructor/questions/{questionId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "questionText": "Updated question?",
+    "questionType": "MULTI",
+    "position": 2,
+    "points": 10
+  }'
+
+curl -X DELETE "{{baseURL}}/instructor/questions/{questionId}" \
+  -H "$AUTH_HEADER"
+
+# Answer authoring
+curl -X POST "{{baseURL}}/instructor/questions/{questionId}/answers" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "answerText": "Correct choice",
+    "isCorrect": true,
+    "position": 1
+  }'
+
+curl -X PUT "{{baseURL}}/instructor/answers/{answerId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "answerText": "Option B",
+    "isCorrect": false,
+    "position": 2
+  }'
+
+curl -X DELETE "{{baseURL}}/instructor/answers/{answerId}" \
+  -H "$AUTH_HEADER"
+
+# Attempts (student)
+curl -X POST "{{baseURL}}/quizzes/{quizId}/attempts" \
+  -H "$AUTH_HEADER"
+
+curl -X POST "{{baseURL}}/quizzes/{quizId}/attempts/{attemptId}/submit" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "quizId": {quizId},
+    "answers": [
+      {"questionId": 101, "answerId": 1001},
+      {"questionId": 102, "answerId": 1005},
+      {"questionId": 103, "answerText": "Free text answer"}
+    ]
+  }'
+
+curl -X GET "{{baseURL}}/quizzes/{quizId}/attempts/{attemptId}" \
+  -H "$AUTH_HEADER"
+
+curl -X GET "{{baseURL}}/quizzes/{quizId}/attempts" \
+  -H "$AUTH_HEADER"
