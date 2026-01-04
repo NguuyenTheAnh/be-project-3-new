@@ -1,0 +1,67 @@
+########################################################################
+# PHASE 6 – Learning Flow (Enrollment, Access Control, Progress)
+# Assumptions:
+# - baseURL="http://localhost:8080/api/v1"
+# - AUTH_HEADER='Authorization: Bearer <ACCESS_TOKEN>'
+# - courseId/lessonId must be published/valid; lesson belongs to course.
+# - For progress APIs, user must be enrolled or lesson must be preview (but enroll is recommended).
+########################################################################
+
+# ------------------------------------------------------------
+# 6.1 Enrollment
+# ------------------------------------------------------------
+# Free enroll (idempotent; revives soft-deleted enrollment)
+curl -X POST "{{baseURL}}/courses/{courseId}/enroll" \
+  -H "$AUTH_HEADER"
+
+# Check enrollment status (true/false)
+curl -X GET "{{baseURL}}/courses/{courseId}/enrollment-status" \
+  -H "$AUTH_HEADER"
+
+# List my enrollments (paging)
+curl -X GET "{{baseURL}}/me/enrollments?page=0&size=10" \
+  -H "$AUTH_HEADER"
+
+# ------------------------------------------------------------
+# 6.2 Lesson Access Control (applied implicitly)
+# - Preview lessons can be viewed without enrollment.
+# - Private lessons/files require enrollment or course creator.
+# - File URLs (presign + serve) are protected:
+#   * GET /files/meta/{id}
+#   * GET /files/{id}/url
+#   * GET /files/{objectKey} (serve)
+# ------------------------------------------------------------
+# Get file metadata + presigned get URL (enforces access)
+curl -X GET "{{baseURL}}/files/meta/{fileId}" \
+  -H "$AUTH_HEADER"
+
+# Presign GET for file (enforces access)
+curl -X GET "{{baseURL}}/files/{fileId}/url" \
+  -H "$AUTH_HEADER"
+
+# Serve file presignedUrl
+curl -L -O {{presignedUrl}}
+
+# ------------------------------------------------------------
+# 6.3 Progress
+# ------------------------------------------------------------
+# Update progress for a lesson (requires access: enrolled or preview)
+curl -X PATCH "{{baseURL}}/courses/{courseId}/lessons/{lessonId}/progress" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "lastPositionSeconds": 320,
+    "completed": false
+  }'
+
+# Mark lesson completed
+curl -X PATCH "{{baseURL}}/courses/{courseId}/lessons/{lessonId}/progress" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "completed": true
+  }'
+
+# Get my progress for a lesson
+curl -X GET "{{baseURL}}/courses/{courseId}/lessons/{lessonId}/progress" \
+  -H "$AUTH_HEADER"

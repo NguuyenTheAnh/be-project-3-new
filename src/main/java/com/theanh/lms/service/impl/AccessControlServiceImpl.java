@@ -77,6 +77,10 @@ public class AccessControlServiceImpl implements AccessControlService {
         }
         Long courseId = file.getCourseId();
         Long lessonId = file.getLessonId();
+        // Private file without course/lesson context -> reject
+        if (courseId == null && lessonId == null) {
+            throw new BusinessException("data.fail");
+        }
         boolean allowed;
         if (lessonId != null) {
             allowed = canViewLesson(userId, courseId, lessonId);
