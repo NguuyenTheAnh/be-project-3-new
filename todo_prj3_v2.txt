@@ -234,12 +234,12 @@ Trên bảng `uploaded_file`:
 
 ---
 
-## PHASE 9 – Q&A
+## PHASE 9 - Q&A
 
-* [ ] Question theo course / lesson
-* [ ] Answer
-* [ ] Accept answer
-* [ ] Vote
+* [x] Question theo course / lesson
+* [x] Answer
+* [x] Accept answer
+* [x] Vote
 
 ---
 

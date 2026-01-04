@@ -1,0 +1,57 @@
+########################################################################
+# PHASE 9 – Q&A
+# Assumptions:
+# - baseURL="http://localhost:8080/api/v1"
+# - AUTH_HEADER='Authorization: Bearer <ACCESS_TOKEN>'
+# - Question belongs to a course; lessonId optional.
+########################################################################
+
+# Create question (auth)
+curl -X POST "{{baseURL}}/courses/{courseId}/questions" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseId": {courseId},
+    "lessonId": null,
+    "title": "How to configure JWT?",
+    "content": "Please share steps..."
+  }'
+
+# Update question (partial update, keeps other fields)
+curl -X PUT "{{baseURL}}/questions/{questionId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated title",
+    "content": "Updated content",
+    "lessonId": 15
+  }'
+
+# List questions by course (public)
+curl -X GET "{{baseURL}}/courses/{courseId}/questions?page=0&size=10"
+
+# Get question detail (public)
+curl -X GET "{{baseURL}}/questions/{questionId}"
+
+# Post answer to a question (auth)
+curl -X POST "{{baseURL}}/questions/{questionId}/answers" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Here is my answer..."
+  }'
+
+# List answers of a question (public)
+curl -X GET "{{baseURL}}/questions/{questionId}/answers"
+
+# Accept an answer (auth; question owner)
+curl -X PATCH "{{baseURL}}/questions/{questionId}/answers/{answerId}/accept" \
+  -H "$AUTH_HEADER"
+
+# Vote question UP/DOWN (auth)
+curl -X POST "{{baseURL}}/questions/{questionId}/vote" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "voteType": "UP"   // or DOWN
+  }'
