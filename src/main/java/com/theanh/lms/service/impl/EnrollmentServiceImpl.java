@@ -79,6 +79,13 @@ public class EnrollmentServiceImpl extends BaseServiceImpl<Enrollment, Enrollmen
     }
 
     @Override
+    public EnrollmentDto getActiveEnrollment(Long userId, Long courseId) {
+        return enrollmentRepository.findByUserIdAndCourseIdAndIsDeletedFalse(userId, courseId)
+                .map(e -> modelMapper.map(e, EnrollmentDto.class))
+                .orElse(null);
+    }
+
+    @Override
     protected Class<Enrollment> getEntityClass() {
         return Enrollment.class;
     }

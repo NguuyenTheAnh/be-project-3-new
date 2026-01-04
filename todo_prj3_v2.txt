@@ -181,7 +181,7 @@ Trên bảng `uploaded_file`:
 
 * [x] `course_lesson`
 * [x] Position
-* [x] Preview flag
+* [x] Preview  ai cung xem
 
 ### 5.4 Documents
 
@@ -195,20 +195,20 @@ Trên bảng `uploaded_file`:
 
 ### 6.1 Enrollment
 
-* [ ] Free enroll (tạm thời)
-* [ ] enrollment status
+* [x] Free enroll (tạm thời)
+* [x] enrollment status
 
 ### 6.2 Lesson access control
 
-* [ ] Preview → ai cũng xem
-* [ ] Full lesson → phải enrolled
-* [ ] Check permission khi gọi file URL
+* [x] Preview  ai cung xem
+* [x] Full lesson  ph?i enrolled
+* [x] Check permission khi g?i file URL
 
 ### 6.3 Progress
 
-* [ ] completed
-* [ ] last_position_seconds
-* [ ] last_accessed_at
+* [x] completed
+* [x] last_position_seconds
+* [x] last_accessed_at
 
 ---
 

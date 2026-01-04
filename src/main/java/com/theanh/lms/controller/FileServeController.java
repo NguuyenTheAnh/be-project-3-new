@@ -1,6 +1,7 @@
 package com.theanh.lms.controller;
 
 import com.theanh.lms.dto.UploadedFileDto;
+import com.theanh.lms.service.AccessControlService;
 import com.theanh.lms.service.FileStorageService;
 import com.theanh.lms.service.PresignService;
 import com.theanh.lms.service.UploadedFileService;
@@ -10,6 +11,8 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +29,14 @@ public class FileServeController {
     private final UploadedFileService uploadedFileService;
     private final FileStorageService fileStorageService;
     private final PresignService presignService;
+    private final AccessControlService accessControlService;
 
     @GetMapping("/{*objectKey}")
     public ResponseEntity<Resource> serve(@PathVariable("objectKey") String objectKey) {
         UploadedFileDto metadata = uploadedFileService.getByObjectKey(objectKey.substring(1));
-        // Với MINIO/S3 (private), chuyển qua presigned GET để tránh lỗi quyền truy cập trực tiếp
+        accessControlService.ensureFileViewable(metadata, currentUserId());
+
+        // Với MINIO/S3 (private), chuyển qua presigned GET để tránh lộ quyền truy cập trực tiếp
         if (!"LOCAL".equalsIgnoreCase(metadata.getStorageProvider())) {
             var presigned = presignService.generateGetUrl(metadata);
             return ResponseEntity.status(302)
@@ -54,5 +60,10 @@ public class FileServeController {
                 .contentType(mediaType)
                 .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
                 .body(resource);
+    }
+
+    private Long currentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null ? Long.parseLong(auth.getPrincipal().toString()) : null;
     }
 }

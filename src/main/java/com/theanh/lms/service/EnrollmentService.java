@@ -13,4 +13,6 @@ public interface EnrollmentService extends BaseService<Enrollment, EnrollmentDto
     Page<EnrollmentDto> findByUser(Long userId, Pageable pageable);
 
     boolean isEnrolled(Long userId, Long courseId);
+
+    EnrollmentDto getActiveEnrollment(Long userId, Long courseId);
 }

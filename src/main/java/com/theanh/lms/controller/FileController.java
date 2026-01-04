@@ -7,12 +7,15 @@ import com.theanh.lms.dto.request.FileAbortRequest;
 import com.theanh.lms.dto.request.FileCompleteRequest;
 import com.theanh.lms.dto.request.PresignPutRequest;
 import com.theanh.lms.dto.response.PresignUrlResponse;
+import com.theanh.lms.service.AccessControlService;
 import com.theanh.lms.service.PresignService;
 import com.theanh.lms.service.UploadedFileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +26,7 @@ public class FileController {
 
     private final UploadedFileService uploadedFileService;
     private final PresignService presignService;
+    private final AccessControlService accessControlService;
 
     @PostMapping(consumes = {"multipart/form-data"})
     @PreAuthorize("isAuthenticated()")
@@ -38,6 +42,7 @@ public class FileController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<UploadedFileDto>> getMetadata(@PathVariable Long id) {
         UploadedFileDto dto = uploadedFileService.findById(id);
+        accessControlService.ensureFileViewable(dto, currentUserId());
         PresignUrlResponse getUrl = presignService.generateGetUrl(dto);
         dto.setAccessUrl(getUrl.getUrl());
         return ResponseConfig.success(dto);
@@ -73,6 +78,13 @@ public class FileController {
     @GetMapping("/{id}/url")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<PresignUrlResponse>> presignGet(@PathVariable Long id) {
-        return ResponseConfig.success(presignService.generateGetUrl(id));
+        UploadedFileDto dto = uploadedFileService.findById(id);
+        accessControlService.ensureFileViewable(dto, currentUserId());
+        return ResponseConfig.success(presignService.generateGetUrl(dto));
+    }
+
+    private Long currentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null ? Long.parseLong(auth.getPrincipal().toString()) : null;
     }
 }
