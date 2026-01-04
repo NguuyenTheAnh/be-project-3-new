@@ -12,6 +12,8 @@ ALTER TABLE uploaded_file
     ADD INDEX IF NOT EXISTS idx_uploaded_file_course (course_id),
     ADD INDEX IF NOT EXISTS idx_uploaded_file_lesson (lesson_id);
 
+-- Phase 6: enrollment table already exists in schema (see db_prj3.txt). No DDL change required here.
+
 -- Backfill existing rows so lifecycle checks work
 UPDATE uploaded_file
 SET
