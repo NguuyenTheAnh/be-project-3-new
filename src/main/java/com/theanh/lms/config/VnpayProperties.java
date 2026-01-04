@@ -1,0 +1,18 @@
+package com.theanh.lms.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Data
+@Component
+@ConfigurationProperties(prefix = "payment.vnpay")
+public class VnpayProperties {
+    private String tmnCode;
+    private String hashSecret;
+    private String payUrl;
+    private String returnUrl;
+    private String ipnUrl;
+    private String currency;
+    private String locale;
+}

@@ -52,3 +52,13 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
+
+payment:
+  vnpay:
+    tmnCode: D5V6VHEW
+    hashSecret: ZVW2W1A44VHEAO4207VGJLWXC1NVTDZV
+    payUrl: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+    returnUrl: http://localhost:3000/payment/return   # placeholder FE URL
+    ipnUrl: http://localhost:8080/api/v1/payments/vnpay/ipn
+    currency: VND
+    locale: vn

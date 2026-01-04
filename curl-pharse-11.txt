@@ -1,0 +1,46 @@
+########################################################################
+# PHASE 11 – Commerce (VNPAY Sandbox)
+# Assumptions:
+# - baseURL="http://localhost:8080/api/v1"
+# - AUTH_HEADER='Authorization: Bearer <ACCESS_TOKEN>'
+# - Currency: VND; price in cents (e.g., 100000 = 1,000.00 VND)
+########################################################################
+
+# 1) Create order (user, one course)
+curl -X POST "{{baseURL}}/orders" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseId": 5,
+    "priceCents": 100000   // 1,000 VND
+  }'
+
+# 2) Generate VNPay payment URL for the order
+curl -X POST "{{baseURL}}/orders/{orderId}/pay/vnpay" \
+  -H "$AUTH_HEADER"
+
+# 3) VNPay return (frontend flow) - handled by GET /payments/vnpay/return
+#    (Called by VNPay after user pays; BE verifies signature & redirects FE)
+# Example:
+# curl -G "{{baseURL}}/payments/vnpay/return" --data-urlencode "vnp_Amount=10000000" ...
+
+# 4) VNPay IPN (server-to-server, source of truth)
+#    Example call (simulate from VNPay):
+# curl -G "{{baseURL}}/payments/vnpay/ipn" \
+#   --data-urlencode "vnp_Amount=10000000" \
+#   --data-urlencode "vnp_TxnRef={orderId}" \
+#   --data-urlencode "vnp_ResponseCode=00" \
+#   --data-urlencode "vnp_TransactionNo=123456789" \
+#   --data-urlencode "vnp_SecureHash=<computed_hmac>"
+
+# 5) Get my orders (paged)
+curl -X GET "{{baseURL}}/orders?page=0&size=10" \
+  -H "$AUTH_HEADER"
+
+# 6) Get my order detail
+curl -X GET "{{baseURL}}/orders/{orderId}" \
+  -H "$AUTH_HEADER"
+
+# 7) Admin list orders (paged)
+curl -X GET "{{baseURL}}/orders/admin?page=0&size=10" \
+  -H "$AUTH_HEADER"

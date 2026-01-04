@@ -1,0 +1,142 @@
+PHASE 11 – COMMERCE (VNPAY SANDBOX) TODO LIST
+==========================================
+
+0. GLOBAL PREPARATION
+---------------------
+- Add VNPay sandbox config to application.yaml:
+  - vnp_TmnCode
+  - vnp_HashSecret
+  - vnp_PayUrl
+  - vnp_ReturnUrl (frontend)
+  - vnp_IpnUrl (backend – cloudflared)
+  - currency = VND, locale = vn
+- Define enums:
+  - OrderStatus: PENDING, PAID, FAILED, CANCELLED, REFUNDED
+  - PaymentProvider: VNPAY
+  - PaymentStatus: INIT, SUCCESS, FAILED
+
+1. ENTITY & REPOSITORY LAYER (NO DDL)
+------------------------------------
+- Map JPA entities:
+  - Order
+  - OrderItem
+  - PaymentTransaction
+- Implement repositories:
+  - OrderRepository
+    - find active order by user + status
+  - OrderItemRepository
+  - PaymentTransactionRepository
+    - find by provider + provider_txn_id
+- Ensure soft-delete and auditing are applied
+
+2. ORDER CREATION
+-----------------
+- API: POST /orders
+- Validate:
+  - Course exists and status = PUBLISHED
+  - User is not already enrolled in course
+- Logic:
+  - If existing PENDING order for same user + course → reuse
+  - Else create new order:
+    - status = PENDING
+    - payment_method = VNPAY
+  - Create order_item with course price
+- Return order summary
+
+3. VNPAY PAYMENT URL GENERATION
+-------------------------------
+- API: POST /orders/{orderId}/pay/vnpay
+- Validate:
+  - Order belongs to user
+  - Order status = PENDING
+- Build VNPay request params:
+  - vnp_TmnCode
+  - vnp_TxnRef = order.id
+  - vnp_Amount = total_amount * 100
+  - vnp_ReturnUrl
+  - vnp_IpnUrl
+  - vnp_CreateDate
+- Generate secure hash (checksum)
+- Persist payment_transaction:
+  - provider = VNPAY
+  - status = INIT
+- Return VNPay sandbox payment URL
+
+4. VNPAY RETURN HANDLER (UI FLOW)
+--------------------------------
+- API: GET /payments/vnpay/return
+- Verify checksum signature
+- Update payment_transaction status (SUCCESS / FAILED)
+- Do NOT create enrollment here
+- Redirect user to frontend:
+  - /payment/success or /payment/fail
+
+5. VNPAY IPN HANDLER (SOURCE OF TRUTH)
+-------------------------------------
+- API: POST /payments/vnpay/ipn
+- Verify:
+  - Checksum signature
+  - vnp_ResponseCode == "00"
+- Idempotency:
+  - If order status already PAID → return OK
+- Transactional update:
+  - order.status = PAID
+  - order.paid_at = now()
+  - payment_transaction.status = SUCCESS
+- Auto-create enrollment:
+  - Guard unique (user_id, course_id)
+- Return VNPay ACK response
+
+6. ENROLLMENT LINKAGE
+---------------------
+- Enrollment created ONLY when order = PAID
+- Handle duplicate IPN calls safely
+- Enrollment fields:
+  - user_id
+  - course_id
+  - enrolled_at = now()
+  - status = ACTIVE
+
+7. QUERY APIs
+-------------
+- API: GET /me/orders
+- API: GET /orders/{id}
+- Admin API: GET /admin/orders
+- Ensure:
+  - is_deleted = 0 filtering
+  - order by created_date DESC
+
+8. ERROR HANDLING & CONSISTENCY
+-------------------------------
+- Reject:
+  - Paying non-PENDING order
+  - Buying a course already enrolled
+- Ensure:
+  - All state changes are @Transactional
+  - Partial updates do not overwrite existing fields
+
+9. TESTING & VALIDATION
+-----------------------
+- Test VNPay sandbox with test card:
+  - SUCCESS scenario
+  - FAILED scenario
+- Verify:
+  - Order state transitions
+  - PaymentTransaction logs
+  - Enrollment created exactly once
+- Retry IPN callback to confirm idempotency
+
+10. DOCUMENTATION
+-----------------
+- Create curl-phase-11.txt:
+  - Create order
+  - Generate VNPay payment URL
+  - Return handler example
+  - IPN callback example
+  - Get my orders
+
+NOTES
+-----
+- DB schema is finalized – do NOT modify
+- Treat VNPay IPN as the single source of truth
+- VND uses integer amount (no decimals)
