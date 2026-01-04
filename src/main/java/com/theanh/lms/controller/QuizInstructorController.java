@@ -49,12 +49,24 @@ public class QuizInstructorController {
     public ResponseEntity<ResponseDto<QuizDto>> updateQuiz(@PathVariable Long quizId,
                                                            @RequestBody @Valid QuizRequest request) {
         QuizDto dto = quizService.findById(quizId);
-        dto.setLessonId(request.getLessonId());
-        dto.setTitle(request.getTitle());
-        dto.setTimeLimitSeconds(request.getTimeLimitSeconds());
-        dto.setPassScore(request.getPassScore());
-        dto.setMaxAttempts(request.getMaxAttempts());
-        dto.setShuffleQuestions(request.getShuffleQuestions());
+        if (request.getLessonId() != null) {
+            dto.setLessonId(request.getLessonId());
+        }
+        if (request.getTitle() != null) {
+            dto.setTitle(request.getTitle());
+        }
+        if (request.getTimeLimitSeconds() != null) {
+            dto.setTimeLimitSeconds(request.getTimeLimitSeconds());
+        }
+        if (request.getPassScore() != null) {
+            dto.setPassScore(request.getPassScore());
+        }
+        if (request.getMaxAttempts() != null) {
+            dto.setMaxAttempts(request.getMaxAttempts());
+        }
+        if (request.getShuffleQuestions() != null) {
+            dto.setShuffleQuestions(request.getShuffleQuestions());
+        }
         return ResponseConfig.success(quizService.saveObject(dto));
     }
 
@@ -84,13 +96,23 @@ public class QuizInstructorController {
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<ResponseDto<QuizQuestionDto>> updateQuestion(@PathVariable Long questionId,
                                                                        @RequestBody @Valid QuizQuestionRequest request) {
-        QuestionType type = parseQuestionType(request.getQuestionType());
         QuizQuestionDto dto = quizQuestionService.findById(questionId);
-        dto.setQuestionText(request.getQuestionText());
-        dto.setQuestionType(type.name());
-        dto.setPosition(request.getPosition());
-        dto.setPoints(request.getPoints());
-        dto.setExplanation(request.getExplanation());
+        if (request.getQuestionText() != null) {
+            dto.setQuestionText(request.getQuestionText());
+        }
+        if (request.getQuestionType() != null) {
+            QuestionType type = parseQuestionType(request.getQuestionType());
+            dto.setQuestionType(type.name());
+        }
+        if (request.getPosition() != null) {
+            dto.setPosition(request.getPosition());
+        }
+        if (request.getPoints() != null) {
+            dto.setPoints(request.getPoints());
+        }
+        if (request.getExplanation() != null) {
+            dto.setExplanation(request.getExplanation());
+        }
         return ResponseConfig.success(quizQuestionService.saveObject(dto));
     }
 
@@ -118,9 +140,15 @@ public class QuizInstructorController {
     public ResponseEntity<ResponseDto<QuizAnswerDto>> updateAnswer(@PathVariable Long answerId,
                                                                    @RequestBody @Valid QuizAnswerRequest request) {
         QuizAnswerDto dto = quizAnswerService.findById(answerId);
-        dto.setAnswerText(request.getAnswerText());
-        dto.setIsCorrect(request.getIsCorrect());
-        dto.setPosition(request.getPosition());
+        if (request.getAnswerText() != null) {
+            dto.setAnswerText(request.getAnswerText());
+        }
+        if (request.getIsCorrect() != null) {
+            dto.setIsCorrect(request.getIsCorrect());
+        }
+        if (request.getPosition() != null) {
+            dto.setPosition(request.getPosition());
+        }
         return ResponseConfig.success(quizAnswerService.saveObject(dto));
     }
 
