@@ -62,4 +62,19 @@ public interface CourseRepository extends BaseRepository<Course, Long> {
     long countByIntroVideoFileIdAndIsDeletedFalse(Long fileId);
 
     long countByThumbnailFileIdAndIsDeletedFalse(Long fileId);
+
+    @Query(value = """
+            SELECT * FROM course c
+            WHERE c.id = :id
+              AND (c.is_deleted IS NULL OR c.is_deleted = 0)
+            """, nativeQuery = true)
+    Optional<Course> findActiveById(@Param("id") Long id);
+
+    @Query(value = """
+            SELECT * FROM course c
+            WHERE c.id = :id
+              AND c.status = 'PUBLISHED'
+              AND (c.is_deleted IS NULL OR c.is_deleted = 0)
+            """, nativeQuery = true)
+    Optional<Course> findActivePublishedById(@Param("id") Long id);
 }

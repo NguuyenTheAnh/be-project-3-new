@@ -1,0 +1,177 @@
+########################################################################
+# Main E2E happy-path (from user creation → enroll → finish course)
+# baseURL="http://localhost:8080/api/v1"
+# Replace tokens/IDs as you go. Keep Authorization headers updated.
+########################################################################
+
+# 0) Admin login (get access/refresh token)
+curl -X POST "{{baseURL}}/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@lms.local",
+    "password": "admin"
+  }'
+# -> capture accessToken as ADMIN_TOKEN
+
+# 1) Create instructor account (admin action if required)
+curl -X POST "{{baseURL}}/users" \
+  -H "Authorization: Bearer {{ADMIN_TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullName": "Instructor One",
+    "email": "instructor1@lms.local",
+    "password": "Password@123",
+    "roles": ["ROLE_INSTRUCTOR"]
+  }'
+# -> instructorId
+
+# 2) Create student account (public signup or admin)
+curl -X POST "{{baseURL}}/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullName": "Student One",
+    "email": "student1@lms.local",
+    "password": "Password@123"
+  }'
+# If register not open, use admin POST /users with ROLE_STUDENT
+# -> student credentials
+
+# 3) Instructor login
+curl -X POST "{{baseURL}}/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "instructor1@lms.local",
+    "password": "Password@123"
+  }'
+# -> INSTRUCTOR_TOKEN
+
+# 4) Upload files (thumbnail / intro video) via BE upload
+curl -X POST "{{baseURL}}/files" \
+  -H "Authorization: Bearer {{INSTRUCTOR_TOKEN}}" \
+  -F "file=@/path/to/thumbnail.jpg" \
+  -F "public=false"
+# -> thumbnailFileId
+
+curl -X POST "{{baseURL}}/files" \
+  -H "Authorization: Bearer {{INSTRUCTOR_TOKEN}}" \
+  -F "file=@/path/to/intro.mp4" \
+  -F "public=false"
+# -> introVideoFileId
+
+# 5) Instructor creates course with server-owned price (BE validates priceCents >= 0)
+curl -X POST "{{baseURL}}/instructor/courses" \
+  -H "Authorization: Bearer {{INSTRUCTOR_TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Java Spring Boot Masterclass",
+    "slug": "java-spring-boot-masterclass",
+    "categoryId": 1,
+    "shortDescription": "Learn Spring Boot end-to-end",
+    "description": "Full syllabus...",
+    "level": "BEGINNER",
+    "language": "EN",
+    "thumbnailFileId": {{thumbnailFileId}},
+    "introVideoFileId": {{introVideoFileId}},
+    "priceCents": 150000,
+    "tagIds": [1,2],
+    "instructors": [
+      {"userId": {{instructorId}}, "instructorRole": "OWNER", "revenueShare": 100}
+    ]
+  }'
+# -> courseId
+
+# 6) Add course sections
+curl -X POST "{{baseURL}}/instructor/courses/{{courseId}}/sections" \
+  -H "Authorization: Bearer {{INSTRUCTOR_TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Section 1 - Basics",
+    "position": 1
+  }'
+# -> courseSectionId
+
+# 7) Upload lesson video file (if separate)
+curl -X POST "{{baseURL}}/files" \
+  -H "Authorization: Bearer {{INSTRUCTOR_TOKEN}}" \
+  -F "file=@/path/to/lesson1.mp4" \
+  -F "public=false"
+# -> lessonVideoFileId
+
+# 8) Create lesson
+curl -X POST "{{baseURL}}/instructor/courses/{{courseId}}/lessons" \
+  -H "Authorization: Bearer {{INSTRUCTOR_TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseSectionId": {{courseSectionId}},
+    "title": "Lesson 1 - Getting Started",
+    "lessonType": "VIDEO",
+    "videoFileId": {{lessonVideoFileId}},
+    "durationSeconds": 600,
+    "isFreePreview": false,
+    "position": 1
+  }'
+# -> lessonId
+
+# 9) Publish course (if required; sets status=PUBLISHED)
+curl -X POST "{{baseURL}}/instructor/courses/{{courseId}}/publish" \
+  -H "Authorization: Bearer {{INSTRUCTOR_TOKEN}}"
+
+# 10) Student login
+curl -X POST "{{baseURL}}/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "student1@lms.local",
+    "password": "Password@123"
+  }'
+# -> STUDENT_TOKEN
+
+# 11) Student view catalog / course detail
+curl -X GET "{{baseURL}}/catalog/courses/{{courseId}}" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}"
+
+# 12) Create order (price is taken from course on BE)
+curl -X POST "{{baseURL}}/orders" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseId": {{courseId}}
+  }'
+# -> orderId
+
+# 13) Generate VNPay payment URL (skip if course price 0)
+curl -X POST "{{baseURL}}/orders/{{orderId}}/pay/vnpay" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}"
+# -> paymentUrl (open in browser, complete payment; VNPay will call IPN)
+
+# 14) (Optional) Simulate IPN for testing locally
+curl -X GET "{{baseURL}}/payment/vnpay/ipn?mock=true&orderId={{orderId}}&code=00"
+# Use real VNPay IPN in production; this is placeholder if mock supported.
+
+# 15) Verify order paid & enrollment created
+curl -X GET "{{baseURL}}/orders/{{orderId}}" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}"
+
+curl -X GET "{{baseURL}}/enrollments/me" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}"
+
+# 16) Access lesson content (ensures access control + presigned URLs)
+curl -X GET "{{baseURL}}/lessons/{{lessonId}}" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}"
+
+# 17) Mark lesson completed (if API available)
+curl -X POST "{{baseURL}}/lessons/{{lessonId}}/complete" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}"
+
+# 18) (Optional) Take quiz if course has quizzes
+curl -X POST "{{baseURL}}/lessons/{{lessonId}}/quiz/submit" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "answers": [
+      {"questionId": 1, "choiceIds": [2]}
+    ]
+  }'
+
+# 19) Confirm course completion/progress
+curl -X GET "{{baseURL}}/progress/courses/{{courseId}}" \
+  -H "Authorization: Bearer {{STUDENT_TOKEN}}"

@@ -1,0 +1,53 @@
+########################################################################
+# Commerce Updates (Server-side pricing, VNPay)
+# - baseURL="http://localhost:8080/api/v1"
+# - AUTH_HEADER='Authorization: Bearer <ACCESS_TOKEN>'
+########################################################################
+
+# Course create (admin/instructor) with price_cents
+curl -X POST "{{baseURL}}/instructor/courses" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "New Course",
+    "slug": "new-course",
+    "categoryId": 1,
+    "shortDescription": "Short desc",
+    "description": "Long desc",
+    "level": "BEGINNER",
+    "language": "EN",
+    "thumbnailFileId": null,
+    "introVideoFileId": null,
+    "priceCents": 150000,          // 1,500 VND
+    "tagIds": [1,2],
+    "instructors": [
+      {"userId": 4, "instructorRole": "OWNER", "revenueShare": 100}
+    ]
+  }'
+
+# Course update (partial; keeps other fields if omitted)
+curl -X PUT "{{baseURL}}/instructor/courses/{courseId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "priceCents": 200000,
+    "title": "Updated title"
+  }'
+
+# Order create (now server-calculates price from course; FE does NOT send price)
+curl -X POST "{{baseURL}}/orders" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "courseId": 5
+  }'
+
+# Generate VNPay payment URL (only when order.status=PENDING and amount>0)
+curl -X POST "{{baseURL}}/orders/{orderId}/pay/vnpay" \
+  -H "$AUTH_HEADER"
+
+# Note: If an order is PENDING over ~30 minutes, BE auto-cancels it; pay request will return error and you must create a new order.
+
+# Free course flow: if price_cents=0, order auto PAID & enroll, no VNPay needed
+
+# VNPay IPN (server-to-server) response codes are validated: signature + amount + responseCode

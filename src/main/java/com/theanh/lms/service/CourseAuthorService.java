@@ -53,4 +53,6 @@ public interface CourseAuthorService {
     CourseDetailResponse updateLessonDocument(Long courseId, Long lessonId, Long documentId, LessonDocumentRequest request);
 
     CourseDetailResponse deleteLessonDocument(Long courseId, Long lessonId, Long documentId);
+
+    CourseDetailResponse publishCourse(Long courseId);
 }

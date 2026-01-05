@@ -1,0 +1,52 @@
+## TODO Commerce (server-owned pricing, VNPay sandbox)
+
+### 0. Mục tiêu
+- Giá được lấy từ BE (`course.price_cents`), FE không gửi giá.
+- Order lưu snapshot giá tại thời điểm mua; đổi giá course sau này không ảnh hưởng order cũ.
+- Chuẩn bị cho sale/coupon trong tương lai (đã tách price/discount).
+
+### 1. DB & DDL
+- [x] Thêm `course.price_cents` (update-sql.txt đã có).
+- Giữ nguyên schema order/order_item/payment_transaction.
+
+### 2. Giá course (BE làm nguồn giá)
+- [x] Cho phép author/admin set `priceCents` khi tạo/cập nhật course (validate >= 0, default 0).
+- [x] Course DTO/requests thêm `priceCents`; Catalog trả giá.
+
+### 3. Order creation
+- [x] `POST /orders` chỉ nhận `courseId`; BE lấy giá course (published, active).
+- [x] Reuse pending order cùng course nếu chưa hết hạn; kiểm tra chưa enroll.
+- [x] Lưu snapshot vào order_item (price/discount/final). `total_amount_cents` = sum(final).
+- [x] Giá 0 → auto PAID + enroll, bỏ qua VNPay.
+
+### 4. Payment URL (VNPay)
+- [x] `POST /orders/{id}/pay/vnpay` chỉ cho `PENDING` + amount > 0.
+- [x] vnp_Amount = total_amount_cents * 100; lưu payment_transaction status INIT.
+
+### 5. Return/IPN (source of truth)
+- [x] Return chỉ hiển thị success/fail (signature check), không enroll.
+- [x] IPN: verify signature, responseCode=00, idempotent PAID, validate amount; update payment_transaction + order (PAID/FAILED), auto-enroll, trả RspCode đúng chuẩn.
+
+### 6. Order lifecycle & cleanup
+- [x] Timeout PENDING (30 phút): job chuyển `PENDING` quá hạn → `CANCELLED`.
+- [x] Chặn pay với order đã `CANCELLED`/hết hạn; bắt tạo order mới.
+
+### 7. Query APIs
+- [x] User: GET /orders (paged), GET /orders/{id} (owner only).
+- [x] Admin: GET /orders/admin (paged).
+
+### 8. Security & validation
+- [x] Soft delete filter ở tất cả query; check amount VNPAY; idempotent IPN; không overwrite field khi update partial.
+
+### 9. Logging & audit
+- [x] Log generate VNPay URL, IPN success/fail/mismatch; lưu raw_response_json (đã có cột).
+
+### 10. Curls/docs
+- [x] Cập nhật curl-commerce-update.txt: order không gửi giá, flow pay/return/ipn, free-course skip VNPay, note hết hạn.
+
+### 11. Kiểm thử nhanh
+- [ ] Happy path: create → pay URL → IPN success → order=PAID → enrollment → không mua lại.
+- [ ] Fail path: IPN fail → order=FAILED → không enroll.
+- [ ] Idempotent: IPN lặp lại OK.
+- [ ] Amount mismatch: IPN bị reject, không enroll.
+- [ ] Pending timeout: order quá hạn bị CANCELLED; pay bị chặn.

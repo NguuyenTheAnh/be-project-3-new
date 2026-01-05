@@ -72,7 +72,9 @@ public class AuthServiceImpl implements AuthService {
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
         Set<String> roles = userService.findRoles(user.getId());
-        List<String> authorities = roles.stream().map(r -> "ROLE_" + r).toList();
+        List<String> authorities = roles.stream()
+                .map(r -> r != null && r.startsWith("ROLE_") ? r : "ROLE_" + r)
+                .toList();
         return issueTokens(user, authorities);
     }
 
@@ -91,7 +93,9 @@ public class AuthServiceImpl implements AuthService {
                 .filter(u -> !Boolean.TRUE.equals(u.getIsDeleted()))
                 .orElseThrow(() -> new BusinessException("data.not_found"));
         Set<String> roles = userService.findRoles(userId);
-        List<String> authorities = roles.stream().map(r -> "ROLE_" + r).toList();
+        List<String> authorities = roles.stream()
+                .map(r -> r != null && r.startsWith("ROLE_") ? r : "ROLE_" + r)
+                .toList();
         AuthTokenResponse response = issueTokens(user, authorities);
         response.setRefreshToken(rotated.getTokenHash());
         return response;

@@ -198,7 +198,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
         }
         Set<String> assigned = new HashSet<>();
         for (String roleName : roleNames) {
-            Role role = roleService.ensureRole(roleName, roleName);
+            String normalized = roleName != null && roleName.startsWith("ROLE_")
+                    ? roleName.substring("ROLE_".length())
+                    : roleName;
+            Role role = roleService.ensureRole(normalized, normalized);
             UserRole mapping = UserRole.builder()
                     .userId(userId)
                     .roleId(role.getId())

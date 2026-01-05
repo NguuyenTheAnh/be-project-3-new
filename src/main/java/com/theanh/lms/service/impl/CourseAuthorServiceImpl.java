@@ -88,6 +88,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
                 .language(request.getLanguage())
                 .thumbnailFileId(request.getThumbnailFileId())
                 .introVideoFileId(request.getIntroVideoFileId())
+                .priceCents(request.getPriceCents() != null && request.getPriceCents() >= 0 ? request.getPriceCents() : 0L)
                 .status(CourseStatus.DRAFT.name())
                 .ratingAvg(null)
                 .ratingCount(0)
@@ -148,6 +149,9 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         if (request.getIntroVideoFileId() != null) {
             course.setIntroVideoFileId(request.getIntroVideoFileId());
             uploadedFileService.markAttached(request.getIntroVideoFileId(), courseId, null, UploadPurpose.INTRO_VIDEO);
+        }
+        if (request.getPriceCents() != null && request.getPriceCents() >= 0) {
+            course.setPriceCents(request.getPriceCents());
         }
         courseRepository.save(course);
         if (request.getTagIds() != null) {
@@ -475,6 +479,19 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             throw new BusinessException("data.not_found");
         }
         lessonDocumentService.deleteById(documentId);
+        return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    @Transactional
+    public CourseDetailResponse publishCourse(Long courseId) {
+        Course course = getCourseOrThrow(courseId);
+        String target = CourseStatus.PUBLISHED.name();
+        if (!isTransitionAllowed(course.getStatus(), target)) {
+            throw new BusinessException("data.fail");
+        }
+        course.setStatus(target);
+        courseRepository.save(course);
         return catalogService.getCourseDetail(courseId, null);
     }
 

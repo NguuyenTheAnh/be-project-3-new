@@ -8,6 +8,7 @@ import com.theanh.lms.config.StorageProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {"com.theanh.lms", "com.theanh.common"})
 @EnableConfigurationProperties({
@@ -17,6 +18,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 		S3StorageProperties.class,
 		PresignProperties.class
 })
+@EnableScheduling
 public class LmsApplication {
 
 	public static void main(String[] args) {

@@ -16,4 +16,6 @@ public interface OrderService extends BaseService<Order, OrderDto, Long> {
     OrderDto getMyOrder(Long userId, Long orderId);
 
     org.springframework.data.domain.Page<OrderDto> adminListOrders(org.springframework.data.domain.Pageable pageable);
+
+    void cancelExpiredPendingOrders();
 }

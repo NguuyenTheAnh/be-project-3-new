@@ -16,6 +16,7 @@ public class CourseDetailResponse {
     private String level;
     private String language;
     private String status;
+    private Long priceCents;
     private LocalDateTime publishedAt;
     private BigDecimal ratingAvg;
     private Integer ratingCount;

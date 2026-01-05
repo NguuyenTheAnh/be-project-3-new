@@ -13,6 +13,7 @@ public class CourseListItemResponse {
     private String shortDescription;
     private String level;
     private String language;
+    private Long priceCents;
     private BigDecimal ratingAvg;
     private Integer ratingCount;
     private CategoryDto category;

@@ -55,6 +55,9 @@ public class Course extends BaseAuditEntity {
     @Column(name = "status", length = 50)
     private String status;
 
+    @Column(name = "price_cents")
+    private Long priceCents;
+
     @Column(name = "published_at")
     private LocalDateTime publishedAt;
 

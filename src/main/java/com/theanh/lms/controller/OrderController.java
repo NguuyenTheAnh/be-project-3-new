@@ -28,7 +28,7 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseDto<OrderDto>> createOrder(@RequestBody @Valid OrderCreateRequest request) {
         Long userId = currentUserId();
-        return ResponseConfig.success(orderService.createOrder(userId, request.getCourseId(), request.getPriceCents()));
+        return ResponseConfig.success(orderService.createOrder(userId, request.getCourseId(), null));
     }
 
     @PostMapping("/{orderId}/pay/vnpay")

@@ -8,7 +8,4 @@ import lombok.Data;
 public class OrderCreateRequest {
     @NotNull
     private Long courseId;
-    @NotNull
-    @Min(0)
-    private Long priceCents;
 }

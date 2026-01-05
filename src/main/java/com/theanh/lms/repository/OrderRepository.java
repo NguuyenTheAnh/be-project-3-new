@@ -55,4 +55,12 @@ public interface OrderRepository extends BaseRepository<Order, Long> {
             """,
             nativeQuery = true)
     org.springframework.data.domain.Page<Order> findAllActive(org.springframework.data.domain.Pageable pageable);
+
+    @Query(value = """
+            SELECT * FROM `order` o
+            WHERE o.status = 'PENDING'
+              AND o.created_date < :cutoff
+              AND (o.is_deleted IS NULL OR o.is_deleted = 0)
+            """, nativeQuery = true)
+    java.util.List<Order> findPendingBefore(@Param("cutoff") java.time.LocalDateTime cutoff);
 }

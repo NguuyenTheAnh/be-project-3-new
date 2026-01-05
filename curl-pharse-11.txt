@@ -26,12 +26,12 @@ curl -X POST "{{baseURL}}/orders/{orderId}/pay/vnpay" \
 
 # 4) VNPay IPN (server-to-server, source of truth)
 #    Example call (simulate from VNPay):
-# curl -G "{{baseURL}}/payments/vnpay/ipn" \
-#   --data-urlencode "vnp_Amount=10000000" \
-#   --data-urlencode "vnp_TxnRef={orderId}" \
-#   --data-urlencode "vnp_ResponseCode=00" \
-#   --data-urlencode "vnp_TransactionNo=123456789" \
-#   --data-urlencode "vnp_SecureHash=<computed_hmac>"
+ curl -G "{{baseURL}}/payments/vnpay/ipn" \
+   --data-urlencode "vnp_Amount=10000000" \
+   --data-urlencode "vnp_TxnRef={orderId}" \
+   --data-urlencode "vnp_ResponseCode=00" \
+   --data-urlencode "vnp_TransactionNo=123456789" \
+   --data-urlencode "vnp_SecureHash=<computed_hmac>"
 
 # 5) Get my orders (paged)
 curl -X GET "{{baseURL}}/orders?page=0&size=10" \

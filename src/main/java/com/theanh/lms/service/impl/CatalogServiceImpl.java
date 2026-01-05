@@ -104,6 +104,7 @@ public class CatalogServiceImpl implements CatalogService {
         response.setLevel(course.getLevel());
         response.setLanguage(course.getLanguage());
         response.setStatus(course.getStatus());
+        response.setPriceCents(course.getPriceCents());
         response.setPublishedAt(course.getPublishedAt());
         response.setRatingAvg(Optional.ofNullable(course.getRatingAvg()).orElse(BigDecimal.ZERO));
         response.setRatingCount(Optional.ofNullable(course.getRatingCount()).orElse(0));
@@ -172,6 +173,7 @@ public class CatalogServiceImpl implements CatalogService {
             dto.setShortDescription(course.getShortDescription());
             dto.setLevel(course.getLevel());
             dto.setLanguage(course.getLanguage());
+            dto.setPriceCents(course.getPriceCents());
             dto.setRatingAvg(Optional.ofNullable(course.getRatingAvg()).orElse(BigDecimal.ZERO));
             dto.setRatingCount(Optional.ofNullable(course.getRatingCount()).orElse(0));
 

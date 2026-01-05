@@ -50,6 +50,12 @@ public class CourseAuthorController {
         return ResponseConfig.success(courseAuthorService.updateTags(courseId, tagIds));
     }
 
+    @PostMapping("/{courseId}/publish")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<CourseDetailResponse>> publish(@PathVariable Long courseId) {
+        return ResponseConfig.success(courseAuthorService.publishCourse(courseId));
+    }
+
     @PutMapping("/{courseId}/instructors")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<ResponseDto<CourseDetailResponse>> updateInstructors(@PathVariable Long courseId,

@@ -28,6 +28,7 @@ public class CourseDto extends BaseDto {
     private Long introVideoFileId;
     private String status;
     private LocalDateTime publishedAt;
+    private Long priceCents;
     private BigDecimal ratingAvg;
     private Integer ratingCount;
 }
