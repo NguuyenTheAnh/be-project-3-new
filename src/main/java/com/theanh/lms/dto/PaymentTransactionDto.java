@@ -20,4 +20,7 @@ public class PaymentTransactionDto extends BaseDto {
     private String currency;
     private String status;
     private String rawResponseJson;
+    private String txnRef;
+    private String paymentUrl;
+    private java.time.LocalDateTime expiredAt;
 }

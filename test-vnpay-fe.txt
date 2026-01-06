@@ -1,0 +1,49 @@
+########################################################################
+# Hướng dẫn FE tích hợp VNPay với BE (sandbox) – chuẩn với API hiện tại
+########################################################################
+
+Prereq
+- BE đang chạy, VNPay config đúng tmnCode/hashSecret.
+- FE có route `/payment/return` để nhận redirect từ VNPay.
+- Ngrok (hoặc tunnel tương đương) để VNPay gọi được FE/BE.
+
+1) Mở public URL cho BE
+   - `ngrok http 8080`
+   - Lưu HTTPS URL: https://<ngrok-be>.ngrok-free.app
+
+2) Mở public URL cho FE
+   - `ngrok http 3000` (hoặc port FE của bạn)
+   - Lưu HTTPS URL: https://<ngrok-fe>.ngrok-free.app
+
+3) Cập nhật env BE (trong shell/IDE)
+   - `VNPAY_RETURN_URL=https://<ngrok-fe>.ngrok-free.app/payment/return`
+   - `VNPAY_IPN_URL=https://<ngrok-be>.ngrok-free.app/api/v1/payments/vnpay/ipn`
+   - Restart BE sau khi set.
+
+4) FE: Tạo order & lấy paymentUrl
+   - B1: Call `POST /api/v1/orders` với `{ "courseId": <id> }` → nhận `orderId`.
+   - B2: Call `POST /api/v1/orders/{orderId}/pay/vnpay` → nhận `paymentUrl`.
+   - B3: `window.location.href = paymentUrl` để chuyển sang VNPay.
+
+5) FE: Xử lý trang return `/payment/return`
+   - VNPay redirect kèm query params: `vnp_ResponseCode`, `vnp_TxnRef`, `vnp_TransactionNo`, `vnp_SecureHash`, ...
+   - FE parse params, hiển thị tạm trạng thái:
+       * `vnp_ResponseCode === "00"` → user thấy “Thanh toán thành công (đang xác nhận)”
+       * Khác 00 → “Thanh toán thất bại/đã hủy”
+   - Gọi BE để lấy trạng thái thật:
+       * `GET /api/v1/orders/{orderId}` (orderId nằm trước dấu “-” trong `vnp_TxnRef`)
+       * Kiểm tra `status` = PAID hay chưa (IPN mới là nguồn tin cậy).
+
+6) IPN (BE)
+   - VNPay gọi `VNPAY_IPN_URL` trực tiếp tới BE → BE tự cập nhật order=PAID + enroll.
+   - FE không cần xử lý gì, chỉ nên refresh order status sau return.
+
+7) Kiểm tra sau thanh toán (FE)
+   - `GET /api/v1/orders/{orderId}` để confirm PAID.
+   - `GET /api/v1/enrollments/me` để xem khóa học đã enroll.
+
+8) Lưu ý
+   - Mỗi lần đổi ngrok URL phải cập nhật env và restart BE.
+   - IPN cần URL HTTPS công khai, không dùng localhost.
+   - VNPay sandbox đôi khi trả IPN trễ vài phút; đợi rồi kiểm tra lại.
+   - Nếu vẫn lỗi, gửi lại full paymentUrl (không chứa secret) để BE kiểm tra tham số/amount/hash.

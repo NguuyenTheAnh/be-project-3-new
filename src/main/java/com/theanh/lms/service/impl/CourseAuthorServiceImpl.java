@@ -40,6 +40,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -491,6 +492,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             throw new BusinessException("data.fail");
         }
         course.setStatus(target);
+        course.setPublishedAt(LocalDateTime.now());
         courseRepository.save(course);
         return catalogService.getCourseDetail(courseId, null);
     }

@@ -39,4 +39,13 @@ public class PaymentTransaction extends BaseAuditEntity {
 
     @Column(name = "raw_response_json", columnDefinition = "longtext")
     private String rawResponseJson;
+
+    @Column(name = "txn_ref", length = 255)
+    private String txnRef;
+
+    @Column(name = "payment_url", columnDefinition = "text")
+    private String paymentUrl;
+
+    @Column(name = "expired_at")
+    private java.time.LocalDateTime expiredAt;
 }

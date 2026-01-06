@@ -16,7 +16,7 @@ ALTER TABLE uploaded_file
 
 -- Phase 11: add course price (run once; remove IF NOT EXISTS for compatibility)
 ALTER TABLE course
-    ADD COLUMN price_cents BIGINT NOT NULL DEFAULT 0 COMMENT 'Course price in cents';
+    ADD COLUMN IF NOT EXISTS price_cents BIGINT NOT NULL DEFAULT 0 COMMENT 'Course price in cents';
 
 -- Backfill existing rows so lifecycle checks work
 UPDATE uploaded_file
@@ -24,3 +24,9 @@ SET
     status  = COALESCE(status, 'READY'),
     purpose = COALESCE(purpose, 'GENERIC')
 WHERE status IS NULL OR purpose IS NULL;
+
+ALTER TABLE payment_transaction
+    ADD COLUMN  txn_ref VARCHAR(255) COMMENT 'VNPay TxnRef (unique per pay request)',
+    ADD COLUMN  payment_url TEXT COMMENT 'Generated payment URL',
+    ADD COLUMN  expired_at DATETIME COMMENT 'Payment link expiration time';
+

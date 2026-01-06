@@ -57,11 +57,11 @@ public class VnpayServiceImpl implements VnpayService {
         }
         String responseCode = params.get("vnp_ResponseCode");
         String txnRef = params.get("vnp_TxnRef");
-        Long orderId = parseLong(txnRef);
+        Long orderId = extractOrderId(txnRef);
         if (orderId == null) {
             return ipnResponse("99", "Invalid order");
         }
-        log.info("VNPay IPN received for order {} with responseCode {}", orderId, responseCode);
+        log.info("VNPay IPN received for order {} with responseCode {} txnRef {}", orderId, responseCode, txnRef);
         Optional<Order> orderOpt = orderRepository.findActiveById(orderId);
         if (orderOpt.isEmpty()) {
             return ipnResponse("01", "Order not found");
@@ -75,6 +75,7 @@ public class VnpayServiceImpl implements VnpayService {
         }
         // amount check: vnp_Amount is amount * 100
         Long vnpAmount = parseLong(params.get("vnp_Amount"));
+        // order totalAmountCents currently stores VND; VNPay sends VND * 100
         long expectedAmount = order.getTotalAmountCents() * 100;
         if (vnpAmount == null || vnpAmount.longValue() != expectedAmount) {
             log.warn("VNPay amount mismatch for order {} expected {} got {}", orderId, expectedAmount, vnpAmount);
@@ -92,8 +93,7 @@ public class VnpayServiceImpl implements VnpayService {
             return ipnResponse("04", "Invalid amount");
         }
         boolean success = "00".equals(responseCode);
-        PaymentTransactionDto existingTxn = paymentTransactionService.findByProviderTxn(
-                PaymentProvider.VNPAY.name(), params.get("vnp_TransactionNo"));
+        PaymentTransactionDto existingTxn = paymentTransactionService.findByTxnRef(txnRef);
         if (existingTxn == null) {
             PaymentTransactionDto txn = new PaymentTransactionDto();
             txn.setOrderId(orderId);
@@ -107,6 +107,7 @@ public class VnpayServiceImpl implements VnpayService {
         } else if (PaymentStatus.INIT.name().equals(existingTxn.getStatus())) {
             existingTxn.setStatus(success ? PaymentStatus.SUCCESS.name() : PaymentStatus.FAILED.name());
             existingTxn.setRawResponseJson(params.toString());
+            existingTxn.setProviderTxnId(params.get("vnp_TransactionNo"));
             paymentTransactionService.saveObject(existingTxn);
         } else {
             log.info("VNPay IPN already processed for providerTxn {}", params.get("vnp_TransactionNo"));
@@ -136,6 +137,17 @@ public class VnpayServiceImpl implements VnpayService {
     private Long parseLong(String value) {
         try {
             return Long.parseLong(value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Long extractOrderId(String txnRef) {
+        if (txnRef == null) {
+            return null;
+        }
+        try {
+            return Long.parseLong(txnRef);
         } catch (Exception e) {
             return null;
         }

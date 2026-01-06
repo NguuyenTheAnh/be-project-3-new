@@ -35,6 +35,10 @@ curl -X GET "{{baseURL}}/me/enrollments?page=0&size=10" \
 curl -X GET "{{baseURL}}/files/meta/{fileId}" \
   -H "$AUTH_HEADER"
 
+# Get lesson detail (enforces enrollment or preview)
+curl -X GET "{{baseURL}}/lessons/{lessonId}" \
+  -H "$AUTH_HEADER"
+
 # Presign GET for file (enforces access)
 curl -X GET "{{baseURL}}/files/{fileId}/url" \
   -H "$AUTH_HEADER"

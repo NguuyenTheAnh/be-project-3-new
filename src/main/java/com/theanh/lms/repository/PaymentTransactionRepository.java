@@ -26,4 +26,11 @@ public interface PaymentTransactionRepository extends BaseRepository<PaymentTran
             """, nativeQuery = true)
     Optional<PaymentTransaction> findByProviderTxn(@Param("provider") String provider,
                                                    @Param("providerTxnId") String providerTxnId);
+
+    @Query(value = """
+            SELECT * FROM payment_transaction pt
+            WHERE pt.txn_ref = :txnRef
+              AND (pt.is_deleted IS NULL OR pt.is_deleted = 0)
+            """, nativeQuery = true)
+    Optional<PaymentTransaction> findByTxnRef(@Param("txnRef") String txnRef);
 }

@@ -126,29 +126,48 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, OrderDto, Long> imp
             throw new BusinessException("data.fail");
         }
         log.info("Generating VNPay URL for order {}", orderId);
-        long amount = order.getTotalAmountCents() * 100; // VNPAY amount in VND * 100
+        // totalAmountCents is actually stored as VND (not cents) at the moment, VNPay requires VND * 100
+        long amount = order.getTotalAmountCents() * 100;
+        // VNPay TxnRef must be alphanumeric only (no special chars)
+        // TxnRef: numeric only to avoid gateway rejection; unique per order
+        String txnRef = String.valueOf(order.getId());
         Map<String, String> params = new HashMap<>();
         params.put("vnp_Version", "2.1.0");
         params.put("vnp_Command", "pay");
         params.put("vnp_TmnCode", vnpayProperties.getTmnCode());
         params.put("vnp_Amount", String.valueOf(amount));
         params.put("vnp_CurrCode", vnpayProperties.getCurrency());
-        params.put("vnp_TxnRef", String.valueOf(order.getId()));
+        params.put("vnp_TxnRef", txnRef);
+        // OrderInfo: no special chars, no accents
         params.put("vnp_OrderInfo", "Order " + order.getId());
         params.put("vnp_OrderType", "other");
         params.put("vnp_Locale", vnpayProperties.getLocale());
         params.put("vnp_ReturnUrl", vnpayProperties.getReturnUrl());
-        params.put("vnp_IpAddr", "127.0.0.1");
-        params.put("vnp_CreateDate", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
-        params.put("vnp_IpnUrl", vnpayProperties.getIpnUrl());
+        params.put("vnp_IpAddr", vnpayProperties.getClientIp());
+        LocalDateTime now = LocalDateTime.now();
+        params.put("vnp_CreateDate", now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        if (vnpayProperties.getExpireMinutes() != null) {
+            params.put("vnp_ExpireDate", now.plusMinutes(vnpayProperties.getExpireMinutes())
+                    .format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+        }
         String payUrl = VnpayUtils.buildSignedUrl(vnpayProperties.getPayUrl(), params, vnpayProperties.getHashSecret());
+        log.info("VNPay hashData={}, secureHash(prefix/suffix)={}...{}, url={}",
+                VnpayUtils.buildHashDataPreview(params),
+                VnpayUtils.computeSecureHashPreview(vnpayProperties.getHashSecret(), params),
+                VnpayUtils.computeSecureHashPreview(vnpayProperties.getHashSecret(), params, true),
+                payUrl);
 
         PaymentTransactionDto txn = new PaymentTransactionDto();
         txn.setOrderId(order.getId());
         txn.setProvider(PaymentProvider.VNPAY.name());
+        txn.setTxnRef(txnRef);
         txn.setAmountCents(order.getTotalAmountCents());
         txn.setCurrency(order.getCurrency());
         txn.setStatus(PaymentStatus.INIT.name());
+        txn.setPaymentUrl(payUrl);
+        if (vnpayProperties.getExpireMinutes() != null) {
+            txn.setExpiredAt(LocalDateTime.now().plusMinutes(vnpayProperties.getExpireMinutes()));
+        }
         paymentTransactionService.saveObject(txn);
 
         return PaymentUrlResponse.builder().paymentUrl(payUrl).build();

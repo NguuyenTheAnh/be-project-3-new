@@ -56,9 +56,11 @@ logging:
 payment:
   vnpay:
     tmnCode: D5V6VHEW
-    hashSecret: ZVW2W1A44VHEAO4207VGJLWXC1NVTDZV
+    hashSecret: EW1B251M7TXF2ZKS7NQLBN072CS6OGDZ
     payUrl: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-    returnUrl: http://localhost:3000/payment/return   # placeholder FE URL
-    ipnUrl: http://localhost:8080/api/v1/payments/vnpay/ipn
+    returnUrl: http://localhost:5173/payment/return   # placeholder FE URL
+    ipnUrl:  https://0a0d6ef7c3b8.ngrok-free.app/api/v1/payments/vnpay/ipn
     currency: VND
     locale: vn
+    client-ip: 8.8.8.8         # do not use localhost for VNPay
+    expire-minutes: 15         # payment link TTL for vnp_ExpireDate

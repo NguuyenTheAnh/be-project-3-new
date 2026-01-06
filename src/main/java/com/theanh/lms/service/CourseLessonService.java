@@ -13,4 +13,6 @@ public interface CourseLessonService extends BaseService<CourseLesson, CourseLes
     void deleteByCourseAndLesson(Long courseId, Long lessonId);
 
     java.util.List<CourseLessonDto> findByCourseId(Long courseId);
+
+    CourseLessonDto findActiveByLessonId(Long lessonId);
 }

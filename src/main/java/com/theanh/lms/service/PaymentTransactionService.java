@@ -9,4 +9,6 @@ public interface PaymentTransactionService extends BaseService<PaymentTransactio
     PaymentTransactionDto findActiveById(Long id);
 
     PaymentTransactionDto findByProviderTxn(String provider, String providerTxnId);
+
+    PaymentTransactionDto findByTxnRef(String txnRef);
 }

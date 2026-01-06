@@ -15,4 +15,12 @@ public class VnpayProperties {
     private String ipnUrl;
     private String currency;
     private String locale;
+    /**
+     * Client IP to send to VNPay when real client IP is unavailable (must not be localhost).
+     */
+    private String clientIp = "8.8.8.8";
+    /**
+     * Payment link TTL in minutes.
+     */
+    private Long expireMinutes = 15L;
 }

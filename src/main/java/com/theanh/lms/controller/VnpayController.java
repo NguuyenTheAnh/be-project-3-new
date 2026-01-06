@@ -29,8 +29,8 @@ public class VnpayController {
         PaymentReturnResponse result = vnpayService.handleReturn(params);
         // simple redirect; in real FE, change URL accordingly
         String redirectUrl = result.getStatus().equalsIgnoreCase("SUCCESS")
-                ? "http://localhost:3000/payment/success"
-                : "http://localhost:3000/payment/fail";
+                ? "http://localhost:5173/payment/success"
+                : "http://localhost:5173/payment/fail";
         response.sendRedirect(redirectUrl);
     }
 

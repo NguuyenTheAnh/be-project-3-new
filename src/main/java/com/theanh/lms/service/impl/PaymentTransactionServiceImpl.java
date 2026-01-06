@@ -33,6 +33,13 @@ public class PaymentTransactionServiceImpl extends BaseServiceImpl<PaymentTransa
     }
 
     @Override
+    public PaymentTransactionDto findByTxnRef(String txnRef) {
+        return repository.findByTxnRef(txnRef)
+                .map(pt -> modelMapper.map(pt, PaymentTransactionDto.class))
+                .orElse(null);
+    }
+
+    @Override
     protected Class<PaymentTransaction> getEntityClass() {
         return PaymentTransaction.class;
     }

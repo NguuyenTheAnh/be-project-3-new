@@ -68,6 +68,13 @@ public class CourseLessonServiceImpl extends BaseServiceImpl<CourseLesson, Cours
     }
 
     @Override
+    public CourseLessonDto findActiveByLessonId(Long lessonId) {
+        return courseLessonRepository.findActiveByLessonId(lessonId)
+                .map(cl -> modelMapper.map(cl, CourseLessonDto.class))
+                .orElse(null);
+    }
+
+    @Override
     protected Class<CourseLesson> getEntityClass() {
         return CourseLesson.class;
     }
