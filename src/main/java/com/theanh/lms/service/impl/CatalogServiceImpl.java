@@ -422,11 +422,20 @@ public class CatalogServiceImpl implements CatalogService {
         String s = sort.toLowerCase();
         Sort sortSpec = switch (s) {
             case "newest" ->
-                    Sort.by(Sort.Direction.DESC, "publishedAt", "createdDate");
+                    Sort.by(
+                            Sort.Order.desc("published_at"),
+                            Sort.Order.desc("created_date")
+                    );
             case "rating" ->
-                    Sort.by(Sort.Direction.DESC, "ratingAvg", "ratingCount");
+                    Sort.by(
+                            Sort.Order.desc("rating_avg"),
+                            Sort.Order.desc("rating_count")
+                    );
             case "popular" ->
-                    Sort.by(Sort.Direction.DESC, "ratingCount", "ratingAvg");
+                    Sort.by(
+                            Sort.Order.desc("rating_count"),
+                            Sort.Order.desc("rating_avg")
+                    );
             default -> pageable.getSort();
         };
         return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortSpec);

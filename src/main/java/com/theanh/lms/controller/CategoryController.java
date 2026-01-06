@@ -4,6 +4,7 @@ import com.theanh.common.dto.ResponseDto;
 import com.theanh.common.util.ResponseConfig;
 import com.theanh.lms.dto.CategoryDto;
 import com.theanh.lms.service.CategoryService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,13 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
+    @PermitAll
     public ResponseEntity<ResponseDto<List<CategoryDto>>> list() {
         return ResponseConfig.success(categoryService.findAll());
     }
 
     @GetMapping("/{id}")
+    @PermitAll
     public ResponseEntity<ResponseDto<CategoryDto>> get(@PathVariable Long id) {
         return ResponseConfig.success(categoryService.findById(id));
     }

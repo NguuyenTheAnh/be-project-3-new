@@ -36,6 +36,9 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**", "/auth/**", "/health", "/files/**",
                                 "/payments/vnpay/ipn", "/payments/vnpay/return").permitAll()
                         .requestMatchers(HttpMethod.GET,
+                                "/courses",
+                                "/tags/**",
+                                "/categories/**",
                                 "/courses/*/questions/**",
                                 "/questions/**",
                                 "/courses/*/reviews/**").permitAll()

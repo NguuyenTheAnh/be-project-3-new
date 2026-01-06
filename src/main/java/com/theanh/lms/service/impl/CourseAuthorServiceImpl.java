@@ -174,6 +174,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             throw new BusinessException("data.fail");
         }
         course.setStatus(target);
+        course.setPublishedAt(LocalDateTime.now());
         courseRepository.save(course);
         return catalogService.getCourseDetail(courseId, null);
     }
