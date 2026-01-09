@@ -4,12 +4,13 @@ import com.theanh.common.exception.BusinessException;
 import com.theanh.lms.dto.UploadedFileDto;
 import com.theanh.lms.dto.CourseLessonDto;
 import com.theanh.lms.dto.LessonDto;
-import com.theanh.lms.entity.Course;
-import com.theanh.lms.repository.CourseRepository;
 import com.theanh.lms.service.AccessControlService;
 import com.theanh.lms.service.CourseLessonService;
+import com.theanh.lms.service.CourseService;
 import com.theanh.lms.service.EnrollmentService;
 import com.theanh.lms.service.LessonService;
+import com.theanh.lms.service.UserService;
+import com.theanh.lms.enums.RoleName;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -22,16 +23,19 @@ public class AccessControlServiceImpl implements AccessControlService {
     private final CourseLessonService courseLessonService;
     private final LessonService lessonService;
     private final EnrollmentService enrollmentService;
-    private final CourseRepository courseRepository;
+    private final CourseService courseService;
+    private final UserService userService;
 
     public AccessControlServiceImpl(CourseLessonService courseLessonService,
-                                    LessonService lessonService,
-                                    EnrollmentService enrollmentService,
-                                    CourseRepository courseRepository) {
+            LessonService lessonService,
+            EnrollmentService enrollmentService,
+            CourseService courseService,
+            UserService userService) {
         this.courseLessonService = courseLessonService;
         this.lessonService = lessonService;
         this.enrollmentService = enrollmentService;
-        this.courseRepository = courseRepository;
+        this.courseService = courseService;
+        this.userService = userService;
     }
 
     @Override
@@ -40,31 +44,23 @@ public class AccessControlServiceImpl implements AccessControlService {
         if (lesson == null) {
             return false;
         }
-        boolean isPreview = Boolean.TRUE.equals(lesson.getIsFreePreview());
-        if (!Boolean.TRUE.equals(isPreview) && courseId != null) {
-            List<CourseLessonDto> mappings = courseLessonService.findByCourseId(courseId);
-            if (!CollectionUtils.isEmpty(mappings)) {
-                isPreview = mappings.stream()
-                        .filter(m -> Objects.equals(lessonId, m.getLessonId()))
-                        .anyMatch(m -> Boolean.TRUE.equals(m.getIsPreview()));
-            }
-        }
+        CourseLessonDto mapping = courseId != null ? null : courseLessonService.findActiveByLessonId(lessonId);
+        Long resolvedCourseId = courseId != null ? courseId : (mapping != null ? mapping.getCourseId() : null);
+        boolean isPreview = Boolean.TRUE.equals(lesson.getIsFreePreview())
+                || Boolean.TRUE.equals(mapping != null ? mapping.getIsPreview() : null);
         if (isPreview) {
             return true;
         }
         if (userId == null) {
             return false;
         }
-        if (courseId != null) {
-            // Course creator always allowed
-            Course course = courseRepository.findById(courseId)
-                    .filter(c -> !Boolean.TRUE.equals(c.getIsDeleted()))
-                    .orElse(null);
-            if (course != null && Objects.equals(course.getCreatorUserId(), userId)) {
-                return true;
-            }
+        if (resolvedCourseId == null) {
+            return false;
         }
-        return enrollmentService.isEnrolled(userId, courseId);
+        if (isCourseCreator(userId, resolvedCourseId)) {
+            return true;
+        }
+        return enrollmentService.isEnrolled(userId, resolvedCourseId);
     }
 
     @Override
@@ -73,6 +69,9 @@ public class AccessControlServiceImpl implements AccessControlService {
             throw new BusinessException("data.not_found");
         }
         if (Boolean.TRUE.equals(file.getIsPublic())) {
+            return;
+        }
+        if (userId != null && userService.findRoles(userId).contains(RoleName.ADMIN.name())) {
             return;
         }
         Long courseId = file.getCourseId();
@@ -99,9 +98,7 @@ public class AccessControlServiceImpl implements AccessControlService {
         if (userId == null || courseId == null) {
             return false;
         }
-        return courseRepository.findById(courseId)
-                .filter(c -> !Boolean.TRUE.equals(c.getIsDeleted()))
-                .filter(c -> Objects.equals(c.getCreatorUserId(), userId))
-                .isPresent();
+        var course = courseService.findActiveById(courseId);
+        return course != null && Objects.equals(course.getCreatorUserId(), userId);
     }
 }

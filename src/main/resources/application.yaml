@@ -59,7 +59,7 @@ payment:
     hashSecret: EW1B251M7TXF2ZKS7NQLBN072CS6OGDZ
     payUrl: https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
     returnUrl: http://localhost:5173/payment/return   # placeholder FE URL
-    ipnUrl:  https://0a0d6ef7c3b8.ngrok-free.app/api/v1/payments/vnpay/ipn
+    ipnUrl:   https://0a0367db5923.ngrok-free.app/api/v1/payments/vnpay/ipn
     currency: VND
     locale: vn
     client-ip: 8.8.8.8         # do not use localhost for VNPay

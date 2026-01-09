@@ -1,6 +1,7 @@
 package com.theanh.lms.controller;
 
 import com.theanh.common.dto.ResponseDto;
+import com.theanh.common.exception.BusinessException;
 import com.theanh.common.util.ResponseConfig;
 import com.theanh.lms.dto.UploadedFileDto;
 import com.theanh.lms.dto.request.FileAbortRequest;
@@ -43,6 +44,17 @@ public class FileController {
     public ResponseEntity<ResponseDto<UploadedFileDto>> getMetadata(@PathVariable Long id) {
         UploadedFileDto dto = uploadedFileService.findById(id);
         accessControlService.ensureFileViewable(dto, currentUserId());
+        PresignUrlResponse getUrl = presignService.generateGetUrl(dto);
+        dto.setAccessUrl(getUrl.getUrl());
+        return ResponseConfig.success(dto);
+    }
+
+    @GetMapping("/meta/public/{id}")
+    public ResponseEntity<ResponseDto<UploadedFileDto>> getPublicMetadata(@PathVariable Long id) {
+        UploadedFileDto dto = uploadedFileService.findById(id);
+        if (!dto.getIsPublic()) {
+            throw new BusinessException("File không tồn tại hoặc không có quyền truy cập.");
+        }
         PresignUrlResponse getUrl = presignService.generateGetUrl(dto);
         dto.setAccessUrl(getUrl.getUrl());
         return ResponseConfig.success(dto);
