@@ -355,6 +355,7 @@ public class CatalogServiceImpl implements CatalogService {
                     dto.setDurationSeconds(lesson.getDurationSeconds());
                     boolean preview = Boolean.TRUE.equals(lesson.getIsFreePreview()) || Boolean.TRUE.equals(cl.getIsPreview());
                     dto.setIsPreview(preview);
+                    dto.setPosition(cl.getPosition());
                     dto.setDocuments(lessonDocMap.getOrDefault(lesson.getId(), List.of()));
                     return dto;
                 })

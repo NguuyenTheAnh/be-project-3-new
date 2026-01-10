@@ -10,4 +10,5 @@ public class LessonPreviewDto {
     private Integer durationSeconds;
     private Boolean isPreview;
     private java.util.List<DocumentResponse> documents;
+    private Integer position;
 }
