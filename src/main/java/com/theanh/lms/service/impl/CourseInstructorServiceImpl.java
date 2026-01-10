@@ -37,4 +37,12 @@ public class CourseInstructorServiceImpl extends BaseServiceImpl<CourseInstructo
             this.deleteByIds(ids);
         }
     }
+
+    @Override
+    public boolean isInstructorOfCourse(Long userId, Long courseId) {
+        if (userId == null || courseId == null) {
+            return false;
+        }
+        return ((CourseInstructorRepository) repository).countActiveByCourseAndUser(courseId, userId) > 0;
+    }
 }

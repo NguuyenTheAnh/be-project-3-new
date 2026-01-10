@@ -58,4 +58,6 @@ public interface CourseAuthorService {
 
     org.springframework.data.domain.Page<com.theanh.lms.dto.InstructorCourseListResponse> listInstructorCourses(Long userId,
                                                                                                                org.springframework.data.domain.Pageable pageable);
+
+    com.theanh.lms.dto.LessonDetailResponse getLessonDetail(Long userId, Long courseId, Long lessonId);
 }

@@ -79,6 +79,18 @@ public interface CourseRepository extends BaseRepository<Course, Long> {
     Optional<Course> findActivePublishedById(@Param("id") Long id);
 
     @Query(value = """
+            SELECT * FROM course c
+            WHERE (c.is_deleted IS NULL OR c.is_deleted = 0)
+            ORDER BY c.created_date DESC
+            """,
+            countQuery = """
+            SELECT COUNT(1) FROM course c
+            WHERE (c.is_deleted IS NULL OR c.is_deleted = 0)
+            """,
+            nativeQuery = true)
+    Page<Course> findAllActiveCourses(Pageable pageable);
+
+    @Query(value = """
             SELECT c.* FROM course c
             JOIN course_instructor ci ON ci.course_id = c.id
             WHERE ci.user_id = :userId

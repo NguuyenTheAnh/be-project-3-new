@@ -36,6 +36,15 @@ public class CourseAuthorController {
         return ResponseConfig.success(courseAuthorService.listInstructorCourses(userId, pageable));
     }
 
+    @GetMapping("/{courseId}/lessons/{lessonId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<com.theanh.lms.dto.LessonDetailResponse>> getLessonDetail(
+            @PathVariable Long courseId,
+            @PathVariable Long lessonId) {
+        Long userId = currentUserId();
+        return ResponseConfig.success(courseAuthorService.getLessonDetail(userId, courseId, lessonId));
+    }
+
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<ResponseDto<CourseDetailResponse>> create(@Valid @RequestBody CourseCreateRequest request) {

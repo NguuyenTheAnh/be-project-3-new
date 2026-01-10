@@ -10,6 +10,8 @@ import com.theanh.lms.dto.CourseTagDto;
 import com.theanh.lms.dto.LessonDto;
 import com.theanh.lms.dto.LessonDocumentDto;
 import com.theanh.lms.dto.InstructorCourseListResponse;
+import com.theanh.lms.dto.LessonDetailResponse;
+import com.theanh.lms.dto.DocumentResponse;
 import com.theanh.lms.dto.request.*;
 import com.theanh.lms.entity.*;
 import com.theanh.lms.enums.CourseLevel;
@@ -18,6 +20,7 @@ import com.theanh.lms.enums.CourseStatus;
 import com.theanh.lms.enums.InstructorRole;
 import com.theanh.lms.enums.LessonType;
 import com.theanh.lms.enums.UploadPurpose;
+import com.theanh.lms.enums.RoleName;
 import com.theanh.lms.repository.CourseRepository;
 import com.theanh.lms.repository.TagRepository;
 import com.theanh.lms.repository.CourseDocumentRepository;
@@ -33,6 +36,7 @@ import com.theanh.lms.service.CourseDocumentService;
 import com.theanh.lms.service.LessonService;
 import com.theanh.lms.service.LessonDocumentService;
 import com.theanh.lms.service.UploadedFileService;
+import com.theanh.lms.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +65,7 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     private final LessonDocumentRepository lessonDocumentRepository;
     private final CatalogService catalogService;
     private final UploadedFileService uploadedFileService;
+    private final UserService userService;
 
     private static final Set<String> ALLOWED_STATUS = Arrays.stream(CourseStatus.values())
             .map(Enum::name)
@@ -502,7 +507,9 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
     @Override
     public org.springframework.data.domain.Page<InstructorCourseListResponse> listInstructorCourses(Long userId,
                                                                                                      org.springframework.data.domain.Pageable pageable) {
-        var page = courseRepository.findByInstructor(userId, pageable);
+        boolean isAdmin = userId != null && userService.findRoles(userId).contains(RoleName.ADMIN.name());
+        var page = isAdmin ? courseRepository.findAllActiveCourses(pageable)
+                : courseRepository.findByInstructor(userId, pageable);
         List<InstructorCourseListResponse> content = page.getContent().stream().map(course -> {
             InstructorCourseListResponse dto = new InstructorCourseListResponse();
             dto.setId(course.getId());
@@ -524,6 +531,40 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             return dto;
         }).toList();
         return new org.springframework.data.domain.PageImpl<>(content, pageable, page.getTotalElements());
+    }
+
+    @Override
+    public LessonDetailResponse getLessonDetail(Long userId, Long courseId, Long lessonId) {
+        Course course = getCourseOrThrow(courseId);
+        if (!isInstructorOrAdmin(userId, courseId)) {
+            throw new BusinessException("auth.forbidden");
+        }
+        LessonDto lesson = lessonService.findById(lessonId);
+        if (lesson == null ) {
+            throw new BusinessException("data.not_found");
+        }
+        CourseLessonDto mapping = courseLessonService.findActiveByLessonId(lessonId);
+        if (mapping == null || !courseId.equals(mapping.getCourseId())) {
+            throw new BusinessException("data.not_found");
+        }
+        LessonDetailResponse resp = new LessonDetailResponse();
+        resp.setId(lesson.getId());
+        resp.setCourseId(courseId);
+        resp.setCourseSectionId(mapping.getCourseSectionId());
+        resp.setTitle(lesson.getTitle());
+        resp.setLessonType(lesson.getLessonType());
+        resp.setContentText(lesson.getContentText());
+        resp.setDurationSeconds(lesson.getDurationSeconds());
+        resp.setIsFreePreview(lesson.getIsFreePreview());
+        resp.setIsPreview(mapping.getIsPreview());
+        if (lesson.getVideoFileId() != null) {
+            try {
+                resp.setVideoFile(uploadedFileService.findById(lesson.getVideoFileId()));
+            } catch (Exception ignored) {
+            }
+        }
+        resp.setDocuments(mapLessonDocuments(lessonDocumentService.findByLessonId(lessonId)));
+        return resp;
     }
 
     private void ensureLessonInCourse(Long courseId, Long lessonId) {
@@ -623,6 +664,16 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         };
     }
 
+    private boolean isInstructorOrAdmin(Long userId, Long courseId) {
+        if (userId == null) {
+            return false;
+        }
+        if (userService.findRoles(userId).contains(RoleName.ADMIN.name())) {
+            return true;
+        }
+        return courseInstructorService.isInstructorOfCourse(userId, courseId);
+    }
+
     private void validateLevelAndLanguage(String level, String language) {
         if (level != null && StringUtils.hasText(level) && !ALLOWED_LEVELS.contains(level)) {
             throw new BusinessException("data.fail");
@@ -630,5 +681,26 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         if (language != null && StringUtils.hasText(language) && !ALLOWED_LANGUAGES.contains(language)) {
             throw new BusinessException("data.fail");
         }
+    }
+
+    private List<DocumentResponse> mapLessonDocuments(List<LessonDocumentDto> docs) {
+        if (CollectionUtils.isEmpty(docs)) {
+            return List.of();
+        }
+        return docs.stream()
+                .sorted(Comparator.comparing(doc -> Optional.ofNullable(doc.getPosition()).orElse(Integer.MAX_VALUE)))
+                .map(doc -> {
+                    DocumentResponse dr = new DocumentResponse();
+                    dr.setId(doc.getId());
+                    dr.setTitle(doc.getTitle());
+                    dr.setPosition(doc.getPosition());
+                    if (doc.getUploadedFileId() != null) {
+                        try {
+                            dr.setFile(uploadedFileService.findById(doc.getUploadedFileId()));
+                        } catch (Exception ignored) {
+                        }
+                    }
+                    return dr;
+                }).toList();
     }
 }
