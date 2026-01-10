@@ -55,4 +55,7 @@ public interface CourseAuthorService {
     CourseDetailResponse deleteLessonDocument(Long courseId, Long lessonId, Long documentId);
 
     CourseDetailResponse publishCourse(Long courseId);
+
+    org.springframework.data.domain.Page<com.theanh.lms.dto.InstructorCourseListResponse> listInstructorCourses(Long userId,
+                                                                                                               org.springframework.data.domain.Pageable pageable);
 }

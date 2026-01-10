@@ -9,6 +9,7 @@ import com.theanh.lms.dto.CourseSectionDto;
 import com.theanh.lms.dto.CourseTagDto;
 import com.theanh.lms.dto.LessonDto;
 import com.theanh.lms.dto.LessonDocumentDto;
+import com.theanh.lms.dto.InstructorCourseListResponse;
 import com.theanh.lms.dto.request.*;
 import com.theanh.lms.entity.*;
 import com.theanh.lms.enums.CourseLevel;
@@ -496,6 +497,33 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
         course.setPublishedAt(LocalDateTime.now());
         courseRepository.save(course);
         return catalogService.getCourseDetail(courseId, null);
+    }
+
+    @Override
+    public org.springframework.data.domain.Page<InstructorCourseListResponse> listInstructorCourses(Long userId,
+                                                                                                     org.springframework.data.domain.Pageable pageable) {
+        var page = courseRepository.findByInstructor(userId, pageable);
+        List<InstructorCourseListResponse> content = page.getContent().stream().map(course -> {
+            InstructorCourseListResponse dto = new InstructorCourseListResponse();
+            dto.setId(course.getId());
+            dto.setTitle(course.getTitle());
+            dto.setSlug(course.getSlug());
+            dto.setShortDescription(course.getShortDescription());
+            dto.setLevel(course.getLevel());
+            dto.setLanguage(course.getLanguage());
+            dto.setStatus(course.getStatus());
+            dto.setPriceCents(course.getPriceCents());
+            dto.setRatingAvg(course.getRatingAvg());
+            dto.setRatingCount(course.getRatingCount());
+            if (course.getThumbnailFileId() != null) {
+                try {
+                    dto.setThumbnail(uploadedFileService.findById(course.getThumbnailFileId()));
+                } catch (Exception ignored) {
+                }
+            }
+            return dto;
+        }).toList();
+        return new org.springframework.data.domain.PageImpl<>(content, pageable, page.getTotalElements());
     }
 
     private void ensureLessonInCourse(Long courseId, Long lessonId) {

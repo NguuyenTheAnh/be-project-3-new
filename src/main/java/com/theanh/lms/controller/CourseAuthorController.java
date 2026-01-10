@@ -3,6 +3,7 @@ package com.theanh.lms.controller;
 import com.theanh.common.dto.ResponseDto;
 import com.theanh.common.util.ResponseConfig;
 import com.theanh.lms.dto.CourseDetailResponse;
+import com.theanh.lms.dto.InstructorCourseListResponse;
 import com.theanh.lms.dto.request.*;
 import com.theanh.lms.service.CourseAuthorService;
 import jakarta.validation.Valid;
@@ -12,6 +13,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -21,6 +25,16 @@ import java.util.List;
 public class CourseAuthorController {
 
     private final CourseAuthorService courseAuthorService;
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<Page<InstructorCourseListResponse>>> listInstructorCourses(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Long userId = currentUserId();
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
+        return ResponseConfig.success(courseAuthorService.listInstructorCourses(userId, pageable));
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
