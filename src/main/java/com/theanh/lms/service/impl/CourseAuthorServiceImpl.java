@@ -374,15 +374,15 @@ public class CourseAuthorServiceImpl implements CourseAuthorService {
             throw new BusinessException("data.fail");
         }
         List<CourseLessonDto> mappings = courseLessonService.findByCourseId(courseId);
-        Set<Long> validIds = mappings.stream().map(CourseLessonDto::getId).collect(Collectors.toSet());
+        Set<Long> validIds = mappings.stream().map(CourseLessonDto::getLessonId).collect(Collectors.toSet());
         Map<Long, Integer> desired = request.getItems().stream()
                 .collect(Collectors.toMap(ReorderItemRequest::getId, ReorderItemRequest::getPosition, (a, b) -> b));
         if (!validIds.containsAll(desired.keySet())) {
             throw new BusinessException("data.fail");
         }
         for (CourseLessonDto mapping : mappings) {
-            if (desired.containsKey(mapping.getId())) {
-                mapping.setPosition(desired.get(mapping.getId()));
+            if (desired.containsKey(mapping.getLessonId())) {
+                mapping.setPosition(desired.get(mapping.getLessonId()));
                 courseLessonService.saveObject(mapping);
             }
         }
