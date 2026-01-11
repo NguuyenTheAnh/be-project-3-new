@@ -4,6 +4,7 @@ import com.theanh.common.dto.ResponseDto;
 import com.theanh.common.util.ResponseConfig;
 import com.theanh.lms.dto.OrderDto;
 import com.theanh.lms.dto.request.OrderCreateRequest;
+import com.theanh.lms.dto.request.OrderCheckoutRequest;
 import com.theanh.lms.dto.response.PaymentUrlResponse;
 import com.theanh.lms.service.OrderService;
 import jakarta.validation.Valid;
@@ -29,6 +30,14 @@ public class OrderController {
     public ResponseEntity<ResponseDto<OrderDto>> createOrder(@RequestBody @Valid OrderCreateRequest request) {
         Long userId = currentUserId();
         return ResponseConfig.success(orderService.createOrder(userId, request.getCourseId(), null));
+    }
+
+    @PostMapping("/checkout")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<OrderDto>> checkout(@RequestBody(required = false) OrderCheckoutRequest request) {
+        Long userId = currentUserId();
+        Long cartId = request != null ? request.getCartId() : null;
+        return ResponseConfig.success(orderService.createOrderFromCart(userId, cartId));
     }
 
     @PostMapping("/{orderId}/pay/vnpay")

@@ -1,0 +1,519 @@
+{
+    "name": "12) Create order (price is taken from course on BE)",
+    "request": {
+        "method": "POST",
+        "header": [
+            {
+                "key": "Authorization",
+                "value": "Bearer {{STUDENT_TOKEN}}"
+            },
+            {
+                "key": "Content-Type",
+                "value": "application/json"
+            }
+        ],
+        "body": {
+            "mode": "raw",
+            "raw": "{\n    \"courseId\": 4\n}",
+            "options": {
+                "raw": {
+                    "language": "json"
+                }
+            }
+        },
+        "url": {
+            "raw": "{{baseURL}}/orders",
+            "host": [
+                "{{baseURL}}"
+            ],
+            "path": [
+                "orders"
+            ]
+        }
+    },
+    "response": [
+        {
+            "name": "12) Create order (price is taken from course on BE)",
+            "originalRequest": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{STUDENT_TOKEN}}"
+                    },
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"courseId\": 4\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseURL}}/orders",
+                    "host": [
+                        "{{baseURL}}"
+                    ],
+                    "path": [
+                        "orders"
+                    ]
+                }
+            },
+            "status": "OK",
+            "code": 200,
+            "_postman_previewlanguage": null,
+            "header": [
+                {
+                    "key": "Vary",
+                    "value": "Origin"
+                },
+                {
+                    "key": "Vary",
+                    "value": "Access-Control-Request-Method"
+                },
+                {
+                    "key": "Vary",
+                    "value": "Access-Control-Request-Headers"
+                },
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "X-XSS-Protection",
+                    "value": "0"
+                },
+                {
+                    "key": "Cache-Control",
+                    "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                    "key": "Pragma",
+                    "value": "no-cache"
+                },
+                {
+                    "key": "Expires",
+                    "value": "0"
+                },
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                },
+                {
+                    "key": "Transfer-Encoding",
+                    "value": "chunked"
+                },
+                {
+                    "key": "Date",
+                    "value": "Thu, 08 Jan 2026 08:47:05 GMT"
+                },
+                {
+                    "key": "Keep-Alive",
+                    "value": "timeout=60"
+                },
+                {
+                    "key": "Connection",
+                    "value": "keep-alive"
+                }
+            ],
+            "cookie": [],
+            "body": "{\n    \"code\": \"00\",\n    \"message\": null,\n    \"data\": {\n        \"id\": 28,\n        \"userId\": 11,\n        \"totalAmountCents\": 150000,\n        \"currency\": \"VND\",\n        \"status\": \"PENDING\",\n        \"paymentMethod\": \"VNPAY\",\n        \"paidAt\": null\n    }\n}"
+        }
+    ]
+},
+{
+    "name": "13) Generate VNPay payment URL (skip if course price 0)",
+    "request": {
+        "method": "POST",
+        "header": [
+            {
+                "key": "Authorization",
+                "value": "Bearer {{STUDENT_TOKEN}}"
+            }
+        ],
+        "url": {
+            "raw": "{{baseURL}}/orders/:orderId/pay/vnpay",
+            "host": [
+                "{{baseURL}}"
+            ],
+            "path": [
+                "orders",
+                ":orderId",
+                "pay",
+                "vnpay"
+            ],
+            "variable": [
+                {
+                    "key": "orderId",
+                    "value": "28"
+                }
+            ]
+        }
+    },
+    "response": [
+        {
+            "name": "13) Generate VNPay payment URL (skip if course price 0)",
+            "originalRequest": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{STUDENT_TOKEN}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseURL}}/orders/:orderId/pay/vnpay",
+                    "host": [
+                        "{{baseURL}}"
+                    ],
+                    "path": [
+                        "orders",
+                        ":orderId",
+                        "pay",
+                        "vnpay"
+                    ],
+                    "variable": [
+                        {
+                            "key": "orderId",
+                            "value": "28"
+                        }
+                    ]
+                }
+            },
+            "status": "OK",
+            "code": 200,
+            "_postman_previewlanguage": null,
+            "header": [
+                {
+                    "key": "Vary",
+                    "value": "Origin"
+                },
+                {
+                    "key": "Vary",
+                    "value": "Access-Control-Request-Method"
+                },
+                {
+                    "key": "Vary",
+                    "value": "Access-Control-Request-Headers"
+                },
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "X-XSS-Protection",
+                    "value": "0"
+                },
+                {
+                    "key": "Cache-Control",
+                    "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                    "key": "Pragma",
+                    "value": "no-cache"
+                },
+                {
+                    "key": "Expires",
+                    "value": "0"
+                },
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                },
+                {
+                    "key": "Transfer-Encoding",
+                    "value": "chunked"
+                },
+                {
+                    "key": "Date",
+                    "value": "Thu, 08 Jan 2026 08:47:18 GMT"
+                },
+                {
+                    "key": "Keep-Alive",
+                    "value": "timeout=60"
+                },
+                {
+                    "key": "Connection",
+                    "value": "keep-alive"
+                }
+            ],
+            "cookie": [],
+            "body": "{\n    \"code\": \"00\",\n    \"message\": null,\n    \"data\": {\n        \"paymentUrl\": \"https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=15000000&vnp_Command=pay&vnp_CreateDate=20260108154718&vnp_CurrCode=VND&vnp_ExpireDate=20260108160218&vnp_IpAddr=8.8.8.8&vnp_Locale=vn&vnp_OrderInfo=Order+28&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A5173%2Fpayment%2Freturn&vnp_TmnCode=D5V6VHEW&vnp_TxnRef=28&vnp_Version=2.1.0&vnp_SecureHash=9748ABB5435191659E878CB4E7AC8C00723BF291C6D134CCD4BF3F18BC09335203BADD57CB754D7C7FE953AE6412686C39A90D472BF8A6FB2FDD26A68EBEE01A\"\n    }\n}"
+        }
+    ]
+},
+{
+    "name": "15) Verify order paid",
+    "protocolProfileBehavior": {
+        "disableBodyPruning": true
+    },
+    "request": {
+        "method": "GET",
+        "header": [
+            {
+                "key": "Authorization",
+                "value": "Bearer {{STUDENT_TOKEN}}"
+            }
+        ],
+        "body": {
+            "mode": "urlencoded",
+            "urlencoded": []
+        },
+        "url": {
+            "raw": "{{baseURL}}/orders/:orderId",
+            "host": [
+                "{{baseURL}}"
+            ],
+            "path": [
+                "orders",
+                ":orderId"
+            ],
+            "variable": [
+                {
+                    "key": "orderId",
+                    "value": "28"
+                }
+            ]
+        }
+    },
+    "response": [
+        {
+            "name": "15) Verify order paid",
+            "originalRequest": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{STUDENT_TOKEN}}"
+                    }
+                ],
+                "body": {
+                    "mode": "urlencoded",
+                    "urlencoded": []
+                },
+                "url": {
+                    "raw": "{{baseURL}}/orders/:orderId",
+                    "host": [
+                        "{{baseURL}}"
+                    ],
+                    "path": [
+                        "orders",
+                        ":orderId"
+                    ],
+                    "variable": [
+                        {
+                            "key": "orderId",
+                            "value": "28"
+                        }
+                    ]
+                }
+            },
+            "status": "OK",
+            "code": 200,
+            "_postman_previewlanguage": null,
+            "header": [
+                {
+                    "key": "Vary",
+                    "value": "Origin"
+                },
+                {
+                    "key": "Vary",
+                    "value": "Access-Control-Request-Method"
+                },
+                {
+                    "key": "Vary",
+                    "value": "Access-Control-Request-Headers"
+                },
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "X-XSS-Protection",
+                    "value": "0"
+                },
+                {
+                    "key": "Cache-Control",
+                    "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                    "key": "Pragma",
+                    "value": "no-cache"
+                },
+                {
+                    "key": "Expires",
+                    "value": "0"
+                },
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                },
+                {
+                    "key": "Transfer-Encoding",
+                    "value": "chunked"
+                },
+                {
+                    "key": "Date",
+                    "value": "Thu, 08 Jan 2026 08:52:59 GMT"
+                },
+                {
+                    "key": "Keep-Alive",
+                    "value": "timeout=60"
+                },
+                {
+                    "key": "Connection",
+                    "value": "keep-alive"
+                }
+            ],
+            "cookie": [],
+            "body": "{\n    \"code\": \"00\",\n    \"message\": null,\n    \"data\": {\n        \"id\": 28,\n        \"userId\": 11,\n        \"totalAmountCents\": 150000,\n        \"currency\": \"VND\",\n        \"status\": \"PAID\",\n        \"paymentMethod\": \"VNPAY\",\n        \"paidAt\": \"2026-01-08T15:50:18\"\n    }\n}"
+        }
+    ]
+},
+{
+    "name": "15) Enrollement created",
+    "request": {
+        "method": "GET",
+        "header": [
+            {
+                "key": "Authorization",
+                "value": "Bearer {{STUDENT_TOKEN}}"
+            }
+        ],
+        "url": {
+            "raw": "{{baseURL}}/me/enrollments?page=0&size=10",
+            "host": [
+                "{{baseURL}}"
+            ],
+            "path": [
+                "me",
+                "enrollments"
+            ],
+            "query": [
+                {
+                    "key": "page",
+                    "value": "0"
+                },
+                {
+                    "key": "size",
+                    "value": "10"
+                }
+            ]
+        }
+    },
+    "response": [
+        {
+            "name": "15) Enrollement created",
+            "originalRequest": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{STUDENT_TOKEN}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseURL}}/me/enrollments?page=0&size=10",
+                    "host": [
+                        "{{baseURL}}"
+                    ],
+                    "path": [
+                        "me",
+                        "enrollments"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "0"
+                        },
+                        {
+                            "key": "size",
+                            "value": "10"
+                        }
+                    ]
+                }
+            },
+            "status": "OK",
+            "code": 200,
+            "_postman_previewlanguage": null,
+            "header": [
+                {
+                    "key": "Vary",
+                    "value": "Origin"
+                },
+                {
+                    "key": "Vary",
+                    "value": "Access-Control-Request-Method"
+                },
+                {
+                    "key": "Vary",
+                    "value": "Access-Control-Request-Headers"
+                },
+                {
+                    "key": "X-Content-Type-Options",
+                    "value": "nosniff"
+                },
+                {
+                    "key": "X-XSS-Protection",
+                    "value": "0"
+                },
+                {
+                    "key": "Cache-Control",
+                    "value": "no-cache, no-store, max-age=0, must-revalidate"
+                },
+                {
+                    "key": "Pragma",
+                    "value": "no-cache"
+                },
+                {
+                    "key": "Expires",
+                    "value": "0"
+                },
+                {
+                    "key": "X-Frame-Options",
+                    "value": "DENY"
+                },
+                {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                },
+                {
+                    "key": "Transfer-Encoding",
+                    "value": "chunked"
+                },
+                {
+                    "key": "Date",
+                    "value": "Thu, 08 Jan 2026 08:53:07 GMT"
+                },
+                {
+                    "key": "Keep-Alive",
+                    "value": "timeout=60"
+                },
+                {
+                    "key": "Connection",
+                    "value": "keep-alive"
+                }
+            ],
+            "cookie": [],
+            "body": "{\n    \"code\": \"00\",\n    \"message\": null,\n    \"data\": {\n        \"content\": [\n            {\n                \"id\": 4,\n                \"courseId\": 4,\n                \"userId\": 11,\n                \"enrolledAt\": \"2026-01-08T15:50:18\",\n                \"status\": \"ACTIVE\"\n            }\n        ],\n        \"pageable\": {\n            \"pageNumber\": 0,\n            \"pageSize\": 10,\n            \"sort\": [],\n            \"offset\": 0,\n            \"paged\": true,\n            \"unpaged\": false\n        },\n        \"last\": true,\n        \"totalElements\": 1,\n        \"totalPages\": 1,\n        \"size\": 10,\n        \"number\": 0,\n        \"sort\": [],\n        \"first\": true,\n        \"numberOfElements\": 1,\n        \"empty\": false\n    }\n}"
+        }
+    ]
+}

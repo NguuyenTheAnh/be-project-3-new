@@ -10,11 +10,15 @@ import com.theanh.lms.dto.PaymentTransactionDto;
 import com.theanh.lms.dto.response.PaymentUrlResponse;
 import com.theanh.lms.entity.Order;
 import com.theanh.lms.dto.CourseDto;
+import com.theanh.lms.dto.CartItemDto;
 import com.theanh.lms.enums.OrderStatus;
 import com.theanh.lms.enums.PaymentProvider;
 import com.theanh.lms.enums.PaymentStatus;
+import com.theanh.lms.enums.CartStatus;
 import com.theanh.lms.repository.OrderRepository;
 import com.theanh.lms.service.CourseService;
+import com.theanh.lms.service.CartService;
+import com.theanh.lms.service.CartItemService;
 import com.theanh.lms.service.EnrollmentService;
 import com.theanh.lms.service.OrderItemService;
 import com.theanh.lms.service.OrderService;
@@ -34,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -43,6 +48,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, OrderDto, Long> imp
 
     private final OrderRepository orderRepository;
     private final OrderItemService orderItemService;
+    private final CartService cartService;
+    private final CartItemService cartItemService;
     private final PaymentTransactionService paymentTransactionService;
     private final EnrollmentService enrollmentService;
     private final VnpayProperties vnpayProperties;
@@ -50,6 +57,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, OrderDto, Long> imp
 
     public OrderServiceImpl(OrderRepository repository,
                             OrderItemService orderItemService,
+                            CartService cartService,
+                            CartItemService cartItemService,
                             PaymentTransactionService paymentTransactionService,
                             EnrollmentService enrollmentService,
                             VnpayProperties vnpayProperties,
@@ -58,6 +67,8 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, OrderDto, Long> imp
         super(repository, modelMapper);
         this.orderRepository = repository;
         this.orderItemService = orderItemService;
+        this.cartService = cartService;
+        this.cartItemService = cartItemService;
         this.paymentTransactionService = paymentTransactionService;
         this.enrollmentService = enrollmentService;
         this.vnpayProperties = vnpayProperties;
@@ -108,6 +119,60 @@ public class OrderServiceImpl extends BaseServiceImpl<Order, OrderDto, Long> imp
             markPaidAndEnroll(savedOrder.getId(), userId);
             savedOrder = findById(savedOrder.getId());
         }
+        return savedOrder;
+    }
+
+    @Override
+    @Transactional
+    public OrderDto createOrderFromCart(Long userId, Long cartId) {
+        cancelExpiredPendingOrders();
+        var cart = cartId != null ? cartService.findActiveById(cartId) : cartService.getOrCreateActiveCart(userId);
+        if (cart == null || !Objects.equals(cart.getUserId(), userId)) {
+            throw new BusinessException("data.not_found");
+        }
+        if (!CartStatus.ACTIVE.name().equals(cart.getStatus())) {
+            throw new BusinessException("data.fail");
+        }
+        List<CartItemDto> items = cartItemService.findByCartId(cart.getId());
+        if (CollectionUtils.isEmpty(items)) {
+            throw new BusinessException("data.fail");
+        }
+        long total = 0L;
+        List<OrderItemDto> orderItems = new java.util.ArrayList<>();
+        for (com.theanh.lms.dto.CartItemDto item : items) {
+            if (enrollmentService.isEnrolled(userId, item.getCourseId())) {
+                throw new BusinessException("data.fail");
+            }
+            CourseDto course = courseService.findActivePublishedById(item.getCourseId());
+            if (course == null) {
+                throw new BusinessException("data.not_found");
+            }
+            long price = course.getPriceCents() != null ? course.getPriceCents() : 0L;
+            total += price;
+            OrderItemDto oi = new OrderItemDto();
+            oi.setCourseId(course.getId());
+            oi.setPriceCents(price);
+            oi.setDiscountCents(0L);
+            oi.setFinalPriceCents(price);
+            orderItems.add(oi);
+        }
+        OrderDto order = new OrderDto();
+        order.setUserId(userId);
+        order.setTotalAmountCents(total);
+        order.setCurrency(vnpayProperties.getCurrency());
+        order.setStatus(OrderStatus.PENDING.name());
+        order.setPaymentMethod(PaymentProvider.VNPAY.name());
+        OrderDto savedOrder = saveObject(order);
+        for (OrderItemDto oi : orderItems) {
+            oi.setOrderId(savedOrder.getId());
+            orderItemService.saveObject(oi);
+        }
+        if (total == 0L) {
+            markPaidAndEnroll(savedOrder.getId(), userId);
+            savedOrder = findById(savedOrder.getId());
+        }
+        cart.setStatus(CartStatus.CHECKED_OUT.name());
+        cartService.saveObject(cart);
         return savedOrder;
     }
 
