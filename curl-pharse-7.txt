@@ -102,3 +102,11 @@ curl -X GET "{{baseURL}}/quizzes/{quizId}/attempts/{attemptId}" \
 
 curl -X GET "{{baseURL}}/quizzes/{quizId}/attempts" \
   -H "$AUTH_HEADER"
+
+# View quiz by lesson (student)
+curl -X GET "{{baseURL}}/lessons/{lessonId}/quiz" \
+  -H "$AUTH_HEADER"
+
+# View quiz by lesson (instructor/admin)
+curl -X GET "{{baseURL}}/instructor/lessons/{lessonId}/quiz" \
+  -H "$AUTH_HEADER"

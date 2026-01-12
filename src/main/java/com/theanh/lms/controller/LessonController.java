@@ -16,6 +16,7 @@ import com.theanh.lms.service.EnrollmentService;
 import com.theanh.lms.service.LessonDocumentService;
 import com.theanh.lms.service.LessonService;
 import com.theanh.lms.service.UploadedFileService;
+import com.theanh.lms.service.QuizViewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,6 +41,7 @@ public class LessonController {
     private final EnrollmentService enrollmentService;
     private final UploadedFileService uploadedFileService;
     private final LessonDocumentService lessonDocumentService;
+    private final QuizViewService quizViewService;
 
     @GetMapping("/{lessonId}")
     @PreAuthorize("isAuthenticated()")
@@ -85,6 +87,13 @@ public class LessonController {
         }
         resp.setDocuments(buildLessonDocuments(lessonId));
         return ResponseConfig.success(resp);
+    }
+
+    @GetMapping("/{lessonId}/quiz")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<com.theanh.lms.dto.QuizViewResponse>> getLessonQuiz(@PathVariable Long lessonId) {
+        Long userId = currentUserId();
+        return ResponseConfig.success(quizViewService.getQuizForLesson(userId, lessonId));
     }
 
     private List<DocumentResponse> buildLessonDocuments(Long lessonId) {

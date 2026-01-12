@@ -5,6 +5,7 @@ import com.theanh.common.util.ResponseConfig;
 import com.theanh.lms.dto.QuizAnswerDto;
 import com.theanh.lms.dto.QuizDto;
 import com.theanh.lms.dto.QuizQuestionDto;
+import com.theanh.lms.dto.QuizViewResponse;
 import com.theanh.lms.dto.request.QuizAnswerRequest;
 import com.theanh.lms.dto.request.QuizQuestionRequest;
 import com.theanh.lms.dto.request.QuizRequest;
@@ -12,11 +13,14 @@ import com.theanh.lms.enums.QuestionType;
 import com.theanh.lms.service.QuizAnswerService;
 import com.theanh.lms.service.QuizQuestionService;
 import com.theanh.lms.service.QuizService;
+import com.theanh.lms.service.QuizViewService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +33,7 @@ public class QuizInstructorController {
     private final QuizService quizService;
     private final QuizQuestionService quizQuestionService;
     private final QuizAnswerService quizAnswerService;
+    private final QuizViewService quizViewService;
 
     @PostMapping("/lessons/{lessonId}/quiz")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
@@ -159,6 +164,13 @@ public class QuizInstructorController {
         return ResponseConfig.success(null);
     }
 
+    @GetMapping("/lessons/{lessonId}/quiz")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<QuizViewResponse>> viewQuizByLesson(@PathVariable Long lessonId) {
+        Long userId = currentUserId();
+        return ResponseConfig.success(quizViewService.getQuizForLessonAsInstructor(userId, lessonId));
+    }
+
     @GetMapping("/quizzes/{quizId}/questions")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<ResponseDto<List<QuizQuestionDto>>> listQuestions(@PathVariable Long quizId) {
@@ -177,5 +189,10 @@ public class QuizInstructorController {
         } catch (Exception ex) {
             throw new com.theanh.common.exception.BusinessException("data.fail");
         }
+    }
+
+    private Long currentUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return Long.parseLong(auth.getPrincipal().toString());
     }
 }
