@@ -10,27 +10,27 @@
 
 # 1) View cart (auto create if missing)
 curl -X GET "{{baseURL}}/cart" \
-  -H "$AUTH_HEADER"
+  -H "{{STUDENT_TOKEN}}"
 
 # 2) Add course to cart
 curl -X POST "{{baseURL}}/cart/items" \
-  -H "$AUTH_HEADER" \
+  -H "{{STUDENT_TOKEN}}" \
   -H "Content-Type: application/json" \
   -d '{ "courseId": 4 }'
 
 # 3) Add another course
 curl -X POST "{{baseURL}}/cart/items" \
-  -H "$AUTH_HEADER" \
+  -H "{{STUDENT_TOKEN}}" \
   -H "Content-Type: application/json" \
   -d '{ "courseId": 5 }'
 
 # 4) Remove a course from cart
 curl -X DELETE "{{baseURL}}/cart/items/4" \
-  -H "$AUTH_HEADER"
+  -H "{{STUDENT_TOKEN}}"
 
 # 5) Checkout cart -> create order with multiple items
 curl -X POST "{{baseURL}}/orders/checkout" \
-  -H "$AUTH_HEADER" \
+  -H "{{STUDENT_TOKEN}}" \
   -H "Content-Type: application/json" \
   -d '{ "cartId": 1 }'
 
@@ -40,7 +40,7 @@ curl -X POST "{{baseURL}}/orders/checkout" \
 
 # 6) Create order for a single course (BE calculates price)
 curl -X POST "{{baseURL}}/orders" \
-  -H "$AUTH_HEADER" \
+  -H "{{STUDENT_TOKEN}}" \
   -H "Content-Type: application/json" \
   -d '{ "courseId": 4 }'
 
@@ -50,7 +50,7 @@ curl -X POST "{{baseURL}}/orders" \
 
 # 7) Generate VNPay payment URL (order must be PENDING and amount > 0)
 curl -X POST "{{baseURL}}/orders/{orderId}/pay/vnpay" \
-  -H "$AUTH_HEADER"
+  -H "{{STUDENT_TOKEN}}"
 
 ############################################
 # D) VNPay return & IPN
@@ -69,11 +69,11 @@ curl -X POST "{{baseURL}}/orders/{orderId}/pay/vnpay" \
 
 # 10) Check order status
 curl -X GET "{{baseURL}}/orders/{orderId}" \
-  -H "$AUTH_HEADER"
+  -H "{{STUDENT_TOKEN}}"
 
 # 11) Check enrollments after payment success
 curl -X GET "{{baseURL}}/me/enrollments?page=0&size=10" \
-  -H "$AUTH_HEADER"
+  -H "{{STUDENT_TOKEN}}"
 
 ############################################
 # Notes
