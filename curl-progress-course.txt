@@ -1,0 +1,23 @@
+# Course progress APIs (percent completed)
+# baseURL="http://localhost:8080/api/v1"
+# AUTH_HEADER='Authorization: Bearer <ACCESS_TOKEN>'
+
+# Get course progress percent for current user (requires enrollment)
+curl -X GET "{{baseURL}}/courses/{courseId}/progress" \
+  -H "$AUTH_HEADER"
+
+# List completed lessons of a course (requires enrollment)
+curl -X GET "{{baseURL}}/courses/{courseId}/lessons/completed" \
+  -H "$AUTH_HEADER"
+
+# Example response
+# {
+#   "code": "00",
+#   "message": null,
+#   "data": {
+#     "courseId": 10,
+#     "totalLessons": 12,
+#     "completedLessons": 3,
+#     "progressPercent": 25.00
+#   }
+# }

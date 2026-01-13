@@ -2,6 +2,8 @@ package com.theanh.lms.controller;
 
 import com.theanh.common.dto.ResponseDto;
 import com.theanh.common.util.ResponseConfig;
+import com.theanh.lms.dto.CourseProgressResponse;
+import com.theanh.lms.dto.LessonDto;
 import com.theanh.lms.dto.ProgressDto;
 import com.theanh.lms.dto.request.ProgressUpdateRequest;
 import com.theanh.lms.service.ProgressService;
@@ -44,6 +46,20 @@ public class ProgressController {
         Long userId = currentUserId();
         ProgressDto dto = progressService.getProgress(userId, courseId, lessonId);
         return ResponseConfig.success(dto);
+    }
+
+    @GetMapping("/courses/{courseId}/progress")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<CourseProgressResponse>> getCourseProgress(@PathVariable @NotNull Long courseId) {
+        Long userId = currentUserId();
+        return ResponseConfig.success(progressService.getCourseProgress(userId, courseId));
+    }
+
+    @GetMapping("/courses/{courseId}/lessons/completed")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<java.util.List<LessonDto>>> getCompletedLessons(@PathVariable @NotNull Long courseId) {
+        Long userId = currentUserId();
+        return ResponseConfig.success(progressService.getCompletedLessons(userId, courseId));
     }
 
     private Long currentUserId() {

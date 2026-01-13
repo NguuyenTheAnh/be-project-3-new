@@ -27,8 +27,11 @@ curl -X PUT "{{baseURL}}/questions/{questionId}" \
     "lessonId": 15
   }'
 
-# List questions by course (public)
+# List questions by course (public) - only course-level questions (lessonId NULL)
 curl -X GET "{{baseURL}}/courses/{courseId}/questions?page=0&size=10"
+
+# List questions by course + lesson (public)
+curl -X GET "{{baseURL}}/courses/{courseId}/questions?lessonId={lessonId}&page=0&size=10"
 
 # Get question detail (public)
 curl -X GET "{{baseURL}}/questions/{questionId}"

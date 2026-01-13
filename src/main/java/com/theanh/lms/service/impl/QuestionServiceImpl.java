@@ -36,6 +36,16 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, QuestionDto, 
     }
 
     @Override
+    public Page<QuestionDto> listByCourse(Long courseId, Long lessonId, Pageable pageable) {
+        if (lessonId == null) {
+            return repository.findByCourseAndNoLesson(courseId, pageable)
+                    .map(q -> modelMapper.map(q, QuestionDto.class));
+        }
+        return repository.findByCourseAndLesson(courseId, lessonId, pageable)
+                .map(q -> modelMapper.map(q, QuestionDto.class));
+    }
+
+    @Override
     public QuestionDto saveObject(QuestionDto dto) {
         if (dto.getStatus() == null) {
             dto.setStatus(QuestionStatus.OPEN.name());

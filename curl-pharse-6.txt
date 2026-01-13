@@ -69,3 +69,7 @@ curl -X PATCH "{{baseURL}}/courses/{courseId}/lessons/{lessonId}/progress" \
 # Get my progress for a lesson
 curl -X GET "{{baseURL}}/courses/{courseId}/lessons/{lessonId}/progress" \
   -H "$AUTH_HEADER"
+
+# Get course progress percent (completed lessons / total lessons)
+curl -X GET "{{baseURL}}/courses/{courseId}/progress" \
+  -H "$AUTH_HEADER"

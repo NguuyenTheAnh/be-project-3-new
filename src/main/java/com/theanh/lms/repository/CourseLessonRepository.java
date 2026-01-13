@@ -22,4 +22,12 @@ public interface CourseLessonRepository extends BaseRepository<CourseLesson, Lon
             LIMIT 1
             """, nativeQuery = true)
     java.util.Optional<CourseLesson> findActiveByLessonId(@Param("lessonId") Long lessonId);
+
+    @Query(value = """
+            SELECT COUNT(1)
+            FROM course_lesson cl
+            WHERE cl.course_id = :courseId
+              AND (cl.is_deleted IS NULL OR cl.is_deleted = 0)
+            """, nativeQuery = true)
+    long countActiveByCourseId(@Param("courseId") Long courseId);
 }

@@ -75,6 +75,11 @@ public class CourseLessonServiceImpl extends BaseServiceImpl<CourseLesson, Cours
     }
 
     @Override
+    public long countActiveByCourseId(Long courseId) {
+        return courseLessonRepository.countActiveByCourseId(courseId);
+    }
+
+    @Override
     protected Class<CourseLesson> getEntityClass() {
         return CourseLesson.class;
     }

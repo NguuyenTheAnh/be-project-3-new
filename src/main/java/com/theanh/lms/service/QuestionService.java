@@ -11,4 +11,6 @@ public interface QuestionService extends BaseService<Question, QuestionDto, Long
     QuestionDto findActiveById(Long id);
 
     Page<QuestionDto> listByCourse(Long courseId, Pageable pageable);
+
+    Page<QuestionDto> listByCourse(Long courseId, Long lessonId, Pageable pageable);
 }

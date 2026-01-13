@@ -74,10 +74,11 @@ public class QuestionController {
     @PermitAll
     @GetMapping("/courses/{courseId}/questions")
     public ResponseEntity<ResponseDto<Page<QuestionDto>>> listByCourse(@PathVariable Long courseId,
+                                                                       @RequestParam(required = false) Long lessonId,
                                                                        @RequestParam(defaultValue = "0") int page,
                                                                        @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
-        return ResponseConfig.success(questionService.listByCourse(courseId, pageable));
+        return ResponseConfig.success(questionService.listByCourse(courseId, lessonId, pageable));
     }
 
     @PermitAll

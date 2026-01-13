@@ -15,4 +15,6 @@ public interface CourseLessonService extends BaseService<CourseLesson, CourseLes
     java.util.List<CourseLessonDto> findByCourseId(Long courseId);
 
     CourseLessonDto findActiveByLessonId(Long lessonId);
+
+    long countActiveByCourseId(Long courseId);
 }

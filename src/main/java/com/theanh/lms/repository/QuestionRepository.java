@@ -33,4 +33,38 @@ public interface QuestionRepository extends BaseRepository<Question, Long> {
             """,
             nativeQuery = true)
     Page<Question> findByCourse(@Param("courseId") Long courseId, Pageable pageable);
+
+    @Query(value = """
+            SELECT * FROM question q
+            WHERE q.course_id = :courseId
+              AND q.lesson_id = :lessonId
+              AND (q.is_deleted IS NULL OR q.is_deleted = 0)
+            ORDER BY q.created_date DESC
+            """,
+            countQuery = """
+            SELECT COUNT(1) FROM question q
+            WHERE q.course_id = :courseId
+              AND q.lesson_id = :lessonId
+              AND (q.is_deleted IS NULL OR q.is_deleted = 0)
+            """,
+            nativeQuery = true)
+    Page<Question> findByCourseAndLesson(@Param("courseId") Long courseId,
+                                         @Param("lessonId") Long lessonId,
+                                         Pageable pageable);
+
+    @Query(value = """
+            SELECT * FROM question q
+            WHERE q.course_id = :courseId
+              AND q.lesson_id IS NULL
+              AND (q.is_deleted IS NULL OR q.is_deleted = 0)
+            ORDER BY q.created_date DESC
+            """,
+            countQuery = """
+            SELECT COUNT(1) FROM question q
+            WHERE q.course_id = :courseId
+              AND q.lesson_id IS NULL
+              AND (q.is_deleted IS NULL OR q.is_deleted = 0)
+            """,
+            nativeQuery = true)
+    Page<Question> findByCourseAndNoLesson(@Param("courseId") Long courseId, Pageable pageable);
 }
