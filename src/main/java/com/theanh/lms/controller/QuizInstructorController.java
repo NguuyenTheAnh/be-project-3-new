@@ -1,21 +1,24 @@
 package com.theanh.lms.controller;
 
 import com.theanh.common.dto.ResponseDto;
+import com.theanh.common.exception.BusinessException;
 import com.theanh.common.util.ResponseConfig;
 import com.theanh.lms.dto.QuizAnswerDto;
 import com.theanh.lms.dto.QuizDto;
 import com.theanh.lms.dto.QuizQuestionDto;
 import com.theanh.lms.dto.QuizViewResponse;
+import com.theanh.lms.dto.LessonDto;
 import com.theanh.lms.dto.request.QuizAnswerRequest;
 import com.theanh.lms.dto.request.QuizQuestionRequest;
 import com.theanh.lms.dto.request.QuizRequest;
+import com.theanh.lms.enums.LessonType;
 import com.theanh.lms.enums.QuestionType;
+import com.theanh.lms.service.LessonService;
 import com.theanh.lms.service.QuizAnswerService;
 import com.theanh.lms.service.QuizQuestionService;
 import com.theanh.lms.service.QuizService;
 import com.theanh.lms.service.QuizViewService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,11 +37,17 @@ public class QuizInstructorController {
     private final QuizQuestionService quizQuestionService;
     private final QuizAnswerService quizAnswerService;
     private final QuizViewService quizViewService;
+    private final LessonService lessonService;
 
     @PostMapping("/lessons/{lessonId}/quiz")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<ResponseDto<QuizDto>> createQuiz(@PathVariable Long lessonId,
                                                            @RequestBody @Valid QuizRequest request) {
+        ensureLessonIsQuiz(lessonId);
+        QuizDto existing = quizService.findActiveByLesson(lessonId);
+        if (existing != null) {
+            throw new BusinessException("data.exists");
+        }
         QuizDto dto = new QuizDto();
         dto.setLessonId(lessonId);
         dto.setTitle(request.getTitle());
@@ -194,5 +203,15 @@ public class QuizInstructorController {
     private Long currentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return Long.parseLong(auth.getPrincipal().toString());
+    }
+
+    private void ensureLessonIsQuiz(Long lessonId) {
+        LessonDto lesson = lessonService.findById(lessonId);
+        if (lesson == null) {
+            throw new BusinessException("data.not_found");
+        }
+        if (!LessonType.QUIZ.name().equals(lesson.getLessonType())) {
+            throw new BusinessException("data.invalid");
+        }
     }
 }
