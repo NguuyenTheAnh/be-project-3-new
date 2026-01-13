@@ -110,3 +110,7 @@ curl -X GET "{{baseURL}}/lessons/{lessonId}/quiz" \
 # View quiz by lesson (instructor/admin)
 curl -X GET "{{baseURL}}/instructor/lessons/{lessonId}/quiz" \
   -H "$AUTH_HEADER"
+
+# Notes:
+# - Only lessons with lessonType=QUIZ can have quiz.
+# - If lessonType != QUIZ, API returns error (data.invalid).

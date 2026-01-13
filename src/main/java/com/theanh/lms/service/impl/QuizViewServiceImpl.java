@@ -7,10 +7,13 @@ import com.theanh.lms.dto.QuizQuestionDto;
 import com.theanh.lms.dto.QuizQuestionResponse;
 import com.theanh.lms.dto.QuizViewResponse;
 import com.theanh.lms.dto.QuizDto;
+import com.theanh.lms.dto.LessonDto;
+import com.theanh.lms.enums.LessonType;
 import com.theanh.lms.enums.RoleName;
 import com.theanh.lms.service.AccessControlService;
 import com.theanh.lms.service.CourseInstructorService;
 import com.theanh.lms.service.CourseLessonService;
+import com.theanh.lms.service.LessonService;
 import com.theanh.lms.service.QuizAnswerService;
 import com.theanh.lms.service.QuizQuestionService;
 import com.theanh.lms.service.QuizService;
@@ -31,6 +34,7 @@ public class QuizViewServiceImpl implements QuizViewService {
     private final CourseLessonService courseLessonService;
     private final CourseInstructorService courseInstructorService;
     private final UserService userService;
+    private final LessonService lessonService;
 
     public QuizViewServiceImpl(QuizService quizService,
                                QuizQuestionService quizQuestionService,
@@ -38,7 +42,8 @@ public class QuizViewServiceImpl implements QuizViewService {
                                AccessControlService accessControlService,
                                CourseLessonService courseLessonService,
                                CourseInstructorService courseInstructorService,
-                               UserService userService) {
+                               UserService userService,
+                               LessonService lessonService) {
         this.quizService = quizService;
         this.quizQuestionService = quizQuestionService;
         this.quizAnswerService = quizAnswerService;
@@ -46,10 +51,12 @@ public class QuizViewServiceImpl implements QuizViewService {
         this.courseLessonService = courseLessonService;
         this.courseInstructorService = courseInstructorService;
         this.userService = userService;
+        this.lessonService = lessonService;
     }
 
     @Override
     public QuizViewResponse getQuizForLesson(Long userId, Long lessonId) {
+        ensureLessonIsQuiz(lessonId);
         if (!Boolean.TRUE.equals(accessControlService.canViewLesson(userId, null, lessonId))) {
             throw new BusinessException("auth.forbidden");
         }
@@ -58,6 +65,7 @@ public class QuizViewServiceImpl implements QuizViewService {
 
     @Override
     public QuizViewResponse getQuizForLessonAsInstructor(Long userId, Long lessonId) {
+        ensureLessonIsQuiz(lessonId);
         var mapping = courseLessonService.findActiveByLessonId(lessonId);
         Long courseId = mapping != null ? mapping.getCourseId() : null;
         if (courseId == null) {
@@ -68,6 +76,16 @@ public class QuizViewServiceImpl implements QuizViewService {
             throw new BusinessException("auth.forbidden");
         }
         return buildResponse(lessonId, true);
+    }
+
+    private void ensureLessonIsQuiz(Long lessonId) {
+        LessonDto lesson = lessonService.findById(lessonId);
+        if (lesson == null) {
+            throw new BusinessException("data.not_found");
+        }
+        if (!LessonType.QUIZ.name().equals(lesson.getLessonType())) {
+            throw new BusinessException("data.invalid");
+        }
     }
 
     private QuizViewResponse buildResponse(Long lessonId, boolean includeCorrect) {
