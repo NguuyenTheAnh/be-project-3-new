@@ -2,16 +2,22 @@ package com.theanh.lms.service.impl;
 
 import com.theanh.common.base.BaseServiceImpl;
 import com.theanh.common.exception.BusinessException;
+import com.theanh.lms.dto.CourseReviewAdminResponse;
 import com.theanh.lms.dto.CourseReviewDto;
+import com.theanh.lms.dto.CourseDto;
+import com.theanh.lms.dto.UserDto;
 import com.theanh.lms.entity.Course;
 import com.theanh.lms.entity.CourseReview;
 import com.theanh.lms.enums.ReviewStatus;
 import com.theanh.lms.repository.CourseRepository;
 import com.theanh.lms.repository.CourseReviewRepository;
 import com.theanh.lms.service.CourseReviewService;
+import com.theanh.lms.service.CourseService;
 import com.theanh.lms.service.EnrollmentService;
+import com.theanh.lms.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +25,11 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseReviewServiceImpl extends BaseServiceImpl<CourseReview, CourseReviewDto, Long> implements CourseReviewService {
@@ -27,15 +37,21 @@ public class CourseReviewServiceImpl extends BaseServiceImpl<CourseReview, Cours
     private final CourseReviewRepository repository;
     private final CourseRepository courseRepository;
     private final EnrollmentService enrollmentService;
+    private final CourseService courseService;
+    private final UserService userService;
 
     public CourseReviewServiceImpl(CourseReviewRepository repository,
                                    CourseRepository courseRepository,
                                    EnrollmentService enrollmentService,
+                                   CourseService courseService,
+                                   UserService userService,
                                    ModelMapper modelMapper) {
         super(repository, modelMapper);
         this.repository = repository;
         this.courseRepository = courseRepository;
         this.enrollmentService = enrollmentService;
+        this.courseService = courseService;
+        this.userService = userService;
     }
 
     @Override
@@ -107,6 +123,50 @@ public class CourseReviewServiceImpl extends BaseServiceImpl<CourseReview, Cours
         }
         repository.deleteById(reviewId);
         refreshCourseRating(courseId);
+    }
+
+    @Override
+    public Page<CourseReviewAdminResponse> listForAdmin(Long courseId, String status, Pageable pageable) {
+        String normalizedStatus = null;
+        if (StringUtils.hasText(status)) {
+            normalizedStatus = parseStatus(status).name();
+        }
+        Page<CourseReview> page = repository.findForAdmin(courseId, normalizedStatus, pageable);
+        List<CourseReview> reviews = page.getContent();
+        if (reviews.isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, page.getTotalElements());
+        }
+        Map<Long, CourseDto> courseMap = courseService.findByIds(reviews.stream()
+                        .map(CourseReview::getCourseId)
+                        .distinct()
+                        .toList())
+                .stream()
+                .collect(Collectors.toMap(CourseDto::getId, Function.identity()));
+        Map<Long, UserDto> userMap = userService.findByIds(reviews.stream()
+                        .map(CourseReview::getUserId)
+                        .distinct()
+                        .toList())
+                .stream()
+                .collect(Collectors.toMap(UserDto::getId, Function.identity()));
+        List<CourseReviewAdminResponse> responses = reviews.stream()
+                .map(review -> {
+                    CourseReviewAdminResponse resp = modelMapper.map(review, CourseReviewAdminResponse.class);
+                    CourseDto course = courseMap.get(review.getCourseId());
+                    UserDto user = userMap.get(review.getUserId());
+                    if (course != null) {
+                        resp.setCourseTitle(course.getTitle());
+                    }
+                    if (user != null) {
+                        String name = user.getFullName();
+                        if (!StringUtils.hasText(name)) {
+                            name = user.getEmail();
+                        }
+                        resp.setStudentName(name);
+                    }
+                    return resp;
+                })
+                .toList();
+        return new PageImpl<>(responses, pageable, page.getTotalElements());
     }
 
     private void refreshCourseRating(Long courseId) {

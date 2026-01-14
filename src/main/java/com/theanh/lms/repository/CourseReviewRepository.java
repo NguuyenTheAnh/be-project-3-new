@@ -47,4 +47,22 @@ public interface CourseReviewRepository extends BaseRepository<CourseReview, Lon
               AND (cr.is_deleted IS NULL OR cr.is_deleted = 0)
             """, nativeQuery = true)
     Object computeRatingStats(@Param("courseId") Long courseId);
+
+    @Query(value = """
+            SELECT * FROM course_review cr
+            WHERE (cr.is_deleted IS NULL OR cr.is_deleted = 0)
+              AND (:courseId IS NULL OR cr.course_id = :courseId)
+              AND (:status IS NULL OR cr.status = :status)
+            ORDER BY cr.created_date DESC
+            """,
+            countQuery = """
+            SELECT COUNT(1) FROM course_review cr
+            WHERE (cr.is_deleted IS NULL OR cr.is_deleted = 0)
+              AND (:courseId IS NULL OR cr.course_id = :courseId)
+              AND (:status IS NULL OR cr.status = :status)
+            """,
+            nativeQuery = true)
+    Page<CourseReview> findForAdmin(@Param("courseId") Long courseId,
+                                    @Param("status") String status,
+                                    Pageable pageable);
 }

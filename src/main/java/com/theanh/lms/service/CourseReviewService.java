@@ -1,6 +1,7 @@
 package com.theanh.lms.service;
 
 import com.theanh.common.base.BaseService;
+import com.theanh.lms.dto.CourseReviewAdminResponse;
 import com.theanh.lms.dto.CourseReviewDto;
 import com.theanh.lms.entity.CourseReview;
 import org.springframework.data.domain.Page;
@@ -17,4 +18,6 @@ public interface CourseReviewService extends BaseService<CourseReview, CourseRev
     CourseReviewDto moderate(Long reviewId, Long moderatorId, String status);
 
     void deleteReview(Long userId, Long courseId, Long reviewId);
+
+    Page<CourseReviewAdminResponse> listForAdmin(Long courseId, String status, Pageable pageable);
 }

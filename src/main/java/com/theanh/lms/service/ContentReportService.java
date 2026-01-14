@@ -13,4 +13,10 @@ public interface ContentReportService extends BaseService<ContentReport, Content
     Page<ContentReportDto> listAll(Pageable pageable);
 
     ContentReportDto updateStatus(Long reportId, String status);
+
+    Page<ContentReportDto> listMyReports(Long userId, Pageable pageable);
+
+    ContentReportDto getMyReport(Long userId, Long reportId);
+
+    ContentReportDto updateMyReport(Long userId, Long reportId, String reason);
 }

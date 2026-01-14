@@ -35,3 +35,7 @@ curl -X PATCH "{{baseURL}}/admin/reviews/{reviewId}/moderate" \
   -d '{
     "status": "APPROVED"   // or REJECTED
   }'
+
+# Admin list reviews (filter by courseId/status optional)
+curl -X GET "{{baseURL}}/admin/reviews?courseId={courseId}&status=APPROVED&page=0&size=10" \
+  -H "$AUTH_HEADER"

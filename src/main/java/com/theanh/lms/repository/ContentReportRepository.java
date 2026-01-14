@@ -42,4 +42,18 @@ public interface ContentReportRepository extends BaseRepository<ContentReport, L
             """,
             nativeQuery = true)
     Page<ContentReport> findAllActive(Pageable pageable);
+
+    @Query(value = """
+            SELECT * FROM content_report cr
+            WHERE cr.reporter_user_id = :userId
+              AND (cr.is_deleted IS NULL OR cr.is_deleted = 0)
+            ORDER BY cr.created_date DESC
+            """,
+            countQuery = """
+            SELECT COUNT(1) FROM content_report cr
+            WHERE cr.reporter_user_id = :userId
+              AND (cr.is_deleted IS NULL OR cr.is_deleted = 0)
+            """,
+            nativeQuery = true)
+    Page<ContentReport> findByReporter(@Param("userId") Long userId, Pageable pageable);
 }

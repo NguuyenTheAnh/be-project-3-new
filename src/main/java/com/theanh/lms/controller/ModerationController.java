@@ -5,6 +5,7 @@ import com.theanh.common.util.ResponseConfig;
 import com.theanh.lms.dto.ContentReportDto;
 import com.theanh.lms.dto.ModerationActionDto;
 import com.theanh.lms.dto.request.ContentReportRequest;
+import com.theanh.lms.dto.request.ContentReportUpdateRequest;
 import com.theanh.lms.dto.request.ModerationActionRequest;
 import com.theanh.lms.service.ContentReportService;
 import com.theanh.lms.service.ModerationActionService;
@@ -42,6 +43,27 @@ public class ModerationController {
                                                                            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
         return ResponseConfig.success(contentReportService.listAll(pageable));
+    }
+
+    @GetMapping("/reports/my")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<Page<ContentReportDto>>> listMyReports(@RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
+        return ResponseConfig.success(contentReportService.listMyReports(currentUserId(), pageable));
+    }
+
+    @GetMapping("/reports/{reportId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<ContentReportDto>> getMyReport(@PathVariable @NotNull Long reportId) {
+        return ResponseConfig.success(contentReportService.getMyReport(currentUserId(), reportId));
+    }
+
+    @PutMapping("/reports/{reportId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseDto<ContentReportDto>> updateMyReport(@PathVariable @NotNull Long reportId,
+                                                                        @RequestBody ContentReportUpdateRequest request) {
+        return ResponseConfig.success(contentReportService.updateMyReport(currentUserId(), reportId, request.getReason()));
     }
 
     @PatchMapping("/admin/reports/{reportId}/status")

@@ -2,6 +2,7 @@ package com.theanh.lms.controller;
 
 import com.theanh.common.dto.ResponseDto;
 import com.theanh.common.util.ResponseConfig;
+import com.theanh.lms.dto.CourseReviewAdminResponse;
 import com.theanh.lms.dto.CourseReviewDto;
 import com.theanh.lms.dto.request.CourseReviewRequest;
 import com.theanh.lms.dto.request.ReviewModerationRequest;
@@ -65,6 +66,16 @@ public class CourseReviewController {
                                                                  @RequestBody @Valid ReviewModerationRequest request) {
         Long moderatorId = currentUserId();
         return ResponseConfig.success(courseReviewService.moderate(reviewId, moderatorId, request.getStatus()));
+    }
+
+    @GetMapping("/admin/reviews")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseDto<Page<CourseReviewAdminResponse>>> listForAdmin(@RequestParam(required = false) Long courseId,
+                                                                                    @RequestParam(required = false) String status,
+                                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                                    @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
+        return ResponseConfig.success(courseReviewService.listForAdmin(courseId, status, pageable));
     }
 
     private Long currentUserId() {

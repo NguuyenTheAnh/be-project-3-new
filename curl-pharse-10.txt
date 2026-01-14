@@ -32,3 +32,19 @@ curl -X POST "{{baseURL}}/admin/reports/{reportId}/actions" \
     "action": "APPROVE",      // APPROVE / REJECT / HIDE / BLOCK_USER
     "notes": "Reviewed and approved"
   }'
+
+# 5) My reports list (auth)
+curl -X GET "{{baseURL}}/reports/my?page=0&size=10" \
+  -H "$AUTH_HEADER"
+
+# 6) My report detail (auth)
+curl -X GET "{{baseURL}}/reports/{reportId}" \
+  -H "$AUTH_HEADER"
+
+# 7) Update my report reason (auth, only when status=OPEN)
+curl -X PUT "{{baseURL}}/reports/{reportId}" \
+  -H "$AUTH_HEADER" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "reason": "Updated reason with more details"
+  }'

@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class ContentReportServiceImpl extends BaseServiceImpl<ContentReport, ContentReportDto, Long> implements ContentReportService {
@@ -78,6 +79,39 @@ public class ContentReportServiceImpl extends BaseServiceImpl<ContentReport, Con
         ContentReport report = repository.findActiveById(reportId)
                 .orElseThrow(() -> new BusinessException("data.not_found"));
         report.setStatus(target.name());
+        ContentReport saved = repository.save(report);
+        return modelMapper.map(saved, ContentReportDto.class);
+    }
+
+    @Override
+    public Page<ContentReportDto> listMyReports(Long userId, Pageable pageable) {
+        return repository.findByReporter(userId, pageable)
+                .map(r -> modelMapper.map(r, ContentReportDto.class));
+    }
+
+    @Override
+    public ContentReportDto getMyReport(Long userId, Long reportId) {
+        ContentReport report = repository.findActiveById(reportId)
+                .orElseThrow(() -> new BusinessException("data.not_found"));
+        if (!report.getReporterUserId().equals(userId)) {
+            throw new BusinessException("auth.forbidden");
+        }
+        return modelMapper.map(report, ContentReportDto.class);
+    }
+
+    @Override
+    public ContentReportDto updateMyReport(Long userId, Long reportId, String reason) {
+        ContentReport report = repository.findActiveById(reportId)
+                .orElseThrow(() -> new BusinessException("data.not_found"));
+        if (!report.getReporterUserId().equals(userId)) {
+            throw new BusinessException("auth.forbidden");
+        }
+        if (!ReportStatus.OPEN.name().equals(report.getStatus())) {
+            throw new BusinessException("data.fail");
+        }
+        if (StringUtils.hasText(reason)) {
+            report.setReason(reason);
+        }
         ContentReport saved = repository.save(report);
         return modelMapper.map(saved, ContentReportDto.class);
     }
