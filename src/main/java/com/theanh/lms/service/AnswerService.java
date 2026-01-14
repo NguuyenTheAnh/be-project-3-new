@@ -11,4 +11,6 @@ public interface AnswerService extends BaseService<Answer, AnswerDto, Long> {
     List<AnswerDto> findByQuestion(Long questionId);
 
     AnswerDto findActiveById(Long id);
+
+    List<AnswerDto> findByQuestions(List<Long> questionIds);
 }

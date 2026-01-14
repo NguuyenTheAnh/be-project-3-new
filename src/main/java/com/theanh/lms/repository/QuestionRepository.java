@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -67,4 +68,30 @@ public interface QuestionRepository extends BaseRepository<Question, Long> {
             """,
             nativeQuery = true)
     Page<Question> findByCourseAndNoLesson(@Param("courseId") Long courseId, Pageable pageable);
+
+    @Query(value = """
+            SELECT * FROM question q
+            WHERE (q.is_deleted IS NULL OR q.is_deleted = 0)
+            ORDER BY q.created_date DESC
+            """,
+            countQuery = """
+            SELECT COUNT(1) FROM question q
+            WHERE (q.is_deleted IS NULL OR q.is_deleted = 0)
+            """,
+            nativeQuery = true)
+    Page<Question> findAllActive(Pageable pageable);
+
+    @Query(value = """
+            SELECT * FROM question q
+            WHERE q.course_id IN (:courseIds)
+              AND (q.is_deleted IS NULL OR q.is_deleted = 0)
+            ORDER BY q.created_date DESC
+            """,
+            countQuery = """
+            SELECT COUNT(1) FROM question q
+            WHERE q.course_id IN (:courseIds)
+              AND (q.is_deleted IS NULL OR q.is_deleted = 0)
+            """,
+            nativeQuery = true)
+    Page<Question> findByCourseIds(@Param("courseIds") List<Long> courseIds, Pageable pageable);
 }

@@ -33,6 +33,10 @@ curl -X GET "{{baseURL}}/courses/{courseId}/questions?page=0&size=10"
 # List questions by course + lesson (public)
 curl -X GET "{{baseURL}}/courses/{courseId}/questions?lessonId={lessonId}&page=0&size=10"
 
+# Management list (admin/instructor)
+curl -X GET "{{baseURL}}/admin/questions?page=0&size=10" \
+  -H "$AUTH_HEADER"
+
 # Get question detail (public)
 curl -X GET "{{baseURL}}/questions/{questionId}"
 
@@ -58,3 +62,11 @@ curl -X POST "{{baseURL}}/questions/{questionId}/vote" \
   -d '{
     "voteType": "UP"   // or DOWN
   }'
+
+# Admin/Instructor delete question (soft delete)
+curl -X DELETE "{{baseURL}}/admin/questions/{questionId}" \
+  -H "$AUTH_HEADER"
+
+# Admin/Instructor delete answer (soft delete)
+curl -X DELETE "{{baseURL}}/admin/answers/{answerId}" \
+  -H "$AUTH_HEADER"

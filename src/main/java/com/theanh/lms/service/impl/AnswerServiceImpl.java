@@ -26,6 +26,7 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, AnswerDto, Long> 
         return repository.findByQuestion(questionId)
                 .stream()
                 .map(a -> modelMapper.map(a, AnswerDto.class))
+                .filter(a -> Boolean.TRUE.equals(a.getIsAccepted()))
                 .toList();
     }
 
@@ -34,6 +35,17 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, AnswerDto, Long> 
         return repository.findActiveById(id)
                 .map(a -> modelMapper.map(a, AnswerDto.class))
                 .orElse(null);
+    }
+
+    @Override
+    public List<AnswerDto> findByQuestions(List<Long> questionIds) {
+        if (questionIds == null || questionIds.isEmpty()) {
+            return List.of();
+        }
+        return repository.findByQuestions(questionIds)
+                .stream()
+                .map(a -> modelMapper.map(a, AnswerDto.class))
+                .toList();
     }
 
     @Override

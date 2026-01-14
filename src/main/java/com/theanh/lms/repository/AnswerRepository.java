@@ -26,4 +26,12 @@ public interface AnswerRepository extends BaseRepository<Answer, Long> {
               AND (a.is_deleted IS NULL OR a.is_deleted = 0)
             """, nativeQuery = true)
     Optional<Answer> findActiveById(@Param("id") Long id);
+
+    @Query(value = """
+            SELECT * FROM answer a
+            WHERE a.question_id IN (:questionIds)
+              AND (a.is_deleted IS NULL OR a.is_deleted = 0)
+            ORDER BY a.question_id ASC, a.created_date ASC
+            """, nativeQuery = true)
+    List<Answer> findByQuestions(@Param("questionIds") List<Long> questionIds);
 }

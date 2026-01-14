@@ -1,17 +1,22 @@
 package com.theanh.lms.controller;
 
 import com.theanh.common.dto.ResponseDto;
+import com.theanh.common.exception.BusinessException;
 import com.theanh.common.util.ResponseConfig;
 import com.theanh.lms.dto.AnswerDto;
+import com.theanh.lms.dto.QuestionDetailResponse;
 import com.theanh.lms.dto.QuestionDto;
 import com.theanh.lms.dto.QuestionVoteDto;
 import com.theanh.lms.dto.request.AnswerRequest;
 import com.theanh.lms.dto.request.QuestionRequest;
 import com.theanh.lms.dto.request.QuestionVoteRequest;
 import com.theanh.lms.enums.QuestionStatus;
+import com.theanh.lms.enums.RoleName;
 import com.theanh.lms.service.AnswerService;
+import com.theanh.lms.service.CourseInstructorService;
 import com.theanh.lms.service.QuestionService;
 import com.theanh.lms.service.QuestionVoteService;
+import com.theanh.lms.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +40,8 @@ public class QuestionController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final QuestionVoteService questionVoteService;
+    private final CourseInstructorService courseInstructorService;
+    private final UserService userService;
 
     @PostMapping("/courses/{courseId}/questions")
     @PreAuthorize("isAuthenticated()")
@@ -79,6 +86,15 @@ public class QuestionController {
                                                                        @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
         return ResponseConfig.success(questionService.listByCourse(courseId, lessonId, pageable));
+    }
+
+    @GetMapping("/admin/questions")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<Page<QuestionDetailResponse>>> listForManagement(@RequestParam(defaultValue = "0") int page,
+                                                                                        @RequestParam(defaultValue = "10") int size) {
+        Long userId = currentUserId();
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
+        return ResponseConfig.success(questionService.listForManagement(userId, pageable));
     }
 
     @PermitAll
@@ -134,8 +150,48 @@ public class QuestionController {
         return ResponseConfig.success(questionVoteService.upsertVote(userId, questionId, request.getVoteType()));
     }
 
+    @DeleteMapping("/admin/questions/{questionId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<Void>> deleteQuestion(@PathVariable Long questionId) {
+        Long userId = currentUserId();
+        QuestionDto question = questionService.findActiveById(questionId);
+        if (question == null) {
+            throw new BusinessException("data.not_found");
+        }
+        ensureCanManageCourse(userId, question.getCourseId());
+        questionService.deleteById(questionId);
+        return ResponseConfig.success(null);
+    }
+
+    @DeleteMapping("/admin/answers/{answerId}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<ResponseDto<Void>> deleteAnswer(@PathVariable Long answerId) {
+        Long userId = currentUserId();
+        AnswerDto answer = answerService.findActiveById(answerId);
+        if (answer == null) {
+            throw new BusinessException("data.not_found");
+        }
+        QuestionDto question = questionService.findActiveById(answer.getQuestionId());
+        if (question == null) {
+            throw new BusinessException("data.not_found");
+        }
+        ensureCanManageCourse(userId, question.getCourseId());
+        answerService.deleteById(answerId);
+        return ResponseConfig.success(null);
+    }
+
     private Long currentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return Long.parseLong(auth.getPrincipal().toString());
+    }
+
+    private void ensureCanManageCourse(Long userId, Long courseId) {
+        if (userId == null || courseId == null) {
+            throw new BusinessException("auth.forbidden");
+        }
+        boolean isAdmin = userService.findRoles(userId).contains(RoleName.ADMIN.name());
+        if (!isAdmin && !courseInstructorService.isInstructorOfCourse(userId, courseId)) {
+            throw new BusinessException("auth.forbidden");
+        }
     }
 }

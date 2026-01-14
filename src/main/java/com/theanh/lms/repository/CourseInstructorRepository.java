@@ -23,4 +23,12 @@ public interface CourseInstructorRepository extends BaseRepository<CourseInstruc
               AND (ci.is_deleted IS NULL OR ci.is_deleted = 0)
             """, nativeQuery = true)
     long countActiveByCourseAndUser(@Param("courseId") Long courseId, @Param("userId") Long userId);
+
+    @Query(value = """
+            SELECT ci.course_id
+            FROM course_instructor ci
+            WHERE ci.user_id = :userId
+              AND (ci.is_deleted IS NULL OR ci.is_deleted = 0)
+            """, nativeQuery = true)
+    List<Long> findCourseIdsByInstructor(@Param("userId") Long userId);
 }

@@ -9,4 +9,6 @@ public interface CourseInstructorService extends BaseService<CourseInstructor, C
     void deleteByCourseId(Long courseId);
 
     boolean isInstructorOfCourse(Long userId, Long courseId);
+
+    java.util.List<Long> findCourseIdsByInstructor(Long userId);
 }

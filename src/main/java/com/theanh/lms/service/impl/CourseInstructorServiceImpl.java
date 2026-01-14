@@ -45,4 +45,12 @@ public class CourseInstructorServiceImpl extends BaseServiceImpl<CourseInstructo
         }
         return ((CourseInstructorRepository) repository).countActiveByCourseAndUser(courseId, userId) > 0;
     }
+
+    @Override
+    public List<Long> findCourseIdsByInstructor(Long userId) {
+        if (userId == null) {
+            return List.of();
+        }
+        return ((CourseInstructorRepository) repository).findCourseIdsByInstructor(userId);
+    }
 }

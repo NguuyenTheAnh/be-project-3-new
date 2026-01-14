@@ -1,6 +1,7 @@
 package com.theanh.lms.service;
 
 import com.theanh.common.base.BaseService;
+import com.theanh.lms.dto.QuestionDetailResponse;
 import com.theanh.lms.dto.QuestionDto;
 import com.theanh.lms.entity.Question;
 import org.springframework.data.domain.Page;
@@ -13,4 +14,6 @@ public interface QuestionService extends BaseService<Question, QuestionDto, Long
     Page<QuestionDto> listByCourse(Long courseId, Pageable pageable);
 
     Page<QuestionDto> listByCourse(Long courseId, Long lessonId, Pageable pageable);
+
+    Page<QuestionDetailResponse> listForManagement(Long userId, Pageable pageable);
 }
