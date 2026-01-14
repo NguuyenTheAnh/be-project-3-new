@@ -1,7 +1,7 @@
 package com.theanh.lms.service.impl;
 
 import com.theanh.common.base.BaseServiceImpl;
-import com.theanh.common.exception.BusinessException;
+import com.theanh.lms.dto.AnswerAdminResponse;
 import com.theanh.lms.dto.AnswerDto;
 import com.theanh.lms.entity.Answer;
 import com.theanh.lms.repository.AnswerRepository;
@@ -26,7 +26,6 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, AnswerDto, Long> 
         return repository.findByQuestion(questionId)
                 .stream()
                 .map(a -> modelMapper.map(a, AnswerDto.class))
-                .filter(a -> Boolean.TRUE.equals(a.getIsAccepted()))
                 .toList();
     }
 
@@ -45,6 +44,51 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, AnswerDto, Long> 
         return repository.findByQuestions(questionIds)
                 .stream()
                 .map(a -> modelMapper.map(a, AnswerDto.class))
+                .toList();
+    }
+
+    @Override
+    public List<AnswerAdminResponse> findByQuestionsForManagement(List<Long> questionIds) {
+        if (questionIds == null || questionIds.isEmpty()) {
+            return List.of();
+        }
+        return repository.findByQuestions(questionIds)
+                .stream()
+                .map(a -> {
+                    AnswerAdminResponse resp = modelMapper.map(a, AnswerAdminResponse.class);
+                    resp.setCreatedUser(a.getCreatedUser());
+                    return resp;
+                })
+                .toList();
+    }
+
+    @Override
+    public List<AnswerAdminResponse> findByQuestionWithCreatedUser(Long questionId) {
+        if (questionId == null) {
+            return List.of();
+        }
+        return repository.findByQuestion(questionId)
+                .stream()
+                .map(a -> {
+                    AnswerAdminResponse resp = modelMapper.map(a, AnswerAdminResponse.class);
+                    resp.setCreatedUser(a.getCreatedUser());
+                    return resp;
+                })
+                .toList();
+    }
+
+    @Override
+    public List<AnswerAdminResponse> findApprovedByQuestion(Long questionId) {
+        if (questionId == null) {
+            return List.of();
+        }
+        return repository.findApprovedByQuestion(questionId)
+                .stream()
+                .map(a -> {
+                    AnswerAdminResponse resp = modelMapper.map(a, AnswerAdminResponse.class);
+                    resp.setCreatedUser(a.getCreatedUser());
+                    return resp;
+                })
                 .toList();
     }
 

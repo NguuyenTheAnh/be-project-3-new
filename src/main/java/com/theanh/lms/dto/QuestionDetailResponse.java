@@ -14,5 +14,5 @@ public class QuestionDetailResponse {
     private String title;
     private String content;
     private String status;
-    private List<AnswerDto> answers;
+    private List<AnswerAdminResponse> answers;
 }

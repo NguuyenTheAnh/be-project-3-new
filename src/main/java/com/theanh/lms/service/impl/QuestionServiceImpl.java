@@ -2,7 +2,7 @@ package com.theanh.lms.service.impl;
 
 import com.theanh.common.base.BaseServiceImpl;
 import com.theanh.common.exception.BusinessException;
-import com.theanh.lms.dto.AnswerDto;
+import com.theanh.lms.dto.AnswerAdminResponse;
 import com.theanh.lms.dto.CourseDto;
 import com.theanh.lms.dto.LessonDto;
 import com.theanh.lms.dto.QuestionDetailResponse;
@@ -115,9 +115,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question, QuestionDto, 
         Map<Long, LessonDto> lessonMap = lessonService.findByIds(lessonIds)
                 .stream()
                 .collect(Collectors.toMap(LessonDto::getId, l -> l));
-        Map<Long, List<AnswerDto>> answerMap = answerService.findByQuestions(questionIds)
+        Map<Long, List<AnswerAdminResponse>> answerMap = answerService.findByQuestionsForManagement(questionIds)
                 .stream()
-                .collect(Collectors.groupingBy(AnswerDto::getQuestionId));
+                .collect(Collectors.groupingBy(AnswerAdminResponse::getQuestionId));
         List<QuestionDetailResponse> responses = questions.stream().map(q -> {
             QuestionDetailResponse resp = new QuestionDetailResponse();
             resp.setId(q.getId());

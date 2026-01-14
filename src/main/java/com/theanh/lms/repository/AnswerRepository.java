@@ -22,6 +22,15 @@ public interface AnswerRepository extends BaseRepository<Answer, Long> {
 
     @Query(value = """
             SELECT * FROM answer a
+            WHERE a.question_id = :questionId
+              AND (a.is_deleted IS NULL OR a.is_deleted = 0)
+              AND a.is_accepted = 1
+            ORDER BY a.created_date ASC
+            """, nativeQuery = true)
+    List<Answer> findApprovedByQuestion(@Param("questionId") Long questionId);
+
+    @Query(value = """
+            SELECT * FROM answer a
             WHERE a.id = :id
               AND (a.is_deleted IS NULL OR a.is_deleted = 0)
             """, nativeQuery = true)

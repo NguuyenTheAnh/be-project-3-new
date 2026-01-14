@@ -13,4 +13,10 @@ public interface AnswerService extends BaseService<Answer, AnswerDto, Long> {
     AnswerDto findActiveById(Long id);
 
     List<AnswerDto> findByQuestions(List<Long> questionIds);
+
+    List<com.theanh.lms.dto.AnswerAdminResponse> findByQuestionsForManagement(List<Long> questionIds);
+
+    List<com.theanh.lms.dto.AnswerAdminResponse> findByQuestionWithCreatedUser(Long questionId);
+
+    List<com.theanh.lms.dto.AnswerAdminResponse> findApprovedByQuestion(Long questionId);
 }

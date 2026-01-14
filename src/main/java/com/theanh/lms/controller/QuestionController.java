@@ -108,18 +108,23 @@ public class QuestionController {
     public ResponseEntity<ResponseDto<AnswerDto>> createAnswer(@PathVariable Long questionId,
                                                                @RequestBody @Valid AnswerRequest request) {
         Long userId = currentUserId();
+        boolean privileged = isPrivileged(userId);
         AnswerDto dto = new AnswerDto();
         dto.setQuestionId(questionId);
         dto.setUserId(userId);
         dto.setContent(request.getContent());
-        dto.setIsAccepted(Boolean.FALSE);
+        dto.setIsAccepted(Boolean.TRUE.equals(privileged));
         return ResponseConfig.success(answerService.saveObject(dto));
     }
 
     @PermitAll
     @GetMapping("/questions/{questionId}/answers")
-    public ResponseEntity<ResponseDto<List<AnswerDto>>> listAnswers(@PathVariable Long questionId) {
-        return ResponseConfig.success(answerService.findByQuestion(questionId));
+    public ResponseEntity<ResponseDto<List<com.theanh.lms.dto.AnswerAdminResponse>>> listAnswers(@PathVariable Long questionId) {
+        Long userId = currentUserIdOrNull();
+        if (isPrivileged(userId)) {
+            return ResponseConfig.success(answerService.findByQuestionWithCreatedUser(questionId));
+        }
+        return ResponseConfig.success(answerService.findApprovedByQuestion(questionId));
     }
 
     @PatchMapping("/questions/{questionId}/answers/{answerId}/accept")
@@ -183,6 +188,22 @@ public class QuestionController {
     private Long currentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return Long.parseLong(auth.getPrincipal().toString());
+    }
+
+    private Long currentUserIdOrNull() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return null;
+        }
+        return Long.parseLong(auth.getPrincipal().toString());
+    }
+
+    private boolean isPrivileged(Long userId) {
+        if (userId == null) {
+            return false;
+        }
+        return userService.findRoles(userId).stream()
+                .anyMatch(role -> RoleName.ADMIN.name().equals(role) || RoleName.INSTRUCTOR.name().equals(role));
     }
 
     private void ensureCanManageCourse(Long userId, Long courseId) {

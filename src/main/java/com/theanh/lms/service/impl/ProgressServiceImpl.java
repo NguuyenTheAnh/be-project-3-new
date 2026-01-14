@@ -71,9 +71,14 @@ public class ProgressServiceImpl extends BaseServiceImpl<Progress, ProgressDto, 
             progress.setLastPositionSeconds(lastPositionSeconds);
         }
         progress.setLastAccessedAt(LocalDateTime.now());
-        if (Boolean.TRUE.equals(completed)) {
-            progress.setCompleted(Boolean.TRUE);
-            progress.setCompletedAt(progress.getCompletedAt() == null ? LocalDateTime.now() : progress.getCompletedAt());
+        if (completed != null) {
+            if (Boolean.TRUE.equals(completed)) {
+                progress.setCompleted(Boolean.TRUE);
+                progress.setCompletedAt(progress.getCompletedAt() == null ? LocalDateTime.now() : progress.getCompletedAt());
+            } else {
+                progress.setCompleted(Boolean.FALSE);
+                progress.setCompletedAt(null);
+            }
         }
         Progress saved = progressRepository.save(progress);
         return modelMapper.map(saved, ProgressDto.class);

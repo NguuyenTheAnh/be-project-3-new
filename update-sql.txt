@@ -30,6 +30,10 @@ ALTER TABLE payment_transaction
     ADD COLUMN  payment_url TEXT COMMENT 'Generated payment URL',
     ADD COLUMN  expired_at DATETIME COMMENT 'Payment link expiration time';
 
+-- Q&A: use is_accepted for moderation (true=approved, false/null=pending)
+-- If you previously added answer.status, drop it with:
+-- ALTER TABLE answer DROP COLUMN status;
+
 -- Cart (multi-course checkout)
 CREATE TABLE IF NOT EXISTS cart
 (
