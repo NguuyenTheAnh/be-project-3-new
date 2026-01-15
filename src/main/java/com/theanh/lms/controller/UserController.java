@@ -69,6 +69,13 @@ public class UserController {
         return ResponseConfig.success("deleted");
     }
 
+    @GetMapping("/me/profile")
+    public ResponseEntity<ResponseDto<UserResponse>> getProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(auth.getPrincipal().toString());
+        return ResponseConfig.success(userViewMapper.toResponse(userService.findById(userId)));
+    }
+
     @PutMapping("/me/profile")
     public ResponseEntity<ResponseDto<UserResponse>> updateProfile(@Valid @RequestBody ProfileUpdateRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
