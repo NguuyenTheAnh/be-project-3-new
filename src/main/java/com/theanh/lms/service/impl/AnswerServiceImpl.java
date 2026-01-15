@@ -71,7 +71,7 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, AnswerDto, Long> 
                 .stream()
                 .map(a -> {
                     AnswerAdminResponse resp = modelMapper.map(a, AnswerAdminResponse.class);
-                    resp.setCreatedUser(a.getCreatedUser());
+                    resp.setCreatedUser(a.getUpdatedUser());
                     return resp;
                 })
                 .toList();
@@ -86,7 +86,7 @@ public class AnswerServiceImpl extends BaseServiceImpl<Answer, AnswerDto, Long> 
                 .stream()
                 .map(a -> {
                     AnswerAdminResponse resp = modelMapper.map(a, AnswerAdminResponse.class);
-                    resp.setCreatedUser(a.getCreatedUser());
+                    resp.setCreatedUser(a.getUpdatedUser());
                     return resp;
                 })
                 .toList();
