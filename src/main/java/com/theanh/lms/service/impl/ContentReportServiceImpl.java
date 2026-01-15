@@ -3,6 +3,8 @@ package com.theanh.lms.service.impl;
 import com.theanh.common.base.BaseServiceImpl;
 import com.theanh.common.exception.BusinessException;
 import com.theanh.lms.dto.ContentReportDto;
+import com.theanh.lms.dto.UserDto;
+import com.theanh.lms.dto.response.ContentReportResponse;
 import com.theanh.lms.entity.ContentReport;
 import com.theanh.lms.enums.ReportStatus;
 import com.theanh.lms.enums.ReportTargetType;
@@ -13,6 +15,7 @@ import com.theanh.lms.repository.CourseRepository;
 import com.theanh.lms.repository.LessonRepository;
 import com.theanh.lms.repository.CourseReviewRepository;
 import com.theanh.lms.service.ContentReportService;
+import com.theanh.lms.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,14 +31,15 @@ public class ContentReportServiceImpl extends BaseServiceImpl<ContentReport, Con
     private final AnswerRepository answerRepository;
     private final CourseRepository courseRepository;
     private final LessonRepository lessonRepository;
+    private final UserService userService;
 
     public ContentReportServiceImpl(ContentReportRepository repository,
-                                   CourseReviewRepository courseReviewRepository,
-                                   QuestionRepository questionRepository,
-                                   AnswerRepository answerRepository,
-                                   CourseRepository courseRepository,
-                                   LessonRepository lessonRepository,
-                                   ModelMapper modelMapper) {
+                                    CourseReviewRepository courseReviewRepository,
+                                    QuestionRepository questionRepository,
+                                    AnswerRepository answerRepository,
+                                    CourseRepository courseRepository,
+                                    LessonRepository lessonRepository,
+                                    ModelMapper modelMapper, UserService userService) {
         super(repository, modelMapper);
         this.repository = repository;
         this.courseReviewRepository = courseReviewRepository;
@@ -43,6 +47,7 @@ public class ContentReportServiceImpl extends BaseServiceImpl<ContentReport, Con
         this.answerRepository = answerRepository;
         this.courseRepository = courseRepository;
         this.lessonRepository = lessonRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -68,9 +73,14 @@ public class ContentReportServiceImpl extends BaseServiceImpl<ContentReport, Con
     }
 
     @Override
-    public Page<ContentReportDto> listAll(Pageable pageable) {
+    public Page<ContentReportResponse> listAll(Pageable pageable) {
         return repository.findAllActive(pageable)
-                .map(r -> modelMapper.map(r, ContentReportDto.class));
+                .map(r -> {
+                    var res = modelMapper.map(r, ContentReportResponse.class);
+                    UserDto reporter = userService.findById(res.getReporterUserId());
+                    res.setReporterName(reporter != null ? reporter.getFullName() : "Người dùng ân danh");
+                    return res;
+                });
     }
 
     @Override

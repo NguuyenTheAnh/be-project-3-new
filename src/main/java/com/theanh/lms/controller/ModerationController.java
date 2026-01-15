@@ -7,6 +7,7 @@ import com.theanh.lms.dto.ModerationActionDto;
 import com.theanh.lms.dto.request.ContentReportRequest;
 import com.theanh.lms.dto.request.ContentReportUpdateRequest;
 import com.theanh.lms.dto.request.ModerationActionRequest;
+import com.theanh.lms.dto.response.ContentReportResponse;
 import com.theanh.lms.service.ContentReportService;
 import com.theanh.lms.service.ModerationActionService;
 import jakarta.validation.Valid;
@@ -39,8 +40,8 @@ public class ModerationController {
 
     @GetMapping("/admin/reports")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDto<Page<ContentReportDto>>> listReports(@RequestParam(defaultValue = "0") int page,
-                                                                           @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<ResponseDto<Page<ContentReportResponse>>> listReports(@RequestParam(defaultValue = "0") int page,
+                                                                                @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(Math.max(page, 0), Math.max(size, 1));
         return ResponseConfig.success(contentReportService.listAll(pageable));
     }
