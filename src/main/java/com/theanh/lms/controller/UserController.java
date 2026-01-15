@@ -29,8 +29,16 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDto<Page<UserResponse>>> list(@RequestParam(value = "q", required = false) String keyword, Pageable pageable) {
-        Page<UserDto> page = userService.search(keyword, pageable);
+    public ResponseEntity<ResponseDto<Page<UserResponse>>> list(
+            @RequestParam(value = "q", required = false) String keyword,
+            @RequestParam(value = "role", required = false) String role,
+            Pageable pageable) {
+        Page<UserDto> page;
+        if (role != null && !role.isEmpty()) {
+            page = userService.searchByRole(role, keyword, pageable);
+        } else {
+            page = userService.search(keyword, pageable);
+        }
         Page<UserResponse> mapped = page.map(userViewMapper::toResponse);
         return ResponseConfig.success(mapped);
     }
@@ -49,7 +57,8 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseDto<UserResponse>> update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<ResponseDto<UserResponse>> update(@PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest request) {
         return ResponseConfig.success(userViewMapper.toResponse(userService.updateUser(id, request)));
     }
 

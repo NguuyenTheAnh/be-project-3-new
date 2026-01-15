@@ -45,12 +45,12 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
     private final UploadedFileService uploadedFileService;
 
     public UserServiceImpl(UserRepository userRepository,
-                           UserRoleRepository userRoleRepository,
-                           RoleRepository roleRepository,
-                           RoleService roleService,
-                           ModelMapper mapper,
-                           PasswordEncoder passwordEncoder,
-                           UploadedFileService uploadedFileService) {
+            UserRoleRepository userRoleRepository,
+            RoleRepository roleRepository,
+            RoleService roleService,
+            ModelMapper mapper,
+            PasswordEncoder passwordEncoder,
+            UploadedFileService uploadedFileService) {
         super(userRepository, mapper);
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
@@ -164,10 +164,23 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
         if (StringUtils.hasText(keyword)) {
             spec = spec.and((root, query, cb) -> cb.or(
                     cb.like(cb.lower(root.get("email")), "%" + keyword.toLowerCase() + "%"),
-                    cb.like(cb.lower(root.get("fullName")), "%" + keyword.toLowerCase() + "%")
-            ));
+                    cb.like(cb.lower(root.get("fullName")), "%" + keyword.toLowerCase() + "%")));
         }
         Page<User> page = userRepository.findAll(spec, pageable);
+        List<UserDto> content = page.getContent().stream()
+                .map(user -> toDto(user, findRoles(user.getId())))
+                .toList();
+        return new PageImpl<>(content, pageable, page.getTotalElements());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UserDto> searchByRole(String roleName, String keyword, Pageable pageable) {
+        if (!StringUtils.hasText(roleName)) {
+            return search(keyword, pageable);
+        }
+        String normalizedRoleName = roleName.toUpperCase();
+        Page<User> page = userRepository.findByRoleNameWithKeyword(normalizedRoleName, keyword, pageable);
         List<UserDto> content = page.getContent().stream()
                 .map(user -> toDto(user, findRoles(user.getId())))
                 .toList();
@@ -221,7 +234,6 @@ public class UserServiceImpl extends BaseServiceImpl<User, UserDto, Long> implem
     private Specification<User> notDeletedOrNullSpec() {
         return (root, query, cb) -> cb.or(
                 cb.isFalse(root.get("isDeleted")),
-                cb.isNull(root.get("isDeleted"))
-        );
+                cb.isNull(root.get("isDeleted")));
     }
 }

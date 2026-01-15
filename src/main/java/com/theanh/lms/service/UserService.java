@@ -25,4 +25,6 @@ public interface UserService extends BaseService<User, UserDto, Long> {
     Set<String> findRoles(Long userId);
 
     Page<UserDto> search(String keyword, Pageable pageable);
+
+    Page<UserDto> searchByRole(String roleName, String keyword, Pageable pageable);
 }
