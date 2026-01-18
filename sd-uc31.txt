@@ -1,0 +1,52 @@
+@startuml CreateQuizQuestion_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Instructor" as Instructor BOUNDARY_COLOR
+boundary "<<boundary>>\nQuiz\n Management Screen" as QuizScreen BOUNDARY_COLOR
+control "<<control>>\nQuiz Instructor\nController" as QuizController CONTROL_COLOR
+entity "<<entity>>\nQuiz" as QuizEntity ENTITY_COLOR
+entity "<<entity>>\nQuiz \nQuestion" as QuestionEntity ENTITY_COLOR
+
+Instructor -> QuizScreen: Enter question\n information\n{questionText, questionType,\nposition, points, explanation}
+activate QuizScreen
+
+QuizScreen -> QuizController: POST /instructor/quizzes\n/{quizId}/questions\n(QuizQuestionRequest)
+activate QuizController
+note right: Request validated:\n- QuestionText not null\n- QuestionType not null\n(SINGLE/MULTI/\nTRUE_FALSE/TEXT)
+
+QuizController -> QuizEntity: findById(quizId)
+activate QuizEntity
+QuizEntity --> QuizController: Quiz data
+deactivate QuizEntity
+
+alt Quiz not found
+    QuizController --> QuizScreen: 404 Not Found\n"Quiz not found"
+    QuizScreen --> Instructor: Show\n error message
+    
+else Quiz found
+    QuizController -> QuizController: Parse and validate\nquestionType
+    
+    alt Invalid question type
+        QuizController --> QuizScreen: 400 Bad Request\n"Invalid question type"
+        QuizScreen --> Instructor: Show\n validation error
+        
+    else Valid question type
+        QuizController -> QuestionEntity: Create new QuizQuestion\n{quizId, questionText,\nquestionType, position,\npoints, explanation}
+        activate QuestionEntity
+        
+        QuizController -> QuestionEntity: save(quizQuestion)
+        QuestionEntity --> QuizController: Created question
+        deactivate QuestionEntity
+        
+        QuizController --> QuizScreen: 200 OK\n{questionId, questionText,\nquestionType, points}
+        deactivate QuizController
+        
+        QuizScreen --> Instructor: Question created \nsuccessfully\nShow updated \nquiz questions
+    end
+end
+
+deactivate QuizScreen
+
+@enduml

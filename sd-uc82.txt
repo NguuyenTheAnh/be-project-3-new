@@ -1,0 +1,56 @@
+@startuml ViewUserList_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Admin" as Admin BOUNDARY_COLOR
+boundary "<<boundary>>\nUser Management\nScreen" as UserScreen BOUNDARY_COLOR
+control "<<control>>\nUser\nController" as UserController CONTROL_COLOR
+entity "<<entity>>\nUser" as UserEntity ENTITY_COLOR
+entity "<<entity>>\nUser\nRole" as UserRoleEntity ENTITY_COLOR
+
+Admin -> UserScreen: Click "View Users"\n{keyword, role, page,\nsize, sort} (optional)
+activate UserScreen
+note right: Filter options:\n- keyword: search by\n  email/fullName\n- role: filter by role\n- Pagination supported
+
+UserScreen -> UserController: GET /users\n?q={keyword}&role={role}\n&page={page}&size={size}\n&sort={sort}
+activate UserController
+note right: Request validated:\n- Admin authenticated\n- All params optional\n- Default pagination
+
+UserController -> UserController: Check role\nfilter provided
+
+alt Role filter provided
+    UserController -> UserRoleEntity: Find users by role\nwith keyword
+    activate UserRoleEntity
+    note right: Join User and UserRole\ntables, filter by:\n- role name (normalized)\n- keyword in email/fullName\n- deletedAt is null
+    UserRoleEntity --> UserController: Page<User>
+    deactivate UserRoleEntity
+    
+else No role filter
+    UserController -> UserEntity: Find users by keyword
+    activate UserEntity
+    note right: Search criteria:\n- keyword LIKE %email%\n- keyword LIKE %fullName%\n- deletedAt is null\n- Order by specified sort
+    UserEntity --> UserController: Page<User>
+    deactivate UserEntity
+end
+
+loop For each user
+    UserController -> UserRoleEntity: Find user roles\nby userId
+    activate UserRoleEntity
+    UserRoleEntity --> UserController: Set<RoleName>
+    deactivate UserRoleEntity
+    
+    UserController -> UserController: Map User to UserDto\n{id, email, fullName,\navatarFileId, phone,\ndateOfBirth, lastLoginAt,\nstatus, roles}
+end
+
+UserController -> UserController: Map UserDto to\nUserResponse\n(include avatar file info)
+
+UserController --> UserScreen: 200 OK\nPage<UserResponse>\n{content: [{user1},\n{user2}, ...],\ntotalElements,\ntotalPages, number}
+deactivate UserController
+
+UserScreen --> Admin: Display user list:\n- Email\n- Full name\n- Roles\n- Status\n- Last login\n- Pagination controls
+note right: Table with:\n- Search bar\n- Role filter dropdown\n- Sortable columns\n- Action buttons\n  (view/edit/delete)
+
+deactivate UserScreen
+
+@enduml

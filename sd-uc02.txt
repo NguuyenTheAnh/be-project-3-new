@@ -1,0 +1,51 @@
+@startuml Login_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+
+actor "User\n(Student/Instructor/Admin)" as User BOUNDARY_COLOR
+boundary "<<boundary>>\nLogin Screen" as LoginScreen BOUNDARY_COLOR
+control "<<control>>\nAuth Controller" as AuthController CONTROL_COLOR
+entity "<<entity>>\nUser" as UserEntity ENTITY_COLOR
+
+
+User -> LoginScreen: Enter credentials\n{email, password}
+activate LoginScreen
+
+LoginScreen -> AuthController: POST /auth/login\n{email, password}
+activate AuthController
+
+AuthController -> UserEntity: findActiveByEmail(email)
+activate UserEntity
+UserEntity --> AuthController: User data
+deactivate UserEntity
+
+alt User not found or invalid password
+    AuthController --> LoginScreen: 400 Bad Request\n"Invalid credentials"
+    LoginScreen --> User: Show error message
+    
+else Valid credentials
+    AuthController -> AuthController: Validate password\nUpdate lastLoginAt
+    
+    AuthController -> UserEntity: save(user)
+    activate UserEntity
+    UserEntity --> AuthController: Updated user
+    deactivate UserEntity
+    
+    AuthController -> UserEntity: findRoles(userId)
+    activate UserEntity
+    UserEntity --> AuthController: Set<String> roles
+    deactivate UserEntity
+    
+    AuthController -> AuthController: Generate tokens\n(access token & refresh token)
+    
+    AuthController --> LoginScreen: 200 OK\n{accessToken, refreshToken,\ntokenType, expiresIn}
+    deactivate AuthController
+    
+    LoginScreen --> User: Login successful\nRedirect to dashboard
+end
+
+deactivate LoginScreen
+
+@enduml

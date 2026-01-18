@@ -1,0 +1,71 @@
+@startuml ReportViolation_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Student" as Student BOUNDARY_COLOR
+boundary "<<boundary>>\nReport\n Screen" as ReportScreen BOUNDARY_COLOR
+control "<<control>>\nModeration\nController" as ModerationController CONTROL_COLOR
+entity "<<entity>>\nTarget\nContent" as TargetEntity ENTITY_COLOR
+entity "<<entity>>\nContent \nReport" as ReportEntity ENTITY_COLOR
+
+Student -> ReportScreen: Click "Report"\nfor content\n{targetType, targetId, reason}
+activate ReportScreen
+note right: Target types:\n- REVIEW\n- QUESTION\n- ANSWER\n- COURSE\n- LESSON
+
+ReportScreen -> ModerationController: POST /reports\n{targetType, targetId, reason}
+activate ModerationController
+note right: Request validated:\n- TargetType not blank\n- TargetId not null\n- Reason: optional\n- User authenticated
+
+ModerationController -> ModerationController: Parse and validate\ntargetType\n(REVIEW/QUESTION/\nANSWER/COURSE/LESSON)
+
+alt Invalid target type
+    ModerationController --> ReportScreen: 400 Bad Request\n"Invalid target type"
+    ReportScreen --> Student: Show error
+    
+else Valid target type
+    ModerationController -> TargetEntity: Check target exists\n(review/question/answer/\ncourse/lesson)
+    activate TargetEntity
+    TargetEntity --> ModerationController: Target data or null
+    deactivate TargetEntity
+    
+    alt Target not found
+        ModerationController --> ReportScreen: 404 Not Found\n"Content not found"
+        ReportScreen --> Student: Show error
+        
+    else Target found
+        ModerationController -> ReportEntity: findByTargetAndUser\n(targetType, targetId, userId)
+        activate ReportEntity
+        ReportEntity --> ModerationController: Existing report or null
+        deactivate ReportEntity
+        
+        alt Report exists (update)
+            ModerationController -> ReportEntity: Update report\n{reason,\nstatus: OPEN}
+            activate ReportEntity
+            note right: Reset to OPEN\nif previously closed
+            
+            ModerationController -> ReportEntity: save(report)
+            ReportEntity --> ModerationController: Updated report
+            deactivate ReportEntity
+            
+        else New report (create)
+            ModerationController -> ReportEntity: Create new ContentReport\n{reporterUserId, targetType,\ntargetId, reason,\nstatus: OPEN}
+            activate ReportEntity
+            note right: Report created\nwith OPEN status\nfor admin review
+            
+            ModerationController -> ReportEntity: save(report)
+            ReportEntity --> ModerationController: Created report
+            deactivate ReportEntity
+        end
+        
+        ModerationController --> ReportScreen: 200 OK\nContentReportDto\n{reportId, targetType,\ntargetId, reason, status}
+        deactivate ModerationController
+        
+        ReportScreen --> Student: Report submitted\nAdmin will review\nyour report
+        note right: Admin will investigate\nand take action\nif needed
+    end
+end
+
+deactivate ReportScreen
+
+@enduml

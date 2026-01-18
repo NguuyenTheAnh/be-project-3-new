@@ -1,0 +1,427 @@
+\section{Đặc tả chức năng}
+\label{section:2.3}
+Phần này sẽ đặc tả chi tiết các Use Case của hệ thống.
+% UC01: Đăng nhập
+\subsection{Use Case "Đăng nhập"}
+Use case "Đăng nhập" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc1.png}
+    \caption{Bảng đặc tả use case "Đăng nhập"}
+    \label{fig:uc1_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Sequence Diagram/uc1.png}
+    \caption{Biểu đồ trình tự của use case "Đăng nhập"}
+    \label{fig:uc1_seq}
+\end{figure}
+
+% UC02: Đăng ký
+\subsection{Use Case "Đăng ký"}
+Use case "Đăng ký" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc2.png}
+    \caption{Bảng đặc tả use case "Đăng ký"}
+    \label{fig:uc2_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Sequence Diagram/uc2.png}
+    \caption{Biểu đồ trình tự của use case "Đăng ký"}
+    \label{fig:uc2_seq}
+\end{figure}
+
+% UC03: Đăng xuất
+\subsection{Use Case "Đăng xuất"}
+Use case "Đăng xuất" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc3.png}
+    \caption{Bảng đặc tả use case "Đăng xuất"}
+    \label{fig:uc3_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Sequence Diagram/uc3.png}
+    \caption{Biểu đồ trình tự của use case "Đăng xuất"}
+    \label{fig:uc3_seq}
+\end{figure}
+
+% UC04: Cập nhật thông tin cá nhân
+\subsection{Use Case "Cập nhật thông tin cá nhân"}
+Use case "Cập nhật thông tin cá nhân" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc4.png}
+    \caption{Bảng đặc tả use case "Cập nhật thông tin cá nhân"}
+    \label{fig:uc4_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc4.png}
+    \caption{Biểu đồ trình tự của use case "Cập nhật thông tin cá nhân"}
+    \label{fig:uc4_seq}
+\end{figure}
+
+% UC05: Xem thông tin doanh số
+\subsection{Use Case "Xem thông tin doanh số"}
+Use case "Xem thông tin doanh số" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc5.png}
+    \caption{Bảng đặc tả use case "Xem thông tin doanh số"}
+    \label{fig:uc5_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc5.png}
+    \caption{Biểu đồ trình tự của use case "Xem thông tin doanh số"}
+    \label{fig:uc5_seq}
+\end{figure}
+
+% UC06: Xem các giao dịch thành công
+\subsection{Use Case "Xem các giao dịch thành công"}
+Use case "Xem các giao dịch thành công" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc6.png}
+    \caption{Bảng đặc tả use case "Xem các giao dịch thành công"}
+    \label{fig:uc6_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc6.png}
+    \caption{Biểu đồ trình tự của use case "Xem các giao dịch thành công"}
+    \label{fig:uc6_seq}
+\end{figure}
+
+% UC07: Xem danh sách đơn hàng
+\subsection{Use Case "Xem danh sách đơn hàng"}
+Use case "Xem danh sách đơn hàng" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc7.png}
+    \caption{Bảng đặc tả use case "Xem danh sách đơn hàng"}
+    \label{fig:uc7_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc7.png}
+    \caption{Biểu đồ trình tự của use case "Xem danh sách đơn hàng"}
+    \label{fig:uc7_seq}
+\end{figure}
+
+% UC08: Xử lý đơn hàng
+\subsection{Use Case "Xử lý đơn hàng"}
+Use case "Xử lý đơn hàng" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc8.png}
+    \caption{Bảng đặc tả use case "Xử lý đơn hàng"}
+    \label{fig:uc8_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc8.png}
+    \caption{Biểu đồ trình tự của use case "Xử lý đơn hàng"}
+    \label{fig:uc8_seq}
+\end{figure}
+
+% UC09: Xem chi tiết đơn hàng
+\subsection{Use Case "Xem chi tiết đơn hàng"}
+Use case "Xem chi tiết đơn hàng" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc9.png}
+    \caption{Bảng đặc tả use case "Xem chi tiết đơn hàng"}
+    \label{fig:uc9_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc9.png}
+    \caption{Biểu đồ trình tự của use case "Xem chi tiết đơn hàng"}
+    \label{fig:uc9_seq}
+\end{figure}
+
+% UC10: Tạo bàn ăn
+\subsection{Use Case "Tạo bàn ăn"}
+Use case "Tạo bàn ăn" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc10.png}
+    \caption{Bảng đặc tả use case "Tạo bàn ăn"}
+    \label{fig:uc10_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc10.png}
+    \caption{Biểu đồ trình tự của use case "Tcreating table"}
+    \label{fig:uc10_seq}
+\end{figure}
+
+% UC11: Xem danh sách bàn ăn
+\subsection{Use Case "Xem danh sách bàn ăn"}
+Use case "Xem danh sách bàn ăn" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc11.png}
+    \caption{Bảng đặc tả use case "Xem danh sách bàn ăn"}
+    \label{fig:uc11_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc11.png}
+    \caption{Biểu đồ trình tự của use case "Xem danh sách bàn ăn"}
+    \label{fig:uc11_seq}
+\end{figure}
+
+% UC12: Sửa thông tin bàn ăn
+\subsection{Use Case "Sửa thông tin bàn ăn"}
+Use case "Sửa thông tin bàn ăn" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc12.png}
+    \caption{Bảng đặc tả use case "Sửa thông tin bàn ăn"}
+    \label{fig:uc12_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc12.png}
+    \caption{Biểu đồ trình tự của use case "Sửa thông tin bàn ăn"}
+    \label{fig:uc12_seq}
+\end{figure}
+
+% UC13: Xóa bàn ăn
+\subsection{Use Case "Xóa bàn ăn"}
+Use case "Xóa bàn ăn" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc13.png}
+    \caption{Bảng đặc tả use case "Xóa bàn ăn"}
+    \label{fig:uc13_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc13.png}
+    \caption{Biểu đồ trình tự của use case "Xóa bàn ăn"}
+    \label{fig:uc13_seq}
+\end{figure}
+
+% UC14: Tạo món ăn
+\subsection{Use Case "Tạo món ăn"}
+Use case "Tạo món ăn" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc14.png}
+    \caption{Bảng đặc tả use case "Tạo món ăn"}
+    \label{fig:uc14_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc14.png}
+    \caption{Biểu đồ trình tự của use case "Tạo món ăn"}
+    \label{fig:uc14_seq}
+\end{figure}
+
+% UC15: Xem danh sách món ăn
+\subsection{Use Case "Xem danh sách món ăn"}
+Use case "Xem danh sách món ăn" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc15.png}
+    \caption{Bảng đặc tả use case "Xem danh sách món ăn"}
+    \label{fig:uc15_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc15.png}
+    \caption{Biểu đồ trình tự của use case "Xem danh sách món ăn"}
+    \label{fig:uc15_seq}
+\end{figure}
+
+% UC16: Sửa thông tin món ăn
+\subsection{Use Case "Sửa thông tin món ăn"}
+Use case "Sửa thông tin món ăn" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc16.png}
+    \caption{Bảng đặc tả use case "Sửa thông tin món ăn"}
+    \label{fig:uc16_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc16.png}
+    \caption{Biểu đồ trình tự của use case "Sửa thông tin món ăn"}
+    \label{fig:uc16_seq}
+\end{figure}
+
+% UC17: Xóa món ăn
+\subsection{Use Case "Xóa món ăn"}
+Use case "Xóa món ăn" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc17.png}
+    \caption{Bảng đặc tả use case "Xóa món ăn"}
+    \label{fig:uc17_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc17.png}
+    \caption{Biểu đồ trình tự của use case "Xóa món ăn"}
+    \label{fig:uc17_seq}
+\end{figure}
+
+% UC18: Xem danh sách nhân viên
+\subsection{Use Case "Xem danh sách nhân viên"}
+Use case "Xem danh sách nhân viên" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc18.png}
+    \caption{Bảng đặc tả use case "Xem danh sách nhân viên"}
+    \label{fig:uc18_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc18.png}
+    \caption{Biểu đồ trình tự của use case "Xem danh sách nhân viên"}
+    \label{fig:uc18_seq}
+\end{figure}
+
+% UC19: Xóa nhân viên
+\subsection{Use Case "Xóa nhân viên"}
+Use case "Xóa nhân viên" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc19.png}
+    \caption{Bảng đặc tả use case "Xóa nhân viên"}
+    \label{fig:uc19_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc19.png}
+    \caption{Biểu đồ trình tự của use case "Xóa nhân viên"}
+    \label{fig:uc19_seq}
+\end{figure}
+
+% UC20: Thêm món vào giỏ hàng
+\subsection{Use Case "Thêm món vào giỏ hàng"}
+Use case "Thêm món vào giỏ hàng" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc20.png}
+    \caption{Bảng đặc tả use case "Thêm món vào giỏ hàng"}
+    \label{fig:uc20_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc20.png}
+    \caption{Biểu đồ trình tự của use case "Thêm món vào giỏ hàng"}
+    \label{fig:uc20_seq}
+\end{figure}
+
+% UC21: Xem thông tin giỏ hàng
+\subsection{Use Case "Xem thông tin giỏ hàng"}
+Use case "Xem thông tin giỏ hàng" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc21.png}
+    \caption{Bảng đặc tả use case "Xem thông tin giỏ hàng"}
+    \label{fig:uc21_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc21.png}
+    \caption{Biểu đồ trình tự của use case "Xem thông tin giỏ hàng"}
+    \label{fig:uc21_seq}
+\end{figure}
+
+% UC22: Cập nhật thông tin giỏ hàng
+\subsection{Use Case "Cập nhật thông tin giỏ hàng"}
+Use case "Cập nhật thông tin giỏ hàng" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc22.png}
+    \caption{Bảng đặc tả use case "Cập nhật thông tin giỏ hàng"}
+    \label{fig:uc22_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc22.png}
+    \caption{Biểu đồ trình tự của use case "Cập nhật thông tin giỏ hàng"}
+    \label{fig:uc22_seq}
+\end{figure}
+
+% UC23: Xóa món trong giỏ hàng
+\subsection{Use Case "Xóa món trong giỏ hàng"}
+Use case "Xóa món trong giỏ hàng" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc23.png}
+    \caption{Bảng đặc tả use case "Xóa món trong giỏ hàng"}
+    \label{fig:uc23_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc23.png}
+    \caption{Biểu đồ trình tự của use case "Xóa món trong giỏ hàng"}
+    \label{fig:uc23_seq}
+\end{figure}
+
+% UC24: Quét QR Code
+\subsection{Use Case "Quét QR Code"}
+Use case "Quét QR Code" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc24.png}
+    \caption{Bảng đặc tả use case "Quét QR Code"}
+    \label{fig:uc24_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5]{Hinhve/Sequence Diagram/uc24.png}
+    \caption{Biểu đồ trình tự của use case "Quét QR Code"}
+    \label{fig:uc24_seq}
+\end{figure}
+
+% UC25: Thanh toán
+\subsection{Use Case "Thanh toán"}
+Use case "Thanh toán" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/Đặc tả use case/uc25.png}
+    \caption{Bảng đặc tả use case "Thanh toán"}
+    \label{fig:uc25_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.35]{Hinhve/Sequence Diagram/uc25.png}
+    \caption{Biểu đồ trình tự của use case "Thanh toán"}
+    \label{fig:uc25_seq}
+\end{figure}

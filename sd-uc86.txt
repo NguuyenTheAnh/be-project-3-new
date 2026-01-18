@@ -1,0 +1,77 @@
+@startuml CreateCategory_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Admin" as Admin BOUNDARY_COLOR
+boundary "<<boundary>>\nCategory\nManagement\nScreen" as CategoryScreen BOUNDARY_COLOR
+control "<<control>>\nCategory\nController" as CategoryController CONTROL_COLOR
+entity "<<entity>>\nCategory" as CategoryEntity ENTITY_COLOR
+
+Admin -> CategoryScreen: Click "Create\nNew Category"\n{name, slug, parentId,\ndescription, position}
+activate CategoryScreen
+note right: Category fields:\n- name: required\n- slug: unique identifier\n- parentId: optional\n- description: optional\n- position: display order
+
+CategoryScreen -> CategoryController: POST /categories\n{name, slug, parentId,\ndescription, position}
+activate CategoryController
+note right: Request validated:\n- Admin authenticated\n- Name not blank\n- All fields validated
+
+CategoryController -> CategoryController: Validate input\n{name, slug, parentId,\ndescription, position}
+
+alt Name is blank
+    CategoryController --> CategoryScreen: 400 Bad Request\n"Name is required"
+    CategoryScreen --> Admin: Show error
+    
+else Valid input
+    CategoryController -> CategoryEntity: Check slug uniqueness\n(if provided)
+    activate CategoryEntity
+    CategoryEntity --> CategoryController: Slug exists or null
+    deactivate CategoryEntity
+    
+    alt Slug already exists
+        CategoryController --> CategoryScreen: 400 Bad Request\n"Slug already exists"
+        CategoryScreen --> Admin: Show error
+        
+    else Slug is unique or null
+        alt ParentId provided
+            CategoryController -> CategoryEntity: Check parent category\nexists by parentId
+            activate CategoryEntity
+            CategoryEntity --> CategoryController: Parent category or null
+            deactivate CategoryEntity
+            
+            alt Parent not found
+                CategoryController --> CategoryScreen: 404 Not Found\n"Parent category not found"
+                CategoryScreen --> Admin: Show error
+            else Parent found
+                CategoryController -> CategoryEntity: Create new Category\n{name, slug, parentId,\ndescription, position}
+                activate CategoryEntity
+                note right: Map DTO to entity\nSet createdAt, updatedAt
+                
+                CategoryController -> CategoryEntity: save(category)
+                CategoryEntity --> CategoryController: Saved Category
+                deactivate CategoryEntity
+            end
+            
+        else No parentId (root category)
+            CategoryController -> CategoryEntity: Create new Category\n{name, slug, parentId=null,\ndescription, position}
+            activate CategoryEntity
+            note right: Root level category\nNo parent relationship
+            
+            CategoryController -> CategoryEntity: save(category)
+            CategoryEntity --> CategoryController: Saved Category
+            deactivate CategoryEntity
+        end
+        
+        CategoryController -> CategoryController: Map Category to\nCategoryDto\n{id, name, slug, parentId,\ndescription, position,\ncreatedAt, updatedAt}
+        
+        CategoryController --> CategoryScreen: 200 OK\nCategoryDto\n{id, name, slug, parentId,\ndescription, position}
+        deactivate CategoryController
+        
+        CategoryScreen --> Admin: Category created\nsuccessfully\nRedirect to category list
+        note right: Success message with\ncategory details
+    end
+end
+
+deactivate CategoryScreen
+
+@enduml

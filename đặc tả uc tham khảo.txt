@@ -1,0 +1,48 @@
+\subsection{Biểu đồ use case phân rã}
+\label{subsection:2.2.2}
+Để làm rõ hơn các chức năng, các Use Case chính được phân rã thành các Use Case con chi tiết hơn.
+
+\subsubsection{Phân rã Use Case "Quản lý món ăn"}
+Use Case "Quản lý món ăn" được phân rã thành các chức năng nhỏ hơn, cho phép quản lý và nhân viên có thể: tạo món ăn, xem danh sách các món ăn, chỉnh sửa thông tin món ăn và xóa món ăn đó.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{Hinhve/Usecase/UseCase_ql_mon_an.png}
+    \caption{Biểu đồ use case phân rã "Quản lý món ăn"}
+    \label{fig:Fig2}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý bàn ăn"}
+Use Case "Quản lý bàn ăn" được phân rã thành các chức năng nhỏ hơn, cho phép quản lý và nhân viên có thể: tạo bàn ăn, xem danh sách các bàn ăn, sửa thông tin bàn ăn và xóa bàn ăn đó.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{Hinhve/Usecase/UseCase_ql_ban_an.png}
+    \caption{Biểu đồ use case phân rã "Quản lý bàn ăn"}
+    \label{fig:Fig2}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý đơn hàng"}
+Use Case "Quản lý đơn hàng" được phân rã thành các chức năng nhỏ hơn, cho phép quản lý và nhân viên có thể tạo đơn hàng, xem danh sách các đơn hàng và cập nhật trạng thái của các đơn hàng.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{Hinhve/Usecase/UseCase_ql_don_hang.png}
+    \caption{Biểu đồ use case phân rã "Quản lý đơn hàng"}
+    \label{fig:Fig2}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý nhân viên"}
+Use Case "Quản lý nhân viên" được phân rã thành các chức năng nhỏ hơn và quản lý nhân viên chỉ dành cho người quản lý, bao gồm: tạo/thêm mới một nhân viên, xem danh sách các nhân viên, sửa thông tin của nhân viên và xóa nhân viên đó ra khỏi hệ thống.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{Hinhve/Usecase/UseCase_ql_nv.png}
+    \caption{Biểu đồ use case phân rã "Quản lý nhân viên"}
+    \label{fig:Fig2}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý giỏ hàng"}
+Use Case "Quản lý giỏ hàng" được phân rã thành các chức năng nhỏ hơn và quản lý giỏ hàng chỉ dành cho khách hàng, bao gồm: thêm món ăn vào giỏ hàng, xem danh sách các món ăn trong giỏ, sửa thông tin của giỏ hàng (số lượng, thay đổi món), xóa món ăn khỏi giỏ và đặt món.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{Hinhve/Usecase/UseCase_ql_gio_hang.png}
+    \caption{Biểu đồ use case phân rã "Quản lý giỏ hàng"}
+    \label{fig:Fig2}
+\end{figure}

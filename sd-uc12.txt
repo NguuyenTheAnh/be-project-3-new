@@ -1,0 +1,49 @@
+@startuml CreateSection_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Instructor" as Instructor BOUNDARY_COLOR
+boundary "<<boundary>>\nCurriculum\nManagement Screen" as CurriculumScreen BOUNDARY_COLOR
+control "<<control>>\nCourse Author\nController" as CourseController CONTROL_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nCourse \nSection" as SectionEntity ENTITY_COLOR
+
+Instructor -> CurriculumScreen: Enter section\n information\n{title, position}
+activate CurriculumScreen
+
+CurriculumScreen -> CourseController: POST /instructor/courses\n/{courseId}/sections\n(CourseSectionRequest)
+activate CourseController
+note right: Request validated:\n- Title not blank
+
+CourseController -> CourseEntity: findById(courseId)
+activate CourseEntity
+CourseEntity --> CourseController: Course data
+deactivate CourseEntity
+
+alt Course not found
+    CourseController --> CurriculumScreen: 404 Not Found\n"Course not found"
+    CurriculumScreen --> Instructor: Show\n error message
+    
+else Course found
+    CourseController -> SectionEntity: Create\n new CourseSection\n{courseId, title, position}
+    activate SectionEntity
+    
+    CourseController -> SectionEntity: save(section)
+    SectionEntity --> CourseController: Created section
+    deactivate SectionEntity
+    
+    CourseController -> CourseEntity: getCourseDetail(courseId)
+    activate CourseEntity
+    CourseEntity --> CourseController: CourseDetailResponse\nwith updated sections
+    deactivate CourseEntity
+    
+    CourseController --> CurriculumScreen: 200 OK\n{sectionId, title, position,\nupdated curriculum}
+    deactivate CourseController
+    
+    CurriculumScreen --> Instructor: Section created \n successfully\nShow updated \ncurriculum
+end
+
+deactivate CurriculumScreen
+
+@enduml

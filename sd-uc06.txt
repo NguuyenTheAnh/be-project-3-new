@@ -1,0 +1,69 @@
+@startuml CreateCourse_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+
+actor "Instructor" as Instructor BOUNDARY_COLOR
+boundary "<<boundary>>\nCourse Creation\nScreen" as CourseScreen BOUNDARY_COLOR
+control "<<control>>\nCourse Author\nController" as CourseController CONTROL_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nCourse Tag" as CourseTagEntity ENTITY_COLOR
+entity "<<entity>>\nCourse Instructor" as CourseInstructorEntity ENTITY_COLOR
+
+
+Instructor -> CourseScreen: Enter course information\n{title, description, price,\ncategory, level, language, tags}
+activate CourseScreen
+
+CourseScreen -> CourseController: POST /instructor/courses\n(CourseCreateRequest)
+activate CourseController
+note right: Request validated:\n- Title not blank\n- Price >= 0
+
+CourseController -> CourseController: Validate level and language
+
+alt Invalid level or language
+    CourseController --> CourseScreen: 400 Bad Request\n"Invalid level or language"
+    CourseScreen --> Instructor: Show validation error
+    
+else Valid input
+    CourseController -> CourseEntity: Create new Course object\nSet status = DRAFT
+    activate CourseEntity
+    
+    CourseController -> CourseEntity: save(course)
+    CourseEntity --> CourseController: Created course
+    deactivate CourseEntity
+    note right: Course created with\nstatus DRAFT
+    
+    alt Tags provided
+        CourseController -> CourseTagEntity: Save course tags
+        activate CourseTagEntity
+        CourseTagEntity --> CourseController: Tags associated
+        deactivate CourseTagEntity
+    end
+    
+    alt Instructors provided
+        CourseController -> CourseInstructorEntity: Save instructors
+        activate CourseInstructorEntity
+        CourseInstructorEntity --> CourseController: Instructors added
+        deactivate CourseInstructorEntity
+    else No instructors
+        CourseController -> CourseInstructorEntity: Add creator as OWNER
+        activate CourseInstructorEntity
+        CourseInstructorEntity --> CourseController: Creator set as owner
+        deactivate CourseInstructorEntity
+    end
+    
+    CourseController -> CourseEntity: getCourseDetail(courseId)
+    activate CourseEntity
+    CourseEntity --> CourseController: CourseDetailResponse
+    deactivate CourseEntity
+    
+    CourseController --> CourseScreen: 200 OK\n{courseId, title, status,\ncreatedAt, ...}
+    deactivate CourseController
+    
+    CourseScreen --> Instructor: Course created successfully\nRedirect to course management
+end
+
+deactivate CourseScreen
+
+@enduml

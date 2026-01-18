@@ -1,0 +1,76 @@
+@startuml ModerateReview_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Admin" as Admin BOUNDARY_COLOR
+boundary "<<boundary>>\nReview\nModeration\nScreen" as ReviewScreen BOUNDARY_COLOR
+control "<<control>>\nCourse Review\nController" as ReviewController CONTROL_COLOR
+entity "<<entity>>\nCourse\nReview" as ReviewEntity ENTITY_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+
+Admin -> ReviewScreen: Click "Moderate Review"\nfor reviewId\n{status: APPROVED/REJECTED}
+activate ReviewScreen
+note right: Admin decides to\napprove or reject\na pending review
+
+ReviewScreen -> ReviewController: PATCH /admin/reviews/\n{reviewId}/moderate\n{status}
+activate ReviewController
+note right: Request validated:\n- Admin authenticated\n- Status: APPROVED\n  or REJECTED
+
+ReviewController -> ReviewController: Extract moderatorId\nfrom authentication
+
+ReviewController -> ReviewController: Parse and validate\nstatus value
+
+alt Invalid status
+    ReviewController --> ReviewScreen: 400 Bad Request\n"Invalid status"
+    ReviewScreen --> Admin: Show error
+    
+else Valid status (APPROVED/REJECTED)
+    ReviewController -> ReviewEntity: Find review by reviewId
+    activate ReviewEntity
+    ReviewEntity --> ReviewController: CourseReview or null
+    deactivate ReviewEntity
+    
+    alt Review not found
+        ReviewController --> ReviewScreen: 404 Not Found\n"Review not found"
+        ReviewScreen --> Admin: Show error
+        
+    else Review is deleted
+        ReviewController --> ReviewScreen: 404 Not Found\n"Review not found"
+        ReviewScreen --> Admin: Show error
+        
+    else Review found
+        ReviewController -> ReviewEntity: Update review\n{status: APPROVED/REJECTED,\nmoderatedByUserId,\nmoderatedAt: now}
+        activate ReviewEntity
+        note right: Set moderation info:\n- status updated\n- moderator recorded\n- timestamp saved
+        
+        ReviewController -> ReviewEntity: save(review)
+        ReviewEntity --> ReviewController: Updated CourseReview
+        deactivate ReviewEntity
+        
+        ReviewController -> CourseEntity: Refresh course\nrating statistics
+        activate CourseEntity
+        note right: Recalculate:\n- ratingAvg\n- ratingCount\nfor the course\n(only APPROVED reviews\ncount)
+        
+        CourseEntity -> ReviewEntity: Count APPROVED\nreviews for course
+        activate ReviewEntity
+        ReviewEntity --> CourseEntity: Review count and avg
+        deactivate ReviewEntity
+        
+        CourseEntity -> CourseEntity: Update course\nrating fields
+        CourseEntity --> ReviewController: Rating updated
+        deactivate CourseEntity
+        
+        ReviewController -> ReviewController: Map CourseReview\nto CourseReviewDto
+        
+        ReviewController --> ReviewScreen: 200 OK\nCourseReviewDto\n{id, courseId, userId,\nrating, title, content,\nstatus, moderatedByUserId,\nmoderatedAt}
+        deactivate ReviewController
+        
+        ReviewScreen --> Admin: Review moderation\ncomplete\nStatus: APPROVED/REJECTED\nCourse rating updated
+        note right: Moderation result:\n- If APPROVED: visible\n  to public, counts in\n  course rating\n- If REJECTED: hidden\n  from public, excluded\n  from rating\n- Moderator info recorded
+    end
+end
+
+deactivate ReviewScreen
+
+@enduml

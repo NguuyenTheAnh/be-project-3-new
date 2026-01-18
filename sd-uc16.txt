@@ -1,0 +1,65 @@
+@startuml CreateLesson_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Instructor" as Instructor BOUNDARY_COLOR
+boundary "<<boundary>>\nLesson\n Management Screen" as LessonScreen BOUNDARY_COLOR
+control "<<control>>\nCourse Author\nController" as CourseController CONTROL_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nLesson" as LessonEntity ENTITY_COLOR
+entity "<<entity>>\nCourse \nLesson" as CourseLessonEntity ENTITY_COLOR
+
+Instructor -> LessonScreen: Enter lesson\n information\n{title, lessonType, \ncontentText, videoFileId,\nsectionId, position}
+activate LessonScreen
+
+LessonScreen -> CourseController: POST /instructor/courses\n/{courseId}/lessons\n(LessonCreateRequest)
+activate CourseController
+note right: Request validated:\n- Title not blank\n- LessonType not blank\n(VIDEO/ARTICLE/QUIZ)
+
+CourseController -> CourseEntity: findById(courseId)
+activate CourseEntity
+CourseEntity --> CourseController: Course data
+deactivate CourseEntity
+
+alt Course not found
+    CourseController --> LessonScreen: 404 Not Found\n"Course not found"
+    LessonScreen --> Instructor: Show\n error message
+    
+else Course found
+    CourseController -> CourseController: Validate lessonType\n(VIDEO/ARTICLE/QUIZ)
+    
+    alt Invalid lesson type
+        CourseController --> LessonScreen: 400 Bad Request\n"Invalid lesson type"
+        LessonScreen --> Instructor: Show\n validation error
+        
+    else Valid lesson type
+        CourseController -> LessonEntity: Create new Lesson\n{title, lessonType,\ncontentText, videoFileId,\ndurationSeconds, isFreePreview}
+        activate LessonEntity
+        
+        CourseController -> LessonEntity: save(lesson)
+        LessonEntity --> CourseController: Created lesson
+        deactivate LessonEntity
+        
+        CourseController -> CourseLessonEntity: Create mapping\n{courseId, sectionId,\nlessonId, position, isPreview}
+        activate CourseLessonEntity
+        
+        CourseController -> CourseLessonEntity: save(courseLesson)
+        CourseLessonEntity --> CourseController: Mapping created
+        deactivate CourseLessonEntity
+        
+        CourseController -> CourseEntity: getCourseDetail(courseId)
+        activate CourseEntity
+        CourseEntity --> CourseController: CourseDetailResponse\nwith updated curriculum
+        deactivate CourseEntity
+        
+        CourseController --> LessonScreen: 200 OK\n{lessonId, title, lessonType,\nupdated curriculum}
+        deactivate CourseController
+        
+        LessonScreen --> Instructor: Lesson created \nsuccessfully\nShow updated \ncurriculum
+    end
+end
+
+deactivate LessonScreen
+
+@enduml

@@ -1,0 +1,64 @@
+@startuml StartQuizAttempt_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Student" as Student BOUNDARY_COLOR
+boundary "<<boundary>>\nQuiz\n Screen" as QuizScreen BOUNDARY_COLOR
+control "<<control>>\nQuiz Attempt\nController" as QuizController CONTROL_COLOR
+entity "<<entity>>\nQuiz" as QuizEntity ENTITY_COLOR
+entity "<<entity>>\nLesson" as LessonEntity ENTITY_COLOR
+entity "<<entity>>\nEnrollment" as EnrollmentEntity ENTITY_COLOR
+entity "<<entity>>\nQuiz \nAttempt" as AttemptEntity ENTITY_COLOR
+
+Student -> QuizScreen: Click "Start Quiz"
+activate QuizScreen
+
+QuizScreen -> QuizController: POST /quizzes/{quizId}\n/attempts
+activate QuizController
+note right: User authenticated
+
+QuizController -> QuizEntity: findActiveById(quizId)
+activate QuizEntity
+QuizEntity --> QuizController: Quiz data
+deactivate QuizEntity
+
+alt Quiz not found
+    QuizController --> QuizScreen: 404 Not Found\n"Quiz not found"
+    QuizScreen --> Student: Show error
+    
+else Quiz found
+    QuizController -> LessonEntity: Get lesson info\nfrom quiz
+    activate LessonEntity
+    LessonEntity --> QuizController: Lesson data
+    deactivate LessonEntity
+    
+    QuizController -> EnrollmentEntity: canViewLesson\n(userId, lessonId)
+    activate EnrollmentEntity
+    EnrollmentEntity --> QuizController: Access permission
+    deactivate EnrollmentEntity
+    
+    alt No access permission
+        QuizController --> QuizScreen: 403 Forbidden\n"Enrollment required"
+        QuizScreen --> Student: Show error\n"You must enroll\n to take this quiz"
+        
+    else Has access permission
+        QuizController -> AttemptEntity: Create new QuizAttempt\n{quizId, userId,\nstartedAt: now,\nstatus: IN_PROGRESS}
+        activate AttemptEntity
+        
+        QuizController -> AttemptEntity: save(attempt)
+        AttemptEntity --> QuizController: Created attempt
+        deactivate AttemptEntity
+        note right: Attempt created\nwith status\nIN_PROGRESS
+        
+        QuizController --> QuizScreen: 200 OK\nQuizAttemptDto\n{attemptId, quizId,\nstartedAt, status}
+        deactivate QuizController
+        
+        QuizScreen --> Student: Quiz started\nShow quiz questions\nand timer (if any)
+        note right: Student can now\nanswer questions\nand submit when done
+    end
+end
+
+deactivate QuizScreen
+
+@enduml

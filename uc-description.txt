@@ -1,0 +1,174 @@
+\subsection{Biểu đồ use case phân rã}
+\label{subsection:use_case_decomposition}
+Để làm rõ hơn các chức năng, các Use Case chính được phân rã thành các Use Case con chi tiết hơn theo từng nhóm chức năng.
+
+\subsubsection{Phân rã Use Case "Xác thực"}
+Use Case "Xác thực" được phân rã thành các chức năng nhỏ hơn, cho phép người dùng có thể: đăng ký tài khoản mới, đăng nhập vào hệ thống, đăng xuất khỏi hệ thống, xem thông tin cá nhân và cập nhật thông tin cá nhân của mình.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase xác thực.png}
+    \caption{Biểu đồ use case phân rã "Xác thực"}
+    \label{fig:uc_xac_thuc}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý khóa học (Giảng viên)"}
+Use Case "Quản lý khóa học (Giảng viên)" được phân rã thành các chức năng nhỏ hơn, cho phép giảng viên có thể: tạo khóa học mới, xem danh sách khóa học của tôi, cập nhật thông tin khóa học, cập nhật trạng thái khóa học, xuất bản khóa học và cập nhật tag cho khóa học.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý khóa học (giảng viên).png}
+    \caption{Biểu đồ use case phân rã "Quản lý khóa học (Giảng viên)"}
+    \label{fig:uc_ql_khoa_hoc_gv}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý giáo trình"}
+Use Case "Quản lý giáo trình" được phân rã thành các chức năng nhỏ hơn, cho phép giảng viên có thể: tạo section mới, cập nhật thông tin section, xóa section khỏi khóa học và sắp xếp lại thứ tự các section trong khóa học.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý giáo trình.png}
+    \caption{Biểu đồ use case phân rã "Quản lý giáo trình"}
+    \label{fig:uc_ql_giao_trinh}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý bài học"}
+Use Case "Quản lý bài học" được phân rã thành các chức năng nhỏ hơn, cho phép giảng viên có thể: tạo bài học mới (video, text, document), xem chi tiết bài học, cập nhật bài học, xóa bài học, sắp xếp bài học trong section, thêm tài liệu vào bài học, cập nhật tài liệu bài học, xóa tài liệu khỏi bài học, thêm tài liệu khóa học, cập nhật tài liệu khóa học, xóa tài liệu khóa học, xem quiz của bài học và tạo quiz cho bài học.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý bài học.png}
+    \caption{Biểu đồ use case phân rã "Quản lý bài học"}
+    \label{fig:uc_ql_bai_hoc}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý quiz"}
+Use Case "Quản lý quiz" được phân rã thành các chức năng nhỏ hơn, cho phép giảng viên có thể: cập nhật thông tin quiz (thời gian, điểm đạt), xóa quiz, tạo câu hỏi quiz, cập nhật câu hỏi, xóa câu hỏi, tạo đáp án cho câu hỏi, cập nhật đáp án và xóa đáp án.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý quiz.png}
+    \caption{Biểu đồ use case phân rã "Quản lý quiz"}
+    \label{fig:uc_ql_quiz}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Tìm kiếm và xem khóa học (Công khai)"}
+Use Case "Tìm kiếm và xem khóa học (Công khai)" được phân rã thành các chức năng nhỏ hơn, cho phép người dùng có thể: xem danh sách khóa học nổi bật, tìm kiếm khóa học theo từ khóa/category/tag/level/ngôn ngữ, xem danh sách khóa học công khai, xem chi tiết khóa học, xem danh sách category và xem danh sách tag.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase tìm kiếm và xem khóa học (công khai).png}
+    \caption{Biểu đồ use case phân rã "Tìm kiếm và xem khóa học (Công khai)"}
+    \label{fig:uc_tim_kiem_xem_khoa_hoc}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý giỏ hàng"}
+Use Case "Quản lý giỏ hàng" được phân rã thành các chức năng nhỏ hơn, cho phép học viên có thể: xem các khóa học trong giỏ hàng, thêm khóa học vào giỏ hàng và xóa khóa học khỏi giỏ hàng.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý giỏ hàng.png}
+    \caption{Biểu đồ use case phân rã "Quản lý giỏ hàng"}
+    \label{fig:uc_ql_gio_hang}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý đơn hàng và thanh toán"}
+Use Case "Quản lý đơn hàng và thanh toán" được phân rã thành các chức năng nhỏ hơn, cho phép học viên có thể: tạo đơn hàng từ giỏ hàng, thanh toán qua VNPay, xem chi tiết đơn hàng và xem kết quả thanh toán. Bên cạnh đó, hệ thống VNPay sẽ thực hiện: xác thực giao dịch VNPay và gửi thông báo IPN về kết quả thanh toán.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý đơn hàng và thanh toán.png}
+    \caption{Biểu đồ use case phân rã "Quản lý đơn hàng và thanh toán"}
+    \label{fig:uc_ql_don_hang_thanh_toan}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Học tập (Học viên)"}
+Use Case "Học tập (Học viên)" được phân rã thành các chức năng nhỏ hơn, cho phép học viên có thể: đăng ký khóa học miễn phí, kiểm tra trạng thái đăng ký, xem khóa học đã đăng ký, xem bài học, cập nhật tiến độ học (đánh dấu hoàn thành), xem tiến độ bài học, xem tiến độ khóa học và xem danh sách bài học đã hoàn thành.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase học tập (học viên).png}
+    \caption{Biểu đồ use case phân rã "Học tập (Học viên)"}
+    \label{fig:uc_hoc_tap_hoc_vien}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quiz (Học viên)"}
+Use Case "Quiz (Học viên)" được phân rã thành các chức năng nhỏ hơn, cho phép học viên có thể: xem quiz bài học, bắt đầu làm quiz, nộp bài quiz, xem kết quả quiz và xem lịch sử làm quiz.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quiz (học viên).png}
+    \caption{Biểu đồ use case phân rã "Quiz (Học viên)"}
+    \label{fig:uc_quiz_hoc_vien}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Hỏi đáp"}
+Use Case "Hỏi đáp" được phân rã thành các chức năng nhỏ hơn, cho phép học viên và giảng viên có thể: xem danh sách câu hỏi khóa học, đặt câu hỏi trong khóa học, xem chi tiết câu hỏi, cập nhật câu hỏi, xem danh sách câu trả lời và trả lời câu hỏi.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase hỏi đáp.png}
+    \caption{Biểu đồ use case phân rã "Hỏi đáp"}
+    \label{fig:uc_hoi_dap}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Đánh giá khóa học"}
+Use Case "Đánh giá khóa học" được phân rã thành các chức năng nhỏ hơn, cho phép học viên có thể: viết đánh giá khóa học, xem đánh giá của tôi, xóa đánh giá của tôi và xem danh sách đánh giá khóa học.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase đánh giá khóa học.png}
+    \caption{Biểu đồ use case phân rã "Đánh giá khóa học"}
+    \label{fig:uc_danh_gia_khoa_hoc}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Báo cáo vi phạm"}
+Use Case "Báo cáo vi phạm" được phân rã thành các chức năng nhỏ hơn, cho phép học viên có thể: báo cáo nội dung vi phạm (khóa học/bài học/review), xem báo cáo của tôi và cập nhật báo cáo của tôi.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase báo cáo vi phạm.png}
+    \caption{Biểu đồ use case phân rã "Báo cáo vi phạm"}
+    \label{fig:uc_bao_cao_vi_pham}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Xem Dashboard"}
+Use Case "Xem Dashboard" được phân rã thành các chức năng nhỏ hơn, cho phép: giảng viên xem dashboard giảng viên (thống kê khóa học và doanh thu của mình), admin xem dashboard admin (thống kê tổng quan hệ thống) và admin xem dashboard giảng viên theo ID (xem dashboard của một giảng viên cụ thể).
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase xem dashboard.png}
+    \caption{Biểu đồ use case phân rã "Xem Dashboard"}
+    \label{fig:uc_xem_dashboard}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý người dùng"}
+Use Case "Quản lý người dùng" được phân rã thành các chức năng nhỏ hơn và quản lý người dùng chỉ dành cho admin, bao gồm: tạo người dùng mới, xem danh sách người dùng, tìm kiếm người dùng theo từ khóa và role, xem chi tiết người dùng và xóa người dùng khỏi hệ thống.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý người dùng.png}
+    \caption{Biểu đồ use case phân rã "Quản lý người dùng"}
+    \label{fig:uc_ql_nguoi_dung}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý danh mục"}
+Use Case "Quản lý danh mục" được phân rã thành các chức năng nhỏ hơn, cho phép admin có thể: tạo category mới, xem danh sách category, cập nhật category, xóa category, tạo tag mới, xem danh sách tag, cập nhật tag và xóa tag.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý danh mục.png}
+    \caption{Biểu đồ use case phân rã "Quản lý danh mục"}
+    \label{fig:uc_ql_danh_muc}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý khóa học (Admin)"}
+Use Case "Quản lý khóa học (Admin)" được phân rã thành các chức năng nhỏ hơn, cho phép admin có thể: xem tất cả khóa học trong hệ thống và xem chi tiết curriculum của bất kỳ khóa học nào.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý khóa học (admin).png}
+    \caption{Biểu đồ use case phân rã "Quản lý khóa học (Admin)"}
+    \label{fig:uc_ql_khoa_hoc_admin}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Quản lý hỏi đáp (Admin)"}
+Use Case "Quản lý hỏi đáp (Admin)" được phân rã thành các chức năng nhỏ hơn, cho phép admin có thể: xem danh sách câu hỏi trong hệ thống, xem chi tiết câu hỏi, cập nhật câu hỏi, xóa câu hỏi vi phạm và xóa câu trả lời vi phạm.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase quản lý hỏi đáp (admin).png}
+    \caption{Biểu đồ use case phân rã "Quản lý hỏi đáp (Admin)"}
+    \label{fig:uc_ql_hoi_dap_admin}
+\end{figure}
+
+\subsubsection{Phân rã Use Case "Kiểm duyệt"}
+Use Case "Kiểm duyệt" được phân rã thành các chức năng nhỏ hơn, cho phép admin có thể: xem danh sách đánh giá cần kiểm duyệt, kiểm duyệt đánh giá (duyệt hoặc từ chối), xem danh sách báo cáo trong hệ thống, cập nhật trạng thái báo cáo (pending, in review, resolved) và thêm hành động kiểm duyệt cho báo cáo.
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{../Hinhve/UseCase/UseCase kiểm duyệt.png}
+    \caption{Biểu đồ use case phân rã "Kiểm duyệt"}
+    \label{fig:uc_kiem_duyet}
+\end{figure}

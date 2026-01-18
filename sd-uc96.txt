@@ -1,0 +1,89 @@
+@startuml ViewQuestionsAdmin_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Admin/Instructor" as Admin BOUNDARY_COLOR
+boundary "<<boundary>>\nQuestion\nManagement\nScreen" as QuestionScreen BOUNDARY_COLOR
+control "<<control>>\nQuestion\nController" as QuestionController CONTROL_COLOR
+entity "<<entity>>\nUser\nRole" as UserRoleEntity ENTITY_COLOR
+entity "<<entity>>\nCourse\nInstructor" as CourseInstructorEntity ENTITY_COLOR
+entity "<<entity>>\nQuestion" as QuestionEntity ENTITY_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nLesson" as LessonEntity ENTITY_COLOR
+entity "<<entity>>\nAnswer" as AnswerEntity ENTITY_COLOR
+
+Admin -> QuestionScreen: Click "View Questions"\n{page, size} (optional)
+activate QuestionScreen
+note right: Admin/Instructor can\nview and manage\nquestions
+
+QuestionScreen -> QuestionController: GET /admin/questions\n?page={page}&size={size}
+activate QuestionController
+note right: Request validated:\n- Admin or Instructor\n  authenticated\n- Default pagination
+
+QuestionController -> QuestionController: Extract userId\nfrom authentication
+
+QuestionController -> UserRoleEntity: Check if user\nhas ADMIN role
+activate UserRoleEntity
+UserRoleEntity --> QuestionController: isAdmin (true/false)
+deactivate UserRoleEntity
+
+alt User is ADMIN
+    QuestionController -> QuestionEntity: Find all active\nquestions (pageable)
+    activate QuestionEntity
+    note right: Get all questions\nwhere deletedAt is null\norder by createdAt DESC
+    QuestionEntity --> QuestionController: Page<Question>
+    deactivate QuestionEntity
+    
+else User is INSTRUCTOR
+    QuestionController -> CourseInstructorEntity: Find course IDs\nby instructor userId
+    activate CourseInstructorEntity
+    CourseInstructorEntity --> QuestionController: List<courseId>
+    deactivate CourseInstructorEntity
+    
+    alt Instructor has no courses
+        QuestionController --> QuestionScreen: 200 OK\nEmpty Page<QuestionDetailResponse>
+        QuestionScreen --> Admin: No questions to display
+        
+    else Instructor has courses
+        QuestionController -> QuestionEntity: Find questions by\ncourse IDs (pageable)
+        activate QuestionEntity
+        note right: Get questions for\ninstructor's courses only
+        QuestionEntity --> QuestionController: Page<Question>
+        deactivate QuestionEntity
+    end
+end
+
+alt Questions found
+    loop For each question
+        QuestionController -> CourseEntity: Find course by courseId
+        activate CourseEntity
+        CourseEntity --> QuestionController: CourseDto
+        deactivate CourseEntity
+        
+        alt Question has lessonId
+            QuestionController -> LessonEntity: Find lesson by lessonId
+            activate LessonEntity
+            LessonEntity --> QuestionController: LessonDto
+            deactivate LessonEntity
+        end
+        
+        QuestionController -> AnswerEntity: Find answers\nfor question
+        activate AnswerEntity
+        note right: Get all answers\nfor this question\nwith user info
+        AnswerEntity --> QuestionController: List<AnswerAdminResponse>
+        deactivate AnswerEntity
+        
+        QuestionController -> QuestionController: Build QuestionDetailResponse\n{id, course, lesson,\nuserId, createdUser,\ntitle, content, status,\nanswers}
+    end
+    
+    QuestionController --> QuestionScreen: 200 OK\nPage<QuestionDetailResponse>\n{content: [{question1\nwith answers},\n{question2}, ...],\ntotalElements,\ntotalPages, number}
+    deactivate QuestionController
+    
+    QuestionScreen --> Admin: Display questions:\n- Question title/content\n- Course and lesson info\n- Asker information\n- Status (OPEN/CLOSED)\n- Answer count\n- Answer details\n- Action buttons\n  (delete question/answer)
+    note right: Management features:\n- View all Q&A\n- See full context\n- Monitor discussions\n- Delete inappropriate\n  content\n- Pagination controls
+end
+
+deactivate QuestionScreen
+
+@enduml

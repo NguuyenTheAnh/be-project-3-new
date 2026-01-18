@@ -1,0 +1,74 @@
+@startuml AddCourseToCart_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Student" as Student BOUNDARY_COLOR
+boundary "<<boundary>>\nCourse Detail\n Screen" as CourseScreen BOUNDARY_COLOR
+control "<<control>>\nCart\nController" as CartController CONTROL_COLOR
+entity "<<entity>>\nEnrollment" as EnrollmentEntity ENTITY_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nCart" as CartEntity ENTITY_COLOR
+entity "<<entity>>\nCart \nItem" as CartItemEntity ENTITY_COLOR
+
+Student -> CourseScreen: Click "Add to Cart"\nfor course
+activate CourseScreen
+
+CourseScreen -> CartController: POST /cart/items\n{courseId}
+activate CartController
+note right: Request validated:\n- CourseId not null\n- User authenticated
+
+CartController -> EnrollmentEntity: isEnrolled(userId, courseId)
+activate EnrollmentEntity
+EnrollmentEntity --> CartController: Boolean result
+deactivate EnrollmentEntity
+
+alt Already enrolled
+    CartController --> CourseScreen: 400 Bad Request\n"Already enrolled"
+    CourseScreen --> Student: Show error\n"You already own\n this course"
+    
+else Not enrolled
+    CartController -> CourseEntity: findActivePublishedById\n(courseId)
+    activate CourseEntity
+    CourseEntity --> CartController: Course data
+    deactivate CourseEntity
+    
+    alt Course not found or not published
+        CartController --> CourseScreen: 404 Not Found\n"Course not available"
+        CourseScreen --> Student: Show error\n"Course not found"
+        
+    else Course available
+        CartController -> CartEntity: getOrCreateActiveCart\n(userId)
+        activate CartEntity
+        CartEntity --> CartController: Cart data
+        deactivate CartEntity
+        
+        CartController -> CartItemEntity: findByCartAndCourse\n(cartId, courseId)
+        activate CartItemEntity
+        CartItemEntity --> CartController: Existing item or null
+        deactivate CartItemEntity
+        
+        alt Item already in cart
+            CartController -> CartController: Skip adding duplicate
+            note right: Item already exists\nin cart
+        else Item not in cart
+            CartController -> CartItemEntity: Create new CartItem\n{cartId, courseId,\npriceCents, finalPriceCents}
+            activate CartItemEntity
+            
+            CartController -> CartItemEntity: save(cartItem)
+            CartItemEntity --> CartController: Created item
+            deactivate CartItemEntity
+        end
+        
+        CartController -> CartController: Build CartResponse\n{items, totalPrice}
+        
+        CartController --> CourseScreen: 200 OK\nCartResponse\n{items[], totalPriceCents}
+        deactivate CartController
+        
+        CourseScreen --> Student: Course added\n to cart\nShow cart badge update
+    end
+end
+
+deactivate CourseScreen
+
+@enduml

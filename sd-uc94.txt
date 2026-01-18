@@ -1,0 +1,69 @@
+@startuml ViewAllCourses_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "User" as User BOUNDARY_COLOR
+boundary "<<boundary>>\nCourse Catalog\nScreen" as CatalogScreen BOUNDARY_COLOR
+control "<<control>>\nCatalog\nController" as CatalogController CONTROL_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nCategory" as CategoryEntity ENTITY_COLOR
+entity "<<entity>>\nCourse\nTag" as CourseTagEntity ENTITY_COLOR
+entity "<<entity>>\nTag" as TagEntity ENTITY_COLOR
+entity "<<entity>>\nUploaded\nFile" as FileEntity ENTITY_COLOR
+
+User -> CatalogScreen: Browse courses\n{keyword, categoryId,\ntagIds, level, language,\nsort, page, size} (optional)
+activate CatalogScreen
+note right: Filter options:\n- keyword: search title/desc\n- categoryId: filter by category\n- tagIds: filter by tags\n- level: BEGINNER/\n  INTERMEDIATE/ADVANCED\n- language: en/vi\n- sort: newest/popular/\n  rating/price\n- Pagination supported
+
+CatalogScreen -> CatalogController: GET /courses\n?keyword={keyword}\n&categoryId={categoryId}\n&tagIds={tagIds}\n&level={level}\n&language={language}\n&sort={sort}\n&page={page}&size={size}
+activate CatalogController
+note right: Request validated:\n- All params optional\n- Public endpoint\n- Default pagination
+
+CatalogController -> CatalogController: Apply sort order\n(newest/popular/\nrating/price)
+
+CatalogController -> CatalogController: Parse tagIds\n(comma-separated)
+
+CatalogController -> CourseEntity: Search published courses\nwith filters
+activate CourseEntity
+note right: Query criteria:\n- status = PUBLISHED\n- keyword LIKE %title%\n  or %description%\n- categoryId matches\n- level matches\n- language matches\n- has all specified tags\n- isDeleted = false\n- Order by sort option
+
+CourseEntity --> CatalogController: Page<Course>
+deactivate CourseEntity
+
+loop For each course
+    alt Course has categoryId
+        CatalogController -> CategoryEntity: Find category\nby categoryId
+        activate CategoryEntity
+        CategoryEntity --> CatalogController: CategoryDto or null
+        deactivate CategoryEntity
+    end
+    
+    CatalogController -> CourseTagEntity: Find course tags\nby courseId
+    activate CourseTagEntity
+    CourseTagEntity -> TagEntity: Get tag details
+    activate TagEntity
+    TagEntity --> CourseTagEntity: Tag info
+    deactivate TagEntity
+    CourseTagEntity --> CatalogController: List<TagDto>
+    deactivate CourseTagEntity
+    
+    alt Course has thumbnailFileId
+        CatalogController -> FileEntity: Find thumbnail\nfile by fileId
+        activate FileEntity
+        FileEntity --> CatalogController: UploadedFileDto
+        deactivate FileEntity
+    end
+    
+    CatalogController -> CatalogController: Map to CourseListItemResponse\n{id, title, slug,\nshortDescription, level,\nlanguage, priceCents,\nratingAvg, ratingCount,\ncategory, tags, thumbnail}
+end
+
+CatalogController --> CatalogScreen: 200 OK\nPage<CourseListItemResponse>\n{content: [{course1},\n{course2}, ...],\ntotalElements,\ntotalPages, number}
+deactivate CatalogController
+
+CatalogScreen --> User: Display course list:\n- Course cards with\n  thumbnail\n- Title and description\n- Price and rating\n- Category and tags\n- Filter panel\n- Pagination controls
+note right: Catalog features:\n- Grid/list view\n- Advanced filters\n- Sort options\n- Search bar\n- Category navigation\n- Click course to\n  view details
+
+deactivate CatalogScreen
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml ViewPublicCourses_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "User" as User BOUNDARY_COLOR
+boundary "<<boundary>>\nCourse\n Catalog Screen" as CatalogScreen BOUNDARY_COLOR
+control "<<control>>\nCatalog\nController" as CatalogController CONTROL_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+
+User -> CatalogScreen: Browse courses\nwith filters\n{keyword, categoryId, tagIds,\nlevel, language, sort, page}
+activate CatalogScreen
+
+CatalogScreen -> CatalogController: GET /courses\n?keyword=...&categoryId=...\n&tagIds=...&level=...\n&language=...&sort=...\n&page=...&size=...
+activate CatalogController
+
+CatalogController -> CatalogController: Parse filters\nand pagination
+
+CatalogController -> CourseEntity: searchPublishedCourses\n(keyword, categoryId,\nlevel, language, tagIds,\nsort, pageable)
+activate CourseEntity
+note right: Query filters:\n- Only PUBLISHED courses\n- Match keyword (if provided)\n- Filter by category (if provided)\n- Filter by level (if provided)\n- Filter by language (if provided)\n- Filter by tags (if provided)\n- Apply sorting
+
+CourseEntity --> CatalogController: Page<Course> results
+deactivate CourseEntity
+
+CatalogController -> CatalogController: Map to\nCourseListItemResponse\n{id, title, thumbnail,\nprice, ratingAvg, instructors}
+
+CatalogController --> CatalogScreen: 200 OK\nPage<CourseListItemResponse>\n{content[], totalElements,\ntotalPages, pageNumber}
+deactivate CatalogController
+
+CatalogScreen --> User: Display course list\nwith pagination\nand filter options
+deactivate CatalogScreen
+
+@enduml

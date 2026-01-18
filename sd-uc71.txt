@@ -1,0 +1,74 @@
+@startuml CreateCourseReview_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Student" as Student BOUNDARY_COLOR
+boundary "<<boundary>>\nCourse Review\n Screen" as ReviewScreen BOUNDARY_COLOR
+control "<<control>>\nCourse Review\nController" as ReviewController CONTROL_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nEnrollment" as EnrollmentEntity ENTITY_COLOR
+entity "<<entity>>\nCourse \nReview" as ReviewEntity ENTITY_COLOR
+
+Student -> ReviewScreen: Write review\n{rating (1-5), title, content}
+activate ReviewScreen
+
+ReviewScreen -> ReviewController: POST /courses/{courseId}\n/reviews\n{rating, title, content}
+activate ReviewController
+note right: Request validated:\n- Rating: 1-5 (required)\n- Title: optional\n- Content: optional\n- User authenticated
+
+ReviewController -> CourseEntity: findById(courseId)
+activate CourseEntity
+CourseEntity --> ReviewController: Course data
+deactivate CourseEntity
+
+alt Course not found or not published
+    ReviewController --> ReviewScreen: 400 Bad Request\n"Course not available"
+    ReviewScreen --> Student: Show error
+    
+else Course published
+    ReviewController -> EnrollmentEntity: isEnrolled(userId, courseId)
+    activate EnrollmentEntity
+    EnrollmentEntity --> ReviewController: Boolean result
+    deactivate EnrollmentEntity
+    
+    alt Not enrolled
+        ReviewController --> ReviewScreen: 400 Bad Request\n"Must enroll to review"
+        ReviewScreen --> Student: Show error\n"You must enroll\n this course\n to write a review"
+        
+    else Enrolled
+        ReviewController -> ReviewEntity: findActiveByCourseAndUser\n(courseId, userId)
+        activate ReviewEntity
+        ReviewEntity --> ReviewController: Existing review or null
+        deactivate ReviewEntity
+        
+        alt Review exists (update)
+            ReviewController -> ReviewEntity: Update review\n{rating, title, content,\nstatus: PENDING}
+            activate ReviewEntity
+            note right: Reset to PENDING\nfor re-moderation
+            
+            ReviewController -> ReviewEntity: save(review)
+            ReviewEntity --> ReviewController: Updated review
+            deactivate ReviewEntity
+            
+        else New review (create)
+            ReviewController -> ReviewEntity: Create new CourseReview\n{courseId, userId,\nrating, title, content,\nstatus: PENDING}
+            activate ReviewEntity
+            note right: Review created\nwith PENDING status\nfor moderation
+            
+            ReviewController -> ReviewEntity: save(review)
+            ReviewEntity --> ReviewController: Created review
+            deactivate ReviewEntity
+        end
+        
+        ReviewController --> ReviewScreen: 200 OK\nCourseReviewDto\n{reviewId, rating, title,\ncontent, status: PENDING}
+        deactivate ReviewController
+        
+        ReviewScreen --> Student: Review submitted\nWaiting for\nadmin approval
+        note right: Review will be visible\nafter admin approval
+    end
+end
+
+deactivate ReviewScreen
+
+@enduml

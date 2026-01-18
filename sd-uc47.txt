@@ -1,0 +1,64 @@
+@startuml PayVNPay_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Student" as Student BOUNDARY_COLOR
+boundary "<<boundary>>\nCheckout\n Screen" as CheckoutScreen BOUNDARY_COLOR
+control "<<control>>\nOrder\nController" as OrderController CONTROL_COLOR
+entity "<<entity>>\nOrder" as OrderEntity ENTITY_COLOR
+entity "<<entity>>\nPayment \nTransaction" as TransactionEntity ENTITY_COLOR
+participant "<<external>>\nVNPay\nGateway" as VNPayGateway
+
+Student -> CheckoutScreen: Click "Pay with VNPay"
+activate CheckoutScreen
+
+CheckoutScreen -> OrderController: POST /orders/{orderId}\n/pay/vnpay
+activate OrderController
+note right: User authenticated
+
+OrderController -> OrderEntity: findActiveById(orderId)
+activate OrderEntity
+OrderEntity --> OrderController: Order data
+deactivate OrderEntity
+
+alt Order not found
+    OrderController --> CheckoutScreen: 404 Not Found\n"Order not found"
+    CheckoutScreen --> Student: Show error
+    
+else Order found
+    OrderController -> OrderController: Validate order\n- Belongs to user\n- Status = PENDING\n- Not expired
+    
+    alt Validation failed
+        OrderController --> CheckoutScreen: 400 Bad Request\n"Invalid order"
+        CheckoutScreen --> Student: Show error\n"Cannot pay this order"
+        
+    else Valid order
+        OrderController -> OrderController: Build VNPay parameters\n{amount, txnRef, orderInfo,\nreturnUrl, createDate, expireDate}
+        
+        OrderController -> OrderController: Generate secure hash\nand payment URL
+        note right: Sign with VNPay\nhash secret
+        
+        OrderController -> TransactionEntity: Create PaymentTransaction\n{orderId, provider: VNPAY,\ntxnRef, amount, status: INIT,\npaymentUrl, expiredAt}
+        activate TransactionEntity
+        
+        OrderController -> TransactionEntity: save(transaction)
+        TransactionEntity --> OrderController: Saved transaction
+        deactivate TransactionEntity
+        
+        OrderController --> CheckoutScreen: 200 OK\nPaymentUrlResponse\n{paymentUrl}
+        deactivate OrderController
+        
+        CheckoutScreen -> Student: Redirect to\nVNPay payment page
+        deactivate CheckoutScreen
+        
+        Student -> VNPayGateway: Access VNPay URL\nto complete payment
+        activate VNPayGateway
+        note right: Student enters\ncard info and\nconfirms payment\non VNPay site
+        
+        VNPayGateway --> Student: Payment processing...
+        deactivate VNPayGateway
+    end
+end
+
+@enduml

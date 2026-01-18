@@ -1,0 +1,45 @@
+@startuml ViewCourseQuestions_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "User\n(Student/Instructor)" as User BOUNDARY_COLOR
+boundary "<<boundary>>\nQ&A\n Discussion Screen" as QAScreen BOUNDARY_COLOR
+control "<<control>>\nQuestion\nController" as QuestionController CONTROL_COLOR
+entity "<<entity>>\nQuestion" as QuestionEntity ENTITY_COLOR
+
+User -> QAScreen: View Q&A section\nof course
+activate QAScreen
+
+QAScreen -> QuestionController: GET /courses/{courseId}\n/questions\n?lessonId=...&page=...&size=...
+activate QuestionController
+note right: Public endpoint\nno auth required
+
+QuestionController -> QuestionController: Parse filters\n{courseId, lessonId (optional),\npage, size}
+
+alt LessonId provided
+    QuestionController -> QuestionEntity: findByCourseAndLesson\n(courseId, lessonId,\npageable)
+    activate QuestionEntity
+    note right: Filter questions\nfor specific lesson
+    QuestionEntity --> QuestionController: Page<Question> results
+    deactivate QuestionEntity
+    
+else No lessonId (course-level)
+    QuestionController -> QuestionEntity: findByCourseAndNoLesson\n(courseId, pageable)
+    activate QuestionEntity
+    note right: Get course-level\nquestions only
+    QuestionEntity --> QuestionController: Page<Question> results
+    deactivate QuestionEntity
+end
+
+QuestionController -> QuestionController: Map to\nQuestionDto\n{id, title, content,\nuserId, createdAt, status}
+
+QuestionController --> QAScreen: 200 OK\nPage<QuestionDto>\n{content[], totalElements,\ntotalPages, pageNumber}
+deactivate QuestionController
+
+QAScreen --> User: Display questions\nwith pagination\n- Question title\n- Content preview\n- Author\n- Created date\n- Answer count
+note right: User can click\non question to\nview details and answers
+
+deactivate QAScreen
+
+@enduml

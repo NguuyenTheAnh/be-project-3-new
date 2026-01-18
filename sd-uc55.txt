@@ -1,0 +1,77 @@
+@startuml ViewLesson_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Student" as Student BOUNDARY_COLOR
+boundary "<<boundary>>\nLesson\n Viewer Screen" as LessonScreen BOUNDARY_COLOR
+control "<<control>>\nLesson\nController" as LessonController CONTROL_COLOR
+entity "<<entity>>\nLesson" as LessonEntity ENTITY_COLOR
+entity "<<entity>>\nCourse \nLesson" as CourseLessonEntity ENTITY_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nEnrollment" as EnrollmentEntity ENTITY_COLOR
+
+Student -> LessonScreen: Click to view lesson
+activate LessonScreen
+
+LessonScreen -> LessonController: GET /lessons/{lessonId}
+activate LessonController
+note right: User authenticated
+
+LessonController -> LessonEntity: findById(lessonId)
+activate LessonEntity
+LessonEntity --> LessonController: Lesson data
+deactivate LessonEntity
+
+alt Lesson not found
+    LessonController --> LessonScreen: 404 Not Found\n"Lesson not found"
+    LessonScreen --> Student: Show error
+    
+else Lesson found
+    LessonController -> CourseLessonEntity: findActiveByLessonId\n(lessonId)
+    activate CourseLessonEntity
+    CourseLessonEntity --> LessonController: CourseLesson mapping
+    deactivate CourseLessonEntity
+    
+    alt Mapping not found
+        LessonController --> LessonScreen: 404 Not Found\n"Lesson not found"
+        LessonScreen --> Student: Show error
+        
+    else Mapping found
+        LessonController -> CourseEntity: findActiveById(courseId)
+        activate CourseEntity
+        CourseEntity --> LessonController: Course data
+        deactivate CourseEntity
+        
+        alt Course archived or deleted
+            LessonController --> LessonScreen: 404 Not Found\n"Course not available"
+            LessonScreen --> Student: Show error
+            
+        else Course available
+            LessonController -> LessonController: Check if preview allowed\n(isFreePreview or isPreview)
+            
+            LessonController -> EnrollmentEntity: isEnrolled(userId, courseId)
+            activate EnrollmentEntity
+            EnrollmentEntity --> LessonController: Boolean result
+            deactivate EnrollmentEntity
+            
+            alt Not enrolled and not preview
+                LessonController --> LessonScreen: 403 Forbidden\n"Enrollment required"
+                LessonScreen --> Student: Show error\n"You must enroll\n to view this lesson"
+                
+            else Enrolled or preview allowed
+                LessonController -> LessonController: Build LessonDetailResponse\n{id, title, lessonType,\ncontentText, videoFile,\ndocuments, duration}
+                
+                LessonController --> LessonScreen: 200 OK\nLessonDetailResponse\n{lesson content, video,\ndocuments}
+                deactivate LessonController
+                
+                LessonScreen --> Student: Display lesson\n- Video player (if VIDEO)\n- Text content (if ARTICLE)\n- Quiz (if QUIZ)\n- Documents
+                note right: Student can now\nview lesson content\nand download documents
+            end
+        end
+    end
+end
+
+deactivate LessonScreen
+
+@enduml

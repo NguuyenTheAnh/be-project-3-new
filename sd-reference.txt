@@ -1,0 +1,57 @@
+1. usecase: đăng nhập hệ thống dành cho nhân viên và quản lý (Manager, Employee):
+
+```plantuml
+@startuml Login_Sequence_Diagram
+!define BOUNDARY_COLOR #DFDFB2
+!define CONTROL_COLOR #DFDFB2
+!define ENTITY_COLOR #DFDFB2
+
+title Sequence Diagram - Employee/Manager Login
+
+actor "Staff\n(Manager/Employee)" as Staff
+boundary "<<boundary>>\nLogin Screen" as LoginScreen BOUNDARY_COLOR
+control "<<control>>\nAuth Controller" as AuthController CONTROL_COLOR
+entity "<<entity>>\nAccount" as Account ENTITY_COLOR
+
+== Authentication Process ==
+
+Staff -> LoginScreen: Enter credentials\n{email, password}
+activate LoginScreen
+
+LoginScreen -> AuthController: POST /auth/login\n{email, password}
+activate AuthController
+
+AuthController -> Account: findByEmail(email)
+activate Account
+Account --> AuthController: User account data
+deactivate Account
+
+AuthController -> AuthController: Validate password\n(comparePassword)
+
+alt Password is valid
+    AuthController -> AuthController: Create JWT tokens\n(access_token, refresh_token)
+    
+    AuthController -> Account: updateUserToken(refresh_token)
+    activate Account
+    Account --> AuthController: Token saved
+    deactivate Account
+    
+    AuthController -> AuthController: Set HTTP-only cookie\n(refresh_token)
+    
+    AuthController --> LoginScreen: 200 OK\n{access_token, user_info}
+    deactivate AuthController
+    
+    LoginScreen --> Staff: Login successful\nRedirect to dashboard
+    note right: Show user dashboard
+
+else Password is invalid
+    AuthController --> LoginScreen: 401 Unauthorized\n"Invalid credentials"
+    deactivate AuthController
+    
+    LoginScreen --> Staff: Show error message\n"Invalid email or password"
+end
+
+deactivate LoginScreen
+
+@enduml
+```

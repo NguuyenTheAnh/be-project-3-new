@@ -1,0 +1,326 @@
+\section{Đặc tả chức năng}
+\label{section:2.3}
+Phần này sẽ đặc tả chi tiết các Use Case của hệ thống.
+
+% UC02: Đăng nhập
+\subsection{Use Case "Đăng nhập"}
+Use case "Đăng nhập" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc02.png}
+    \caption{Bảng đặc tả use case "Đăng nhập"}
+    \label{fig:uc02_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc02.png}
+    \caption{Biểu đồ trình tự của use case "Đăng nhập"}
+    \label{fig:uc02_seq}
+\end{figure}
+
+% UC06: Tạo khóa học mới
+\subsection{Use Case "Tạo khóa học mới"}
+Use case "Tạo khóa học mới" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc06.png}
+    \caption{Bảng đặc tả use case "Tạo khóa học mới"}
+    \label{fig:uc06_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc06.png}
+    \caption{Biểu đồ trình tự của use case "Tạo khóa học mới"}
+    \label{fig:uc06_seq}
+\end{figure}
+
+% UC12: Tạo section
+\subsection{Use Case "Tạo section"}
+Use case "Tạo section" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc12.png}
+    \caption{Bảng đặc tả use case "Tạo section"}
+    \label{fig:uc12_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc12.png}
+    \caption{Biểu đồ trình tự của use case "Tạo section"}
+    \label{fig:uc12_seq}
+\end{figure}
+
+% UC16: Tạo bài học mới
+\subsection{Use Case "Tạo bài học mới"}
+Use case "Tạo bài học mới" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc16.png}
+    \caption{Bảng đặc tả use case "Tạo bài học mới"}
+    \label{fig:uc16_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc16.png}
+    \caption{Biểu đồ trình tự của use case "Tạo bài học mới"}
+    \label{fig:uc16_seq}
+\end{figure}
+
+% UC31: Tạo câu hỏi quiz
+\subsection{Use Case "Tạo câu hỏi quiz"}
+Use case "Tạo câu hỏi quiz" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc31.png}
+    \caption{Bảng đặc tả use case "Tạo câu hỏi quiz"}
+    \label{fig:uc31_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc31.png}
+    \caption{Biểu đồ trình tự của use case "Tạo câu hỏi quiz"}
+    \label{fig:uc31_seq}
+\end{figure}
+
+% UC39: Xem danh sách khóa học
+\subsection{Use Case "Xem danh sách khóa học"}
+Use case "Xem danh sách khóa học" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc39.png}
+    \caption{Bảng đặc tả use case "Xem danh sách khóa học"}
+    \label{fig:uc39_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc39.png}
+    \caption{Biểu đồ trình tự của use case "Xem danh sách khóa học"}
+    \label{fig:uc39_seq}
+\end{figure}
+
+% UC44: Thêm khóa học vào giỏ
+\subsection{Use Case "Thêm khóa học vào giỏ"}
+Use case "Thêm khóa học vào giỏ" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc44.png}
+    \caption{Bảng đặc tả use case "Thêm khóa học vào giỏ"}
+    \label{fig:uc44_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc44.png}
+    \caption{Biểu đồ trình tự của use case "Thêm khóa học vào giỏ"}
+    \label{fig:uc44_seq}
+\end{figure}
+
+% UC47: Thanh toán qua VNPay
+\subsection{Use Case "Thanh toán qua VNPay"}
+Use case "Thanh toán qua VNPay" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc47.png}
+    \caption{Bảng đặc tả use case "Thanh toán qua VNPay"}
+    \label{fig:uc47_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc47.png}
+    \caption{Biểu đồ trình tự của use case "Thanh toán qua VNPay"}
+    \label{fig:uc47_seq}
+\end{figure}
+
+% UC55: Xem bài học
+\subsection{Use Case "Xem bài học"}
+Use case "Xem bài học" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc55.png}
+    \caption{Bảng đặc tả use case "Xem bài học"}
+    \label{fig:uc55_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc55.png}
+    \caption{Biểu đồ trình tự của use case "Xem bài học"}
+    \label{fig:uc55_seq}
+\end{figure}
+
+% UC61: Bắt đầu làm quiz
+\subsection{Use Case "Bắt đầu làm quiz"}
+Use case "Bắt đầu làm quiz" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc61.png}
+    \caption{Bảng đặc tả use case "Bắt đầu làm quiz"}
+    \label{fig:uc61_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc61.png}
+    \caption{Biểu đồ trình tự của use case "Bắt đầu làm quiz"}
+    \label{fig:uc61_seq}
+\end{figure}
+
+% UC65: Xem danh sách câu hỏi khóa học
+\subsection{Use Case "Xem danh sách câu hỏi khóa học"}
+Use case "Xem danh sách câu hỏi khóa học" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc65.png}
+    \caption{Bảng đặc tả use case "Xem danh sách câu hỏi khóa học"}
+    \label{fig:uc65_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc65.png}
+    \caption{Biểu đồ trình tự của use case "Xem danh sách câu hỏi khóa học"}
+    \label{fig:uc65_seq}
+\end{figure}
+
+% UC71: Viết đánh giá khóa học
+\subsection{Use Case "Viết đánh giá khóa học"}
+Use case "Viết đánh giá khóa học" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc71.png}
+    \caption{Bảng đặc tả use case "Viết đánh giá khóa học"}
+    \label{fig:uc71_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc71.png}
+    \caption{Biểu đồ trình tự của use case "Viết đánh giá khóa học"}
+    \label{fig:uc71_seq}
+\end{figure}
+
+% UC75: Báo cáo nội dung vi phạm
+\subsection{Use Case "Báo cáo nội dung vi phạm"}
+Use case "Báo cáo nội dung vi phạm" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc75.png}
+    \caption{Bảng đặc tả use case "Báo cáo nội dung vi phạm"}
+    \label{fig:uc75_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc75.png}
+    \caption{Biểu đồ trình tự của use case "Báo cáo nội dung vi phạm"}
+    \label{fig:uc75_seq}
+\end{figure}
+
+% UC78: Xem dashboard giảng viên
+\subsection{Use Case "Xem dashboard giảng viên"}
+Use case "Xem dashboard giảng viên" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc78.png}
+    \caption{Bảng đặc tả use case "Xem dashboard giảng viên"}
+    \label{fig:uc78_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc78.png}
+    \caption{Biểu đồ trình tự của use case "Xem dashboard giảng viên"}
+    \label{fig:uc78_seq}
+\end{figure}
+
+% UC82: Xem danh sách người dùng
+\subsection{Use Case "Xem danh sách người dùng"}
+Use case "Xem danh sách người dùng" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc82.png}
+    \caption{Bảng đặc tả use case "Xem danh sách người dùng"}
+    \label{fig:uc82_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc82.png}
+    \caption{Biểu đồ trình tự của use case "Xem danh sách người dùng"}
+    \label{fig:uc82_seq}
+\end{figure}
+
+% UC86: Tạo category mới
+\subsection{Use Case "Tạo category mới"}
+Use case "Tạo category mới" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc86.png}
+    \caption{Bảng đặc tả use case "Tạo category mới"}
+    \label{fig:uc86_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc86.png}
+    \caption{Biểu đồ trình tự của use case "Tạo category mới"}
+    \label{fig:uc86_seq}
+\end{figure}
+
+% UC94: Xem tất cả khóa học
+\subsection{Use Case "Xem tất cả khóa học"}
+Use case "Xem tất cả khóa học" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc94.png}
+    \caption{Bảng đặc tả use case "Xem tất cả khóa học"}
+    \label{fig:uc94_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc94.png}
+    \caption{Biểu đồ trình tự của use case "Xem tất cả khóa học"}
+    \label{fig:uc94_seq}
+\end{figure}
+
+% UC96: Xem danh sách câu hỏi (Admin)
+\subsection{Use Case "Xem danh sách câu hỏi (Admin)"}
+Use case "Xem danh sách câu hỏi (Admin)" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc96.png}
+    \caption{Bảng đặc tả use case "Xem danh sách câu hỏi (Admin)"}
+    \label{fig:uc96_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc96.png}
+    \caption{Biểu đồ trình tự của use case "Xem danh sách câu hỏi (Admin)"}
+    \label{fig:uc96_seq}
+\end{figure}
+
+% UC102: Kiểm duyệt đánh giá
+\subsection{Use Case "Kiểm duyệt đánh giá"}
+Use case "Kiểm duyệt đánh giá" được trình bày chi tiết trong bảng đặc tả use case và biểu đồ trình tự bên dưới:
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/uc-des/uc102.png}
+    \caption{Bảng đặc tả use case "Kiểm duyệt đánh giá"}
+    \label{fig:uc102_spec}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{Hinhve/sd-img/uc102.png}
+    \caption{Biểu đồ trình tự của use case "Kiểm duyệt đánh giá"}
+    \label{fig:uc102_seq}
+\end{figure}

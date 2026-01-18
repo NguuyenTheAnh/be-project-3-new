@@ -1,0 +1,93 @@
+@startuml InstructorDashboard_Sequence_Diagram
+!define BOUNDARY_COLOR #ffffcc
+!define CONTROL_COLOR #ffffcc
+!define ENTITY_COLOR #ffffcc
+
+actor "Instructor" as Instructor BOUNDARY_COLOR
+boundary "<<boundary>>\nDashboard\nScreen" as DashboardScreen BOUNDARY_COLOR
+control "<<control>>\nDashboard\nController" as DashboardController CONTROL_COLOR
+entity "<<entity>>\nCourse" as CourseEntity ENTITY_COLOR
+entity "<<entity>>\nEnrollment" as EnrollmentEntity ENTITY_COLOR
+entity "<<entity>>\nCourse\nInstructor" as CourseInstructorEntity ENTITY_COLOR
+entity "<<entity>>\nQuestion" as QuestionEntity ENTITY_COLOR
+entity "<<entity>>\nCourse\nCompletion" as CourseCompletionEntity ENTITY_COLOR
+
+Instructor -> DashboardScreen: Click "View Dashboard"\nlimit (optional)
+activate DashboardScreen
+note right: Default limit: 10
+
+DashboardScreen -> DashboardController: GET /dashboard/instructor\n?limit={limit}
+activate DashboardController
+note right: Request validated:\n- Instructor authenticated\n- InstructorId from token\n- Limit: default 10
+
+DashboardController -> DashboardController: Extract instructorId\nfrom authentication
+
+DashboardController -> CourseInstructorEntity: Count published\ncourses by instructorId
+activate CourseInstructorEntity
+CourseInstructorEntity --> DashboardController: myPublishedCourses
+deactivate CourseInstructorEntity
+
+DashboardController -> EnrollmentEntity: Count total students\nfor instructor's courses
+activate EnrollmentEntity
+EnrollmentEntity --> DashboardController: totalStudents
+deactivate EnrollmentEntity
+
+DashboardController -> EnrollmentEntity: Count enrollments\nlast 7 days
+activate EnrollmentEntity
+note right: Filter by createdAt\n>= now - 7 days
+EnrollmentEntity --> DashboardController: newEnrollmentsLast7Days
+deactivate EnrollmentEntity
+
+DashboardController -> EnrollmentEntity: Count enrollments\nlast 30 days
+activate EnrollmentEntity
+note right: Filter by createdAt\n>= now - 30 days
+EnrollmentEntity --> DashboardController: newEnrollmentsLast30Days
+deactivate EnrollmentEntity
+
+DashboardController -> EnrollmentEntity: Sum revenue\nlast 7 days
+activate EnrollmentEntity
+note right: Sum pricePaidCents\nfor paid enrollments
+EnrollmentEntity --> DashboardController: revenueLast7Days
+deactivate EnrollmentEntity
+
+DashboardController -> EnrollmentEntity: Sum revenue\nlast 30 days
+activate EnrollmentEntity
+EnrollmentEntity --> DashboardController: revenueLast30Days
+deactivate EnrollmentEntity
+
+DashboardController -> CourseEntity: Get average rating\nfor instructor's courses
+activate CourseEntity
+note right: Calculate from\nrating fields
+CourseEntity --> DashboardController: avgRating
+deactivate CourseEntity
+
+DashboardController -> QuestionEntity: Find unanswered\nquestions\n(limit N)
+activate QuestionEntity
+note right: Questions on instructor's\ncourses with answerCount=0\norder by createdAt DESC
+QuestionEntity --> DashboardController: List<UnansweredQuestionDto>
+deactivate QuestionEntity
+
+DashboardController -> CourseEntity: Find instructor's courses\n(limit N)
+activate CourseEntity
+note right: Instructor's published\ncourses with enrollment,\nrevenue, rating stats\norder by enrollmentCount DESC
+CourseEntity --> DashboardController: List<TopCourseDto>
+deactivate CourseEntity
+
+DashboardController -> CourseCompletionEntity: Find recent\ncompletions (limit N)
+activate CourseCompletionEntity
+note right: Completions on instructor's\ncourses order by\ncompletedAt DESC
+CourseCompletionEntity --> DashboardController: List<CourseCompletionDto>
+deactivate CourseCompletionEntity
+
+DashboardController -> DashboardController: Build InstructorDashboardDto\n{kpi, unansweredQuestions,\nmyCourses, courseCompletions}
+note right: KPI includes:\n- myPublishedCourses\n- totalStudents\n- newEnrollments (7d/30d)\n- revenue (7d/30d)\n- avgRating
+
+DashboardController --> DashboardScreen: 200 OK\nInstructorDashboardDto\n{kpi, unansweredQuestions,\nmyCourses, courseCompletions}
+deactivate DashboardController
+
+DashboardScreen --> Instructor: Display dashboard:\n- KPI metrics\n- Unanswered questions\n- Top courses\n- Recent completions
+note right: Dashboard provides:\n- Performance overview\n- Student engagement\n- Course analytics\n- Recent activities
+
+deactivate DashboardScreen
+
+@enduml
