@@ -1,0 +1,409 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" version="27.0.8">
+  <diagram name="LMS Package Diagram" id="lms-package-diagram">
+    <mxGraphModel dx="1723" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Main Application Package -->
+        <mxCell id="main-app" value="LMS Backend Application" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="50" y="50" width="1100" height="1500" as="geometry" />
+        </mxCell>
+        
+        <!-- Core Package -->
+        <mxCell id="core-package" value="Core" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="40" width="500" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="lms-application" value="LmsApplication" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-package" vertex="1">
+          <mxGeometry x="10" y="35" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="common-config" value="CommonConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-package" vertex="1">
+          <mxGeometry x="170" y="35" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="security-config" value="SecurityConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-package" vertex="1">
+          <mxGeometry x="330" y="35" width="150" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Controller Package -->
+        <mxCell id="controller-package" value="Controller Layer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="180" width="1060" height="280" as="geometry" />
+        </mxCell>
+        
+        <!-- Row 1 Controllers -->
+        <mxCell id="auth-controllers" value="Authentication" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="controller-package" vertex="1">
+          <mxGeometry x="10" y="35" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-controller" value="AuthController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="auth-controllers" vertex="1">
+          <mxGeometry x="10" y="30" width="230" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="user-controllers" value="User Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="controller-package" vertex="1">
+          <mxGeometry x="270" y="35" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="user-controller" value="UserController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="user-controllers" vertex="1">
+          <mxGeometry x="10" y="30" width="230" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="course-controllers" value="Course Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="controller-package" vertex="1">
+          <mxGeometry x="530" y="35" width="250" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="course-author-controller" value="CourseAuthorController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="course-controllers" vertex="1">
+          <mxGeometry x="10" y="30" width="230" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog-controller" value="CatalogController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="course-controllers" vertex="1">
+          <mxGeometry x="10" y="60" width="230" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="category-controllers" value="Category &amp; Tag" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="controller-package" vertex="1">
+          <mxGeometry x="790" y="35" width="250" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="category-controller" value="CategoryController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="category-controllers" vertex="1">
+          <mxGeometry x="10" y="30" width="230" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tag-controller" value="TagController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="category-controllers" vertex="1">
+          <mxGeometry x="10" y="60" width="230" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Row 2 Controllers -->
+        <mxCell id="learning-controllers" value="Learning" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="controller-package" vertex="1">
+          <mxGeometry x="10" y="140" width="330" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="lesson-controller" value="LessonController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="learning-controllers" vertex="1">
+          <mxGeometry x="10" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz-instructor-controller" value="QuizInstructorController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="learning-controllers" vertex="1">
+          <mxGeometry x="170" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz-attempt-controller" value="QuizAttemptController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="learning-controllers" vertex="1">
+          <mxGeometry x="10" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="enrollment-controller" value="EnrollmentController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="learning-controllers" vertex="1">
+          <mxGeometry x="170" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="progress-controller" value="ProgressController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="learning-controllers" vertex="1">
+          <mxGeometry x="10" y="90" width="150" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="commerce-controllers" value="Commerce" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="controller-package" vertex="1">
+          <mxGeometry x="350" y="140" width="330" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-controller" value="CartController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="commerce-controllers" vertex="1">
+          <mxGeometry x="10" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="order-controller" value="OrderController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="commerce-controllers" vertex="1">
+          <mxGeometry x="170" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="vnpay-controller" value="VnpayController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="commerce-controllers" vertex="1">
+          <mxGeometry x="10" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="community-controllers" value="Community" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="controller-package" vertex="1">
+          <mxGeometry x="690" y="140" width="350" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="question-controller" value="QuestionController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-controllers" vertex="1">
+          <mxGeometry x="10" y="30" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="review-controller" value="CourseReviewController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-controllers" vertex="1">
+          <mxGeometry x="180" y="30" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="moderation-controller" value="ModerationController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-controllers" vertex="1">
+          <mxGeometry x="10" y="60" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="dashboard-controller" value="DashboardController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-controllers" vertex="1">
+          <mxGeometry x="180" y="60" width="160" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Service Package -->
+        <mxCell id="service-package" value="Service Layer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="480" width="1060" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="core-services" value="Core Services" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="service-package" vertex="1">
+          <mxGeometry x="10" y="35" width="330" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="user-service" value="UserService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-services" vertex="1">
+          <mxGeometry x="10" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="course-service" value="CourseService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-services" vertex="1">
+          <mxGeometry x="170" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="lesson-service" value="LessonService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-services" vertex="1">
+          <mxGeometry x="10" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz-service" value="QuizService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-services" vertex="1">
+          <mxGeometry x="170" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="category-service" value="CategoryService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-services" vertex="1">
+          <mxGeometry x="10" y="90" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tag-service" value="TagService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-services" vertex="1">
+          <mxGeometry x="170" y="90" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="enrollment-service" value="EnrollmentService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-services" vertex="1">
+          <mxGeometry x="10" y="120" width="150" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="business-services" value="Business Services" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="service-package" vertex="1">
+          <mxGeometry x="350" y="35" width="330" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-service" value="CartService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="business-services" vertex="1">
+          <mxGeometry x="10" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="order-service" value="OrderService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="business-services" vertex="1">
+          <mxGeometry x="170" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="payment-service" value="PaymentService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="business-services" vertex="1">
+          <mxGeometry x="10" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="question-service" value="QuestionService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="business-services" vertex="1">
+          <mxGeometry x="170" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="review-service" value="CourseReviewService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="business-services" vertex="1">
+          <mxGeometry x="10" y="90" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="report-service" value="ContentReportService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="business-services" vertex="1">
+          <mxGeometry x="170" y="90" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="dashboard-service" value="DashboardService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="business-services" vertex="1">
+          <mxGeometry x="10" y="120" width="150" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="utility-services" value="Utility Services" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="service-package" vertex="1">
+          <mxGeometry x="690" y="35" width="350" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="file-service" value="UploadedFileService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="utility-services" vertex="1">
+          <mxGeometry x="10" y="30" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog-service" value="CatalogService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="utility-services" vertex="1">
+          <mxGeometry x="180" y="30" width="160" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="progress-service" value="ProgressService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="utility-services" vertex="1">
+          <mxGeometry x="10" y="60" width="160" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Repository Package -->
+        <mxCell id="repository-package" value="Repository Layer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="700" width="1060" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="repositories" value="JPA Repositories (extends JpaRepository)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="repository-package" vertex="1">
+          <mxGeometry x="10" y="35" width="1040" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Entity Package -->
+        <mxCell id="entity-package" value="Entity Layer (Domain Model)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="815" width="1060" height="330" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="user-entities" value="User &amp; Role" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="entity-package" vertex="1">
+          <mxGeometry x="10" y="35" width="250" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="user-entity" value="User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="user-entities" vertex="1">
+          <mxGeometry x="10" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="role-entity" value="Role" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="user-entities" vertex="1">
+          <mxGeometry x="130" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="user-role-entity" value="UserRole" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="user-entities" vertex="1">
+          <mxGeometry x="10" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="course-entities" value="Course" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="entity-package" vertex="1">
+          <mxGeometry x="270" y="35" width="250" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="course-entity" value="Course" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="course-entities" vertex="1">
+          <mxGeometry x="10" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="category-entity" value="Category" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="course-entities" vertex="1">
+          <mxGeometry x="130" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="tag-entity" value="Tag" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="course-entities" vertex="1">
+          <mxGeometry x="10" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="course-tag-entity" value="CourseTag" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="course-entities" vertex="1">
+          <mxGeometry x="130" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="course-instructor-entity" value="CourseInstructor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="course-entities" vertex="1">
+          <mxGeometry x="10" y="90" width="110" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="curriculum-entities" value="Curriculum" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="entity-package" vertex="1">
+          <mxGeometry x="530" y="35" width="250" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="section-entity" value="CourseSection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="curriculum-entities" vertex="1">
+          <mxGeometry x="10" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="lesson-entity" value="Lesson" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="curriculum-entities" vertex="1">
+          <mxGeometry x="130" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="course-lesson-entity" value="CourseLesson" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="curriculum-entities" vertex="1">
+          <mxGeometry x="10" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="lesson-document-entity" value="LessonDocument" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="curriculum-entities" vertex="1">
+          <mxGeometry x="130" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="course-document-entity" value="CourseDocument" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="curriculum-entities" vertex="1">
+          <mxGeometry x="10" y="90" width="110" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="quiz-entities" value="Quiz &amp; Assessment" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="entity-package" vertex="1">
+          <mxGeometry x="790" y="35" width="250" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz-entity" value="Quiz" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="quiz-entities" vertex="1">
+          <mxGeometry x="10" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz-question-entity" value="QuizQuestion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="quiz-entities" vertex="1">
+          <mxGeometry x="130" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz-option-entity" value="QuizOption" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="quiz-entities" vertex="1">
+          <mxGeometry x="10" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz-attempt-entity" value="QuizAttempt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="quiz-entities" vertex="1">
+          <mxGeometry x="130" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="quiz-answer-entity" value="QuizAnswer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="quiz-entities" vertex="1">
+          <mxGeometry x="10" y="90" width="110" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Row 2 Entities -->
+        <mxCell id="enrollment-entities" value="Enrollment &amp; Progress" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="entity-package" vertex="1">
+          <mxGeometry x="10" y="170" width="250" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="enrollment-entity" value="Enrollment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="enrollment-entities" vertex="1">
+          <mxGeometry x="10" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="lesson-progress-entity" value="LessonProgress" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="enrollment-entities" vertex="1">
+          <mxGeometry x="130" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="completion-entity" value="CourseCompletion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="enrollment-entities" vertex="1">
+          <mxGeometry x="10" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="commerce-entities" value="Commerce" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="entity-package" vertex="1">
+          <mxGeometry x="270" y="170" width="250" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-entity" value="Cart" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="commerce-entities" vertex="1">
+          <mxGeometry x="10" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-item-entity" value="CartItem" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="commerce-entities" vertex="1">
+          <mxGeometry x="130" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="order-entity" value="Order" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="commerce-entities" vertex="1">
+          <mxGeometry x="10" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="order-item-entity" value="OrderItem" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="commerce-entities" vertex="1">
+          <mxGeometry x="130" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="payment-entity" value="PaymentTransaction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="commerce-entities" vertex="1">
+          <mxGeometry x="10" y="90" width="110" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="community-entities" value="Community" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="entity-package" vertex="1">
+          <mxGeometry x="530" y="170" width="250" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="question-entity" value="Question" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-entities" vertex="1">
+          <mxGeometry x="10" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="answer-entity" value="Answer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-entities" vertex="1">
+          <mxGeometry x="130" y="30" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="review-entity" value="CourseReview" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-entities" vertex="1">
+          <mxGeometry x="10" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="content-report-entity" value="ContentReport" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-entities" vertex="1">
+          <mxGeometry x="130" y="60" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="question-vote-entity" value="QuestionVote" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="community-entities" vertex="1">
+          <mxGeometry x="10" y="90" width="110" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="file-entities" value="File Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="entity-package" vertex="1">
+          <mxGeometry x="790" y="170" width="250" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="file-entity" value="UploadedFile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="file-entities" vertex="1">
+          <mxGeometry x="10" y="30" width="230" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- DTO Package -->
+        <mxCell id="dto-package" value="DTO Layer (Data Transfer Objects)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="1165" width="1060" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="dtos" value="Request DTOs, Response DTOs, Dashboard DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="dto-package" vertex="1">
+          <mxGeometry x="10" y="35" width="1040" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Infrastructure Package -->
+        <mxCell id="infrastructure-package" value="Infrastructure &amp; Common" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="1280" width="1060" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="common-utils" value="Common" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="infrastructure-package" vertex="1">
+          <mxGeometry x="10" y="35" width="330" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="base-dto" value="BaseDto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="common-utils" vertex="1">
+          <mxGeometry x="10" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="base-entity" value="BaseEntity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="common-utils" vertex="1">
+          <mxGeometry x="170" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="base-service" value="BaseService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="common-utils" vertex="1">
+          <mxGeometry x="10" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="response-config" value="ResponseConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="common-utils" vertex="1">
+          <mxGeometry x="170" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="business-exception" value="BusinessException" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="common-utils" vertex="1">
+          <mxGeometry x="10" y="90" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="exception-handler" value="GlobalExceptionHandler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="common-utils" vertex="1">
+          <mxGeometry x="170" y="90" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="message-source-config" value="MessageSourceConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="common-utils" vertex="1">
+          <mxGeometry x="10" y="120" width="150" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="config-utils" value="Configuration" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="infrastructure-package" vertex="1">
+          <mxGeometry x="350" y="35" width="330" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="jpa-config" value="JpaConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="config-utils" vertex="1">
+          <mxGeometry x="10" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="web-config" value="WebConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="config-utils" vertex="1">
+          <mxGeometry x="170" y="30" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="model-mapper-config" value="ModelMapperConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="config-utils" vertex="1">
+          <mxGeometry x="10" y="60" width="150" height="25" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="external-integration" value="External Integration" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="infrastructure-package" vertex="1">
+          <mxGeometry x="690" y="35" width="350" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="vnpay-config" value="VNPay Payment Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-integration" vertex="1">
+          <mxGeometry x="10" y="30" width="330" height="25" as="geometry" />
+        </mxCell>
+        
+        <!-- Dependencies arrows -->
+        <mxCell id="controller-to-service" value="" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#DAA520;" parent="1" source="controller-package" target="service-package" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="800" as="sourcePoint" />
+            <mxPoint x="650" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="service-to-repository" value="" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#DAA520;" parent="1" source="service-package" target="repository-package" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="800" as="sourcePoint" />
+            <mxPoint x="650" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="repository-to-entity" value="" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#DAA520;" parent="1" source="repository-package" target="entity-package" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="950" as="sourcePoint" />
+            <mxPoint x="650" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

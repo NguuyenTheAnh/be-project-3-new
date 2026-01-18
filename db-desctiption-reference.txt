@@ -1,0 +1,236 @@
+\subsection{Mô tả chi tiết các bảng}
+Phần này mô tả chi tiết cấu trúc của từng bảng trong cơ sở dữ liệu.
+
+\vspace{1cm} % Tạo khoảng cách
+
+Bảng `account` lưu trữ thông tin tài khoản của nhân viên và quản lý.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & account\_id & int & Khóa chính \\
+        \hline
+        2 & name & varchar(255) & Họ và tên của nhân viên/quản lý \\
+        \hline
+        3 & email & varchar(255) & Email đăng nhập, là duy nhất \\
+        \hline
+        4 & password & varchar(255) & Mật khẩu đã được mã hóa \\
+        \hline
+        5 & role & role\_type & Vai trò (Enum: 'Manager' hoặc 'Staff') \\
+        \hline
+        6 & phone & varchar(50) & Số điện thoại \\
+        \hline
+        7 & is\_active & bool & Trạng thái hoạt động của tài khoản \\
+        \hline
+        8 & refresh\_token & varchar(500) & Refresh token để duy trì phiên đăng nhập \\
+        \hline
+        9 & created\_at & date & Thời gian tạo tài khoản \\
+        \hline
+        10 & updated\_at & date & Thời gian cập nhật lần cuối \\
+        \hline
+        11 & deleted\_at & date & Thời gian xóa mềm \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `account`}
+    \label{tab:account_detail}
+\end{table}
+
+Bảng `dish` lưu trữ thông tin chi tiết về các món ăn.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & dish\_id & int & Khóa chính \\
+        \hline
+        2 & dish\_name & varchar(255) & Tên món ăn \\
+        \hline
+        3 & price & int & Giá món ăn \\
+        \hline
+        4 & description & text & Mô tả chi tiết món ăn \\
+        \hline
+        5 & image\_name & varchar(255) & Tên file hình ảnh của món ăn \\
+        \hline
+        6 & status & dish\_status & Trạng thái (Enum: 'Available', 'Unavailable') \\
+        \hline
+        7 & options & text & Các tùy chọn thêm cho món (VD: cay, ít ngọt) \\
+        \hline
+        8 & category & dish\_category & Loại món ăn (Enum: 'Món chính', 'Tráng miệng') \\
+        \hline
+        9 & created\_at & date & Thời gian tạo món ăn \\
+        \hline
+        10 & updated\_at & date & Thời gian cập nhật lần cuối \\
+        \hline
+        11 & deleted\_at & date & Thời gian xóa mềm \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `dish`}
+    \label{tab:dish_detail}
+\end{table}
+
+Bảng `table` lưu trữ thông tin về các bàn ăn trong nhà hàng.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{3.5cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & table\_id & int & Khóa chính \\
+        \hline
+        2 & table\_name & varchar(255) & Tên/số hiệu bàn, là duy nhất \\
+        \hline
+        3 & payment\_status & table\_payment\_status & Trạng thái thanh toán của bàn \\
+        \hline
+        4 & capacity & int & Sức chứa của bàn \\
+        \hline
+        5 & status & table\_status & Trạng thái của bàn (Enum: 'Trống', 'Có khách') \\
+        \hline
+        6 & created\_at & date & Thời gian tạo bàn \\
+        \hline
+        7 & updated\_at & date & Thời gian cập nhật lần cuối \\
+        \hline
+        8 & deleted\_at & date & Thời gian xóa mềm \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `table`}
+    \label{tab:table_detail}
+\end{table}
+
+Bảng `order` lưu trữ thông tin về các đơn hàng của khách.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & order\_id & int & Khóa chính \\
+        \hline
+        2 & options & text & Ghi chú chung cho cả đơn hàng \\
+        \hline
+        3 & status & order\_status & Trạng thái đơn hàng \\
+        \hline
+        4 & total\_order & int & Tổng giá trị đơn hàng \\
+        \hline
+        5 & guest\_id & int & Khóa ngoại, tham chiếu đến bảng `guest` \\
+        \hline
+        6 & table\_id & int & Khóa ngoại, tham chiếu đến bảng `table` \\
+        \hline
+        7 & order\_handler\_id & int & Khóa ngoại, tham chiếu đến `account` (người xử lý) \\
+        \hline
+        8 & created\_at & date & Thời gian tạo đơn hàng \\
+        \hline
+        9 & updated\_at & date & Thời gian cập nhật lần cuối \\
+        \hline
+        10 & deleted\_at & date & Thời gian xóa mềm \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `order`}
+    \label{tab:order_detail}
+\end{table}
+
+Bảng `guest` lưu trữ thông tin phiên tạm thời của khách hàng tại bàn.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & guest\_id & int & Khóa chính \\
+        \hline
+        2 & guest\_name & varchar(255) & Tên khách hàng (tùy chọn) \\
+        \hline
+        3 & refresh\_token & varchar(500) & Refresh token để duy trì phiên của khách \\
+        \hline
+        4 & table\_id & int & Khóa ngoại, tham chiếu đến bàn khách đang ngồi \\
+        \hline
+        5 & cart\_id & int & Khóa ngoại, tham chiếu đến giỏ hàng của khách \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `guest`}
+    \label{tab:guest_detail}
+\end{table}
+
+Bảng `cart` và `cart\_item` cùng nhau quản lý giỏ hàng của khách.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & cart\_id & int & Khóa chính \\
+        \hline
+        2 & total\_cart & int & Tổng giá trị các món trong giỏ hàng \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `cart`}
+    \label{tab:cart_detail}
+\end{table}
+
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & cart\_item\_id & int & (Không dùng làm khóa chính) \\
+        \hline
+        2 & cart\_id & int & Khóa chính kết hợp, khóa ngoại đến `cart` \\
+        \hline
+        3 & dish\_id & int & Khóa chính kết hợp, khóa ngoại đến `dish` \\
+        \hline
+        4 & quantity & int & Số lượng của món ăn trong giỏ hàng \\
+        \hline
+        5 & total\_cart\_item & int & Tổng giá trị của mục này (số lượng * đơn giá) \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `cart\_item`}
+    \label{tab:cart_item_detail}
+\end{table}
+
+
+Bảng `transaction` lưu trữ lịch sử các giao dịch thanh toán qua ZaloPay.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & transaction\_id & varchar(100) & Khóa chính, mã giao dịch của hệ thống \\
+        \hline
+        2 & id\_zalopay & varchar(100) & Mã giao dịch từ ZaloPay \\
+        \hline
+        3 & transaction\_date & bigint & Thời gian giao dịch (timestamp) \\
+        \hline
+        4 & amount\_in & bigint & Số tiền nhận vào \\
+        \hline
+        5 & amount\_out & bigint & Số tiền chi ra \\
+        \hline
+        6 & accumulated & bigint & Số dư lũy kế \\
+        \hline
+        7 & table\_id & int & Khóa ngoại, tham chiếu đến bàn đã thanh toán \\
+        \hline
+        8 & created\_at & date & Thời gian ghi nhận giao dịch \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `transaction`}
+    \label{tab:transaction_detail}
+\end{table}

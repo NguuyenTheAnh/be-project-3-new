@@ -1,0 +1,345 @@
+\section{Kiểm thử chức năng}
+\label{sec:testing}
+% (Giữ lại đoạn giới thiệu và 4 bảng đầu tiên tôi đã viết ở lần trước)
+% ...
+Dưới đây là các bảng kiểm thử chức năng chi tiết cho các use case tiêu biểu của hệ thống.
+
+%========================= UC01: Đăng nhập =========================
+\subsection{Kiểm thử Use Case UC01: Đăng nhập}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Email: `manager@email.com` \newline Mật khẩu: `12345678` & Thông báo đăng nhập thành công. Chuyển hướng đến trang Dashboard. & Không xử lý & OK \\ \hline
+    2 & Email: `manager@email.com` \newline Mật khẩu: (để trống) & Thông báo: "Vui lòng nhập mật khẩu." & Xử lý chuẩn & OK \\ \hline
+    3 & Email: (để trống) \newline Mật khẩu: `12345678` & Thông báo: "Vui lòng nhập email." & Xử lý chuẩn & OK \\ \hline
+    4 & Email: `manager@email.com` \newline Mật khẩu: `123456789` & Thông báo: "Sai thông tin tài khoản hoặc mật khẩu." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Đăng nhập"}
+\end{table}
+
+%========================= UC02: Đăng ký =========================
+\subsection{Kiểm thử Use Case UC02: Đăng ký}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhập đầy đủ và hợp lệ các thông tin (tên, email, mật khẩu, vai trò) & Thông báo: "Tạo tài khoản thành công". Tài khoản mới xuất hiện trong danh sách. & Không xử lý & OK \\ \hline
+    2 & Email đã tồn tại trong hệ thống & Thông báo: "Email này đã được sử dụng." & Xử lý chuẩn & OK \\ \hline
+    3 & Mật khẩu và mật khẩu xác nhận không khớp & Thông báo: "Mật khẩu xác nhận không khớp." & Xử lý chuẩn & OK \\ \hline
+    4 & Để trống trường bắt buộc (ví dụ: email) & Thông báo: "Vui lòng điền đầy đủ thông tin bắt buộc." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Đăng ký"}
+\end{table}
+
+%========================= UC03: Đăng xuất =========================
+\subsection{Kiểm thử Use Case UC03: Đăng xuất}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Người dùng (đã đăng nhập) nhấn nút "Đăng xuất" & Hệ thống xóa phiên đăng nhập, chuyển hướng người dùng về trang Đăng nhập. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Đăng xuất"}
+\end{table}
+
+%========================= UC04: Cập nhật thông tin cá nhân =========================
+\subsection{Kiểm thử Use Case UC04: Cập nhật thông tin cá nhân}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Thay đổi "Họ và tên" và "Số điện thoại" với dữ liệu hợp lệ. & Thông báo: "Cập nhật thành công". Thông tin mới được hiển thị. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Cập nhật thông tin cá nhân"}
+\end{table}
+
+%========================= UC05: Xem thông tin doanh số =========================
+\subsection{Kiểm thử Use Case UC05: Xem thông tin doanh số}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Truy cập trang Dashboard/Báo cáo. & Hiển thị các biểu đồ, số liệu về doanh thu theo ngày/tuần/tháng. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem thông tin doanh số"}
+\end{table}
+
+%========================= UC06: Xem các giao dịch thành công =========================
+\subsection{Kiểm thử Use Case UC06: Xem các giao dịch thành công}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Truy cập trang quản lý Giao dịch. & Hiển thị danh sách các giao dịch đã thanh toán thành công qua ZaloPay, sắp xếp theo thời gian mới nhất. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem các giao dịch thành công"}
+\end{table}
+
+%========================= UC07: Xem danh sách đơn hàng =========================
+\subsection{Kiểm thử Use Case UC07: Xem danh sách đơn hàng}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Truy cập trang quản lý Đơn hàng. & Hiển thị danh sách tất cả các đơn hàng với các thông tin cơ bản (Mã đơn, Bàn, Tổng tiền, Trạng thái). & Không xử lý & OK \\ \hline
+    2 & Lọc đơn hàng theo trạng thái (ví dụ: "Chờ xác nhận"). & Danh sách được cập nhật, chỉ hiển thị các đơn hàng có trạng thái "Chờ xác nhận". & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem danh sách đơn hàng"}
+\end{table}
+
+%========================= UC08: Xử lý đơn hàng =========================
+\subsection{Kiểm thử Use Case UC08: Xử lý đơn hàng}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhấn "Xác nhận" trên đơn hàng "Chờ xác nhận". & Trạng thái đơn hàng chuyển thành "Đang xử lý". & Không xử lý & OK \\ \hline
+    2 & Nhấn "Hoàn thành" trên đơn hàng "Đang xử lý". & Trạng thái đơn hàng chuyển thành "Hoàn thành". & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xử lý đơn hàng"}
+\end{table}
+
+%========================= UC09: Xem chi tiết đơn hàng =========================
+\subsection{Kiểm thử Use Case UC09: Xem chi tiết đơn hàng}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhấn vào một đơn hàng trong danh sách. & Hiển thị pop-up/trang chi tiết, bao gồm danh sách các món ăn, số lượng, giá, và ghi chú của đơn hàng đó. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem chi tiết đơn hàng"}
+\end{table}
+
+%========================= UC10: Tạo bàn ăn =========================
+\subsection{Kiểm thử Use Case UC10: Tạo bàn ăn}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhập tên bàn "Bàn 10", sức chứa "4". & Thông báo "Tạo bàn thành công". Bàn mới xuất hiện trong danh sách. Mã QR được tạo cho bàn. & Không xử lý & OK \\ \hline
+    2 & Nhập tên bàn đã tồn tại (ví dụ: "Bàn 1"). & Thông báo: "Tên bàn đã tồn tại." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Tạo bàn ăn"}
+\end{table}
+
+%========================= UC11: Xem danh sách bàn ăn =========================
+\subsection{Kiểm thử Use Case UC11: Xem danh sách bàn ăn}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Truy cập trang quản lý Bàn ăn. & Hiển thị danh sách tất cả các bàn với tên, trạng thái và mã QR tương ứng. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem danh sách bàn ăn"}
+\end{table}
+
+%========================= UC12: Sửa thông tin bàn ăn =========================
+\subsection{Kiểm thử Use Case UC12: Sửa thông tin bàn ăn}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Chọn một bàn, thay đổi sức chứa từ "4" thành "6". & Thông báo "Cập nhật thành công". Thông tin mới được hiển thị. & Không xử lý & OK \\ \hline
+    2 & Cố gắng đổi tên bàn thành một tên đã tồn tại. & Thông báo: "Tên bàn đã tồn tại." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Sửa thông tin bàn ăn"}
+\end{table}
+
+%========================= UC13: Xóa bàn ăn =========================
+\subsection{Kiểm thử Use Case UC13: Xóa bàn ăn}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhấn nút "Xóa" trên một bàn và xác nhận. & Thông báo "Xóa bàn thành công". Bàn đó biến mất khỏi danh sách. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xóa bàn ăn"}
+\end{table}
+
+%========================= UC14: Tạo món ăn =========================
+\subsection{Kiểm thử Use Case UC14: Tạo món ăn}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhập đầy đủ thông tin hợp lệ cho món ăn mới. & Thông báo "Tạo món thành công". Món ăn mới xuất hiện trong thực đơn. & Không xử lý & OK \\ \hline
+    2 & Để trống tên món hoặc giá. & Thông báo: "Vui lòng điền tên và giá món ăn." & Xử lý chuẩn & OK \\ \hline
+    3 & Nhập giá không phải là số. & Thông báo: "Giá phải là một con số." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Tạo món ăn"}
+\end{table}
+
+%========================= UC15: Xem danh sách món =========================
+\subsection{Kiểm thử Use Case UC15: Xem danh sách món}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Truy cập trang quản lý Thực đơn. & Hiển thị danh sách tất cả các món ăn theo từng danh mục. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem danh sách món"}
+\end{table}
+
+%========================= UC16: Sửa thông tin món ăn =========================
+\subsection{Kiểm thử Use Case UC16: Sửa thông tin món ăn}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Chọn một món ăn, thay đổi giá và mô tả. & Thông báo "Cập nhật thành công". Thông tin mới được hiển thị. & Không xử lý & OK \\ \hline
+    2 & Xóa giá của một món ăn (để trống). & Thông báo: "Giá không được để trống." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Sửa thông tin món ăn"}
+\end{table}
+
+%========================= UC17: Xóa món ăn =========================
+\subsection{Kiểm thử Use Case UC17: Xóa món ăn}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhấn nút "Xóa" trên một món ăn và xác nhận. & Thông báo "Xóa món thành công". Món ăn biến mất khỏi thực đơn. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xóa món ăn"}
+\end{table}
+
+%========================= UC18: Xem danh sách nhân viên =========================
+\subsection{Kiểm thử Use Case UC18: Xem danh sách nhân viên}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Quản lý truy cập trang Quản lý nhân viên. & Hiển thị danh sách các tài khoản nhân viên. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem danh sách nhân viên"}
+\end{table}
+
+%========================= UC19: Xóa nhân viên =========================
+\subsection{Kiểm thử Use Case UC19: Xóa nhân viên}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Quản lý nhấn "Xóa" trên một tài khoản nhân viên và xác nhận. & Thông báo "Xóa nhân viên thành công". Nhân viên đó biến mất khỏi danh sách. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xóa nhân viên"}
+\end{table}
+
+%========================= UC20: Thêm món vào giỏ hàng =========================
+\subsection{Kiểm thử Use Case UC20: Thêm món vào giỏ hàng}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Chọn món "Gà rán", số lượng: 2. & Món ăn được thêm vào giỏ hàng, tổng tiền giỏ hàng được cập nhật. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Thêm món vào giỏ hàng"}
+\end{table}
+
+%========================= UC21: Xem thông tin giỏ hàng =========================
+\subsection{Kiểm thử Use Case UC21: Xem thông tin giỏ hàng}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhấn vào biểu tượng giỏ hàng. & Hiển thị pop-up/trang giỏ hàng với danh sách các món đã chọn, số lượng và tổng tiền. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem thông tin giỏ hàng"}
+\end{table}
+
+%========================= UC22: Cập nhật thông tin giỏ hàng =========================
+\subsection{Kiểm thử Use Case UC22: Cập nhật thông tin giỏ hàng}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Trong giỏ hàng, tăng số lượng món "Gà rán" từ 2 lên 3. & Số lượng và tổng tiền của món đó được cập nhật, tổng tiền giỏ hàng cũng được cập nhật. & Không xử lý & OK \\ \hline
+    2 & Giảm số lượng món về 0. & Món ăn đó bị xóa khỏi giỏ hàng. & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Cập nhật thông tin giỏ hàng"}
+\end{table}
+
+%========================= UC23: Xóa món trong giỏ hàng =========================
+\subsection{Kiểm thử Use Case UC23: Xóa món trong giỏ hàng}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhấn nút xóa bên cạnh một món ăn trong giỏ hàng. & Món ăn đó bị xóa khỏi giỏ hàng. Tổng tiền được cập nhật lại. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xóa món trong giỏ hàng"}
+\end{table}
+
+%========================= UC24: Quét QR Code =========================
+\subsection{Kiểm thử Use Case UC24: Quét QR Code}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Khách hàng quét mã QR hợp lệ của "Bàn 1". \newline Nhập tên "Nguyễn Văn A". & Chuyển đến trang thực đơn của nhà hàng, hệ thống ghi nhận phiên làm việc cho khách "Nguyễn Văn A" tại "Bàn 1". & Không xử lý & OK \\ \hline
+    2 & Không nhập tên khách hàng. & Hiển thị thông báo "Vui lòng nhập tên của bạn." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Quét QR Code"}
+\end{table}
+
+%========================= UC25: Thanh toán =========================
+\subsection{Kiểm thử Use Case UC25: Thanh toán}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Giỏ hàng có sản phẩm, nhấn "Thanh toán" và xác nhận giao dịch trên ZaloPay. & Hiển thị trang "Đặt hàng thành công". Đơn hàng được tạo với trạng thái "Chờ xác nhận". & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Thanh toán"}
+\end{table}

@@ -1,0 +1,288 @@
+\section{Kiểm thử chức năng}
+\label{sec:testing}
+Dưới đây là các bảng kiểm thử chức năng chi tiết cho các use case của hệ thống.
+
+%========================= UC02: Đăng nhập =========================
+\subsection{Kiểm thử Use Case UC02: Đăng nhập}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Email: `student@email.com` \newline Mật khẩu: `12345678` & Thông báo đăng nhập thành công. Chuyển hướng đến trang Dashboard. & Không xử lý & OK \\ \hline
+    2 & Email: (để trống) \newline Mật khẩu: `12345678` & Thông báo: "Vui lòng nhập email." & Xử lý chuẩn & OK \\ \hline
+    3 & Email: `student@email.com` \newline Mật khẩu: `sai-mat-khau` & Thông báo: "Sai thông tin tài khoản hoặc mật khẩu." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Đăng nhập"}
+\end{table}
+
+%========================= UC06: Tạo khóa học mới =========================
+\subsection{Kiểm thử Use Case UC06: Tạo khóa học mới}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhập tiêu đề, mô tả, danh mục, giá hợp lệ & Khóa học được tạo thành công, xuất hiện trong danh sách ở trạng thái nháp. & Không xử lý & OK \\ \hline
+    2 & Để trống tiêu đề khóa học & Thông báo: "Vui lòng nhập tên khóa học." & Xử lý chuẩn & OK \\ \hline
+    3 & Người dùng không phải giảng viên thực hiện tạo khóa học & Thông báo: "Bạn không có quyền tạo khóa học." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Tạo khóa học mới"}
+\end{table}
+
+%========================= UC12: Tạo section =========================
+\subsection{Kiểm thử Use Case UC12: Tạo section}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhập tiêu đề section và vị trí hợp lệ & Section mới được tạo và hiển thị trong danh sách section. & Không xử lý & OK \\ \hline
+    2 & Để trống tiêu đề section & Thông báo: "Vui lòng nhập tên section." & Xử lý chuẩn & OK \\ \hline
+    3 & Nhập vị trí section không hợp lệ (âm hoặc trùng vị trí) & Thông báo: "Vị trí section không hợp lệ." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Tạo section"}
+\end{table}
+
+%========================= UC16: Tạo bài học mới =========================
+\subsection{Kiểm thử Use Case UC16: Tạo bài học mới}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Chọn loại bài học VIDEO và tải lên file hợp lệ & Bài học được tạo thành công và hiển thị trong danh sách bài học. & Không xử lý & OK \\ \hline
+    2 & Để trống tiêu đề bài học & Thông báo: "Vui lòng nhập tiêu đề bài học." & Xử lý chuẩn & OK \\ \hline
+    3 & Chọn loại bài học không hợp lệ & Thông báo: "Loại bài học không hợp lệ." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Tạo bài học mới"}
+\end{table}
+
+%========================= UC31: Tạo câu hỏi quiz =========================
+\subsection{Kiểm thử Use Case UC31: Tạo câu hỏi quiz}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhập nội dung câu hỏi, đáp án, chọn đáp án đúng & Câu hỏi quiz được tạo và hiển thị trong danh sách câu hỏi. & Không xử lý & OK \\ \hline
+    2 & Không chọn đáp án đúng & Thông báo: "Vui lòng chọn đáp án đúng." & Xử lý chuẩn & OK \\ \hline
+    3 & Để trống nội dung câu hỏi & Thông báo: "Vui lòng nhập nội dung câu hỏi." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Tạo câu hỏi quiz"}
+\end{table}
+
+%========================= UC39: Xem danh sách khóa học =========================
+\subsection{Kiểm thử Use Case UC39: Xem danh sách khóa học}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Truy cập trang danh sách khóa học & Hiển thị danh sách khóa học kèm phân trang. & Không xử lý & OK \\ \hline
+    2 & Lọc theo danh mục khóa học & Danh sách được cập nhật theo danh mục đã chọn. & Không xử lý & OK \\ \hline
+    3 & Tìm kiếm với từ khóa không có kết quả & Hiển thị thông báo không tìm thấy khóa học phù hợp. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem danh sách khóa học"}
+\end{table}
+
+%========================= UC44: Thêm khóa học vào giỏ =========================
+\subsection{Kiểm thử Use Case UC44: Thêm khóa học vào giỏ}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhấn nút "Thêm vào giỏ" tại một khóa học & Khóa học được thêm vào giỏ, số lượng giỏ hàng cập nhật. & Không xử lý & OK \\ \hline
+    2 & Thêm khóa học đã có trong giỏ & Thông báo: "Khóa học đã có trong giỏ hàng." & Xử lý chuẩn & OK \\ \hline
+    3 & Người dùng chưa đăng nhập thực hiện thêm vào giỏ & Chuyển hướng đến trang đăng nhập. & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Thêm khóa học vào giỏ"}
+\end{table}
+
+%========================= UC47: Thanh toán qua VNPay =========================
+\subsection{Kiểm thử Use Case UC47: Thanh toán qua VNPay}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Giỏ hàng có khóa học, nhấn "Thanh toán" & Chuyển đến VNPay, thanh toán thành công, đơn hàng ở trạng thái PAID. & Không xử lý & OK \\ \hline
+    2 & Người dùng hủy giao dịch trên VNPay & Đơn hàng ở trạng thái FAILED/CANCELLED, hiển thị thông báo thất bại. & Xử lý chuẩn & OK \\ \hline
+    3 & Thanh toán quá thời hạn liên kết & Thông báo: "Liên kết thanh toán đã hết hạn." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Thanh toán qua VNPay"}
+\end{table}
+
+%========================= UC55: Xem bài học =========================
+\subsection{Kiểm thử Use Case UC55: Xem bài học}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Người dùng đã ghi danh mở bài học & Hiển thị nội dung bài học (video/bài viết) và thông tin liên quan. & Không xử lý & OK \\ \hline
+    2 & Người dùng chưa ghi danh mở bài học & Thông báo yêu cầu mua/ghi danh để xem nội dung. & Xử lý chuẩn & OK \\ \hline
+    3 & Mở bài học không tồn tại & Thông báo: "Bài học không tồn tại." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem bài học"}
+\end{table}
+
+%========================= UC61: Bắt đầu làm quiz =========================
+\subsection{Kiểm thử Use Case UC61: Bắt đầu làm quiz}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhấn "Bắt đầu" để làm quiz & Hiển thị câu hỏi, bắt đầu đếm thời gian làm bài. & Không xử lý & OK \\ \hline
+    2 & Hết thời gian làm bài & Hệ thống tự động nộp bài và hiển thị kết quả. & Xử lý chuẩn & OK \\ \hline
+    3 & Đã vượt số lần làm quiz cho phép & Thông báo: "Bạn đã vượt số lần làm bài." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Bắt đầu làm quiz"}
+\end{table}
+
+%========================= UC65: Xem danh sách câu hỏi khóa học =========================
+\subsection{Kiểm thử Use Case UC65: Xem danh sách câu hỏi khóa học}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Truy cập mục Q\&A của khóa học & Hiển thị danh sách câu hỏi theo thời gian mới nhất. & Không xử lý & OK \\ \hline
+    2 & Lọc theo trạng thái "Đã giải quyết" & Danh sách chỉ hiển thị các câu hỏi đã giải quyết. & Không xử lý & OK \\ \hline
+    3 & Khóa học chưa có câu hỏi & Hiển thị thông báo chưa có câu hỏi. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem danh sách câu hỏi khóa học"}
+\end{table}
+
+%========================= UC71: Viết đánh giá khóa học =========================
+\subsection{Kiểm thử Use Case UC71: Viết đánh giá khóa học}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhập rating và nội dung đánh giá & Đánh giá được gửi thành công, trạng thái PENDING. & Không xử lý & OK \\ \hline
+    2 & Không chọn rating & Thông báo: "Vui lòng chọn số sao đánh giá." & Xử lý chuẩn & OK \\ \hline
+    3 & Người dùng chưa ghi danh khóa học & Thông báo: "Bạn chưa thể đánh giá khóa học này." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Viết đánh giá khóa học"}
+\end{table}
+
+%========================= UC75: Báo cáo nội dung vi phạm =========================
+\subsection{Kiểm thử Use Case UC75: Báo cáo nội dung vi phạm}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Chọn nội dung và nhập lý do báo cáo & Báo cáo được tạo thành công, trạng thái OPEN. & Không xử lý & OK \\ \hline
+    2 & Để trống lý do báo cáo & Thông báo: "Vui lòng nhập lý do báo cáo." & Xử lý chuẩn & OK \\ \hline
+    3 & Báo cáo trùng nội dung đã gửi trước đó & Thông báo: "Bạn đã gửi báo cáo cho nội dung này." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Báo cáo nội dung vi phạm"}
+\end{table}
+
+%========================= UC78: Xem dashboard giảng viên =========================
+\subsection{Kiểm thử Use Case UC78: Xem dashboard giảng viên}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Giảng viên truy cập dashboard & Hiển thị thống kê doanh thu, số học viên, số khóa học. & Không xử lý & OK \\ \hline
+    2 & Chọn khoảng thời gian lọc dữ liệu & Biểu đồ và số liệu được cập nhật theo khoảng thời gian. & Không xử lý & OK \\ \hline
+    3 & Người không phải giảng viên truy cập dashboard & Thông báo: "Bạn không có quyền truy cập." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem dashboard giảng viên"}
+\end{table}
+
+%========================= UC82: Xem danh sách người dùng =========================
+\subsection{Kiểm thử Use Case UC82: Xem danh sách người dùng}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Admin truy cập trang quản lý người dùng & Hiển thị danh sách người dùng với phân trang. & Không xử lý & OK \\ \hline
+    2 & Tìm kiếm theo email người dùng & Danh sách được lọc theo email nhập vào. & Không xử lý & OK \\ \hline
+    3 & Người không phải admin truy cập trang quản lý & Thông báo: "Bạn không có quyền truy cập." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem danh sách người dùng"}
+\end{table}
+
+%========================= UC86: Tạo category mới =========================
+\subsection{Kiểm thử Use Case UC86: Tạo category mới}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Nhập tên và slug hợp lệ & Category được tạo thành công và hiển thị trong danh sách. & Không xử lý & OK \\ \hline
+    2 & Nhập tên hoặc slug đã tồn tại & Thông báo: "Tên hoặc slug đã tồn tại." & Xử lý chuẩn & OK \\ \hline
+    3 & Để trống tên category & Thông báo: "Vui lòng nhập tên category." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Tạo category mới"}
+\end{table}
+
+%========================= UC94: Xem tất cả khóa học =========================
+\subsection{Kiểm thử Use Case UC94: Xem tất cả khóa học}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Truy cập trang khám phá khóa học & Hiển thị toàn bộ khóa học kèm phân trang. & Không xử lý & OK \\ \hline
+    2 & Lọc theo tag hoặc level & Danh sách khóa học được cập nhật theo bộ lọc. & Không xử lý & OK \\ \hline
+    3 & Bộ lọc không có kết quả & Hiển thị thông báo không có khóa học phù hợp. & Không xử lý & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem tất cả khóa học"}
+\end{table}
+
+%========================= UC96: Xem danh sách câu hỏi (Admin) =========================
+\subsection{Kiểm thử Use Case UC96: Xem danh sách câu hỏi (Admin)}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Admin truy cập trang quản lý câu hỏi & Hiển thị danh sách tất cả câu hỏi và trạng thái. & Không xử lý & OK \\ \hline
+    2 & Lọc theo trạng thái "OPEN" & Danh sách chỉ hiển thị các câu hỏi đang mở. & Không xử lý & OK \\ \hline
+    3 & Người không phải admin truy cập trang quản lý & Thông báo: "Bạn không có quyền truy cập." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Xem danh sách câu hỏi (Admin)"}
+\end{table}
+
+%========================= UC102: Kiểm duyệt đánh giá =========================
+\subsection{Kiểm thử Use Case UC102: Kiểm duyệt đánh giá}
+\begin{table}[H]
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|p{3cm}|p{4cm}|p{2.5cm}|c|} \hline
+    \textbf{STT} & \textbf{Input} & \textbf{Output (Mong đợi)} & \textbf{Exception} & \textbf{Kết quả} \\ \hline
+    1 & Admin duyệt một đánh giá & Đánh giá chuyển sang trạng thái APPROVED và hiển thị công khai. & Không xử lý & OK \\ \hline
+    2 & Admin từ chối một đánh giá & Đánh giá chuyển sang trạng thái REJECTED và bị ẩn. & Không xử lý & OK \\ \hline
+    3 & Người không có quyền thực hiện kiểm duyệt & Thông báo: "Bạn không có quyền thực hiện thao tác này." & Xử lý chuẩn & OK \\ \hline
+    \end{tabular}
+    \caption{Bảng kiểm thử cho Use Case "Kiểm duyệt đánh giá"}
+\end{table}

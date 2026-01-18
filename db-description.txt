@@ -1,0 +1,1436 @@
+\subsection{Mô tả chi tiết các bảng}
+Phần này mô tả chi tiết cấu trúc của từng bảng trong cơ sở dữ liệu.
+
+\vspace{1cm} % Tạo khoảng cách
+
+Bảng `uploaded\_file` lưu trữ thông tin file đã tải lên và metadata lưu trữ.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & storage\_provider & varchar(50) & Storage provider: LOCAL/MINIO/S3 \\
+        \hline
+        3 & bucket & varchar(255) & Bucket/container name (if any) \\
+        \hline
+        4 & object\_key & varchar(500) & Object key/path in storage (unique) \\
+        \hline
+        5 & original\_name & varchar(255) & Original filename at upload time \\
+        \hline
+        6 & content\_type & varchar(150) & MIME type \\
+        \hline
+        7 & size\_bytes & bigint & File size in bytes \\
+        \hline
+        8 & checksum\_sha256 & varchar(64) & SHA-256 checksum for integrity/dedup \\
+        \hline
+        9 & is\_public & tinyint(1) & 1=public accessible, 0=requires auth \\
+        \hline
+        10 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        11 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        12 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        13 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        14 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        15 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+        16 & status & varchar(50) & Lifecycle: PENDING/READY/ATTACHED/DELETED \\
+        \hline
+        17 & purpose & varchar(50) & Purpose: THUMBNAIL/INTRO\_VIDEO/LESSON\_VIDEO/DOCUMENT/GENERIC \\
+        \hline
+        18 & course\_id & bigint & Context course for file \\
+        \hline
+        19 & lesson\_id & bigint & Context lesson for file \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `uploaded\_file`}
+    \label{tab:uploaded_file_detail}
+\end{table}
+
+Bảng `user` lưu trữ thông tin người dùng trong hệ thống.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & email & varchar(255) & Login email (unique) \\
+        \hline
+        3 & password\_hash & varchar(255) & Hashed password (BCrypt/Argon2) \\
+        \hline
+        4 & full\_name & varchar(255) & Display name \\
+        \hline
+        5 & avatar\_file\_id & bigint & Khóa ngoại, tham chiếu đến `uploaded\\_file` (avatar image) \\
+        \hline
+        6 & phone & varchar(50) & Phone number \\
+        \hline
+        7 & date\_of\_birth & date & Date of birth (optional) \\
+        \hline
+        8 & last\_login\_at & datetime & Last login timestamp \\
+        \hline
+        9 & status & varchar(50) & User status: ACTIVE/BLOCKED/PENDING \\
+        \hline
+        10 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        11 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        12 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        13 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        14 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        15 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `user`}
+    \label{tab:user_detail}
+\end{table}
+
+Bảng `role` lưu trữ thông tin vai trò người dùng.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & name & varchar(100) & Role name (unique): STUDENT/INSTRUCTOR/ADMIN \\
+        \hline
+        3 & description & varchar(255) & Role description \\
+        \hline
+        4 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        5 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        6 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        7 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        8 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        9 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `role`}
+    \label{tab:role_detail}
+\end{table}
+
+Bảng `permission` lưu trữ thông tin quyền truy cập trong hệ thống.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & code & varchar(150) & Permission code (unique): COURSE\_CREATE, COURSE\_PUBLISH... \\
+        \hline
+        3 & description & varchar(255) & Permission description \\
+        \hline
+        4 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        5 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        6 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        7 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        8 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        9 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `permission`}
+    \label{tab:permission_detail}
+\end{table}
+
+Bảng `user\_roles` lưu trữ quan hệ gán vai trò cho người dùng.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` \\
+        \hline
+        3 & role\_id & bigint & Khóa ngoại, tham chiếu đến `role` \\
+        \hline
+        4 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        5 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        6 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        7 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        8 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        9 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `user\_roles`}
+    \label{tab:user_roles_detail}
+\end{table}
+
+Bảng `role\_permissions` lưu trữ quan hệ gán quyền cho vai trò.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & role\_id & bigint & Khóa ngoại, tham chiếu đến `role` \\
+        \hline
+        3 & permission\_id & bigint & Khóa ngoại, tham chiếu đến `permission` \\
+        \hline
+        4 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        5 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        6 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        7 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        8 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        9 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `role\_permissions`}
+    \label{tab:role_permissions_detail}
+\end{table}
+
+Bảng `refresh\_token` lưu trữ refresh token phục vụ phiên đăng nhập.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (token owner) \\
+        \hline
+        3 & token\_hash & varchar(255) & Refresh token hash (do NOT store raw token) \\
+        \hline
+        4 & issued\_at & datetime & Issued timestamp \\
+        \hline
+        5 & expires\_at & datetime & Expiry timestamp \\
+        \hline
+        6 & revoked\_at & datetime & Revoked timestamp (logout/rotation) \\
+        \hline
+        7 & revoke\_reason & varchar(255) & Reason for revoke \\
+        \hline
+        8 & replaced\_by\_id & bigint & Khóa ngoại, tham chiếu đến `refresh\\_token` (new token when rotated) \\
+        \hline
+        9 & device\_id & varchar(255) & Session/device identifier for multi-device \\
+        \hline
+        10 & user\_agent & varchar(500) & User-Agent at issuance \\
+        \hline
+        11 & ip\_address & varchar(64) & IP address at issuance \\
+        \hline
+        12 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        13 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        14 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        15 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        16 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        17 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `refresh\_token`}
+    \label{tab:refresh_token_detail}
+\end{table}
+
+Bảng `category` lưu trữ danh mục khóa học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & name & varchar(255) & Category name \\
+        \hline
+        3 & slug & varchar(255) & SEO slug (unique if used) \\
+        \hline
+        4 & parent\_id & bigint & Khóa ngoại, tham chiếu đến `category` (parent category) \\
+        \hline
+        5 & description & varchar(500) & Category description \\
+        \hline
+        6 & position & int & Display ordering position \\
+        \hline
+        7 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        8 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        9 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        10 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        11 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        12 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `category`}
+    \label{tab:category_detail}
+\end{table}
+
+Bảng `course` lưu trữ thông tin khóa học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & category\_id & bigint & Khóa ngoại, tham chiếu đến `category` \\
+        \hline
+        3 & creator\_user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (course creator) \\
+        \hline
+        4 & title & varchar(255) & Course title \\
+        \hline
+        5 & slug & varchar(255) & SEO slug (unique if used) \\
+        \hline
+        6 & short\_description & varchar(500) & Short description \\
+        \hline
+        7 & description & text & Long description \\
+        \hline
+        8 & level & varchar(50) & Level: BEGINNER/INTERMEDIATE/ADVANCED \\
+        \hline
+        9 & language & varchar(50) & Language code: vi/en... \\
+        \hline
+        10 & thumbnail\_file\_id & bigint & Khóa ngoại, tham chiếu đến `uploaded\\_file` (course thumbnail) \\
+        \hline
+        11 & intro\_video\_file\_id & bigint & Khóa ngoại, tham chiếu đến `uploaded\\_file` (intro video) \\
+        \hline
+        12 & status & varchar(50) & Status: DRAFT/REVIEW/PUBLISHED/ARCHIVED \\
+        \hline
+        13 & published\_at & datetime & Published timestamp \\
+        \hline
+        14 & rating\_avg & decimal(3,2) & Cached average rating \\
+        \hline
+        15 & rating\_count & int & Cached rating count \\
+        \hline
+        16 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        17 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        18 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        19 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        20 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        21 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+        22 & price\_cents & bigint & Course price in cents \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `course`}
+    \label{tab:course_detail}
+\end{table}
+
+Bảng `course\_instructor` lưu trữ thông tin giảng viên gắn với khóa học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        3 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (instructor) \\
+        \hline
+        4 & instructor\_role & varchar(50) & Role: OWNER/CO\_INSTRUCTOR/ASSISTANT \\
+        \hline
+        5 & revenue\_share & decimal(5,2) & Revenue share percent (optional) \\
+        \hline
+        6 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        7 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        8 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        9 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        10 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        11 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `course\_instructor`}
+    \label{tab:course_instructor_detail}
+\end{table}
+
+Bảng `course\_section` lưu trữ các chương/section của khóa học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        3 & title & varchar(255) & Section title \\
+        \hline
+        4 & position & int & Position within course \\
+        \hline
+        5 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        6 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        7 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        8 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        9 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        10 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `course\_section`}
+    \label{tab:course_section_detail}
+\end{table}
+
+Bảng `lesson` lưu trữ thông tin bài học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & title & varchar(255) & Lesson/lecture title \\
+        \hline
+        3 & lesson\_type & varchar(50) & Type: VIDEO/ARTICLE/QUIZ \\
+        \hline
+        4 & content\_text & longtext & Text content for ARTICLE lessons \\
+        \hline
+        5 & video\_file\_id & bigint & Khóa ngoại, tham chiếu đến `uploaded\\_file` (video for VIDEO lessons) \\
+        \hline
+        6 & duration\_seconds & int & Video duration in seconds \\
+        \hline
+        7 & is\_free\_preview & tinyint(1) & 1=free preview, 0=paid content \\
+        \hline
+        8 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        9 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        10 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        11 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        12 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        13 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `lesson`}
+    \label{tab:lesson_detail}
+\end{table}
+
+Bảng `course\_lesson` lưu trữ quan hệ bài học thuộc khóa học (và section).
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        3 & course\_section\_id & bigint & Khóa ngoại, tham chiếu đến `course\\_section` (nullable if not grouped) \\
+        \hline
+        4 & lesson\_id & bigint & Khóa ngoại, tham chiếu đến `lesson` \\
+        \hline
+        5 & position & int & Position within section/course \\
+        \hline
+        6 & is\_preview & tinyint(1) & Override preview flag at mapping level \\
+        \hline
+        7 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        8 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        9 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        10 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        11 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        12 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `course\_lesson`}
+    \label{tab:course_lesson_detail}
+\end{table}
+
+Bảng `course\_document` lưu trữ tài liệu đính kèm của khóa học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        3 & uploaded\_file\_id & bigint & Khóa ngoại, tham chiếu đến `uploaded\\_file` \\
+        \hline
+        4 & title & varchar(255) & Document title \\
+        \hline
+        5 & doc\_type & varchar(50) & Type: PDF/SLIDE/ATTACHMENT \\
+        \hline
+        6 & position & int & Display position \\
+        \hline
+        7 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        8 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        9 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        10 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        11 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        12 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `course\_document`}
+    \label{tab:course_document_detail}
+\end{table}
+
+Bảng `lesson\_document` lưu trữ tài liệu đính kèm của bài học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & lesson\_id & bigint & Khóa ngoại, tham chiếu đến `lesson` \\
+        \hline
+        3 & uploaded\_file\_id & bigint & Khóa ngoại, tham chiếu đến `uploaded\\_file` \\
+        \hline
+        4 & title & varchar(255) & Document title \\
+        \hline
+        5 & doc\_type & varchar(50) & Type: PDF/SLIDE/ATTACHMENT \\
+        \hline
+        6 & position & int & Display position \\
+        \hline
+        7 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        8 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        9 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        10 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        11 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        12 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `lesson\_document`}
+    \label{tab:lesson_document_detail}
+\end{table}
+
+Bảng `enrollment` lưu trữ thông tin ghi danh khóa học của học viên.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (student) \\
+        \hline
+        3 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        4 & enrolled\_at & datetime & Enrollment timestamp \\
+        \hline
+        5 & status & varchar(50) & Status: ACTIVE/COMPLETED/CANCELLED \\
+        \hline
+        6 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        7 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        8 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        9 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        10 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        11 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `enrollment`}
+    \label{tab:enrollment_detail}
+\end{table}
+
+Bảng `progress` lưu trữ tiến độ học theo từng bài học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & enrollment\_id & bigint & Khóa ngoại, tham chiếu đến `enrollment` \\
+        \hline
+        3 & lesson\_id & bigint & Khóa ngoại, tham chiếu đến `lesson` \\
+        \hline
+        4 & completed & tinyint(1) & 1=completed, 0=not completed \\
+        \hline
+        5 & completed\_at & datetime & Completion timestamp \\
+        \hline
+        6 & last\_position\_seconds & int & Last playback position in seconds (video) \\
+        \hline
+        7 & last\_accessed\_at & datetime & Last access timestamp \\
+        \hline
+        8 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        9 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        10 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        11 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        12 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        13 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `progress`}
+    \label{tab:progress_detail}
+\end{table}
+
+Bảng `course\_review` lưu trữ đánh giá/nhận xét khóa học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        3 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (reviewer) \\
+        \hline
+        4 & rating & tinyint & Star rating 1..5 \\
+        \hline
+        5 & title & varchar(255) & Review title \\
+        \hline
+        6 & content & text & Review content \\
+        \hline
+        7 & status & varchar(50) & Moderation status: PENDING/APPROVED/REJECTED \\
+        \hline
+        8 & moderated\_by\_user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (moderator) \\
+        \hline
+        9 & moderated\_at & datetime & Moderated timestamp \\
+        \hline
+        10 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        11 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        12 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        13 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        14 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        15 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `course\_review`}
+    \label{tab:course_review_detail}
+\end{table}
+
+Bảng `quiz` lưu trữ bài kiểm tra gắn với bài học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & lesson\_id & bigint & Khóa ngoại, tham chiếu đến `lesson` (quiz attached to lesson) \\
+        \hline
+        3 & title & varchar(255) & Quiz title \\
+        \hline
+        4 & time\_limit\_seconds & int & Time limit in seconds \\
+        \hline
+        5 & pass\_score & decimal(5,2) & Pass score (e.g., 0..100) \\
+        \hline
+        6 & max\_attempts & int & Maximum attempts allowed \\
+        \hline
+        7 & shuffle\_questions & tinyint(1) & 1=shuffle questions, 0=keep order \\
+        \hline
+        8 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        9 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        10 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        11 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        12 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        13 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `quiz`}
+    \label{tab:quiz_detail}
+\end{table}
+
+Bảng `quiz\_question` lưu trữ câu hỏi của bài kiểm tra.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & quiz\_id & bigint & Khóa ngoại, tham chiếu đến `quiz` \\
+        \hline
+        3 & question\_text & text & Question text \\
+        \hline
+        4 & question\_type & varchar(50) & Type: SINGLE/MULTI/TRUE\_FALSE/TEXT \\
+        \hline
+        5 & position & int & Display position \\
+        \hline
+        6 & points & decimal(6,2) & Points for this question \\
+        \hline
+        7 & explanation & text & Explanation shown after answering \\
+        \hline
+        8 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        9 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        10 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        11 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        12 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        13 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `quiz\_question`}
+    \label{tab:quiz_question_detail}
+\end{table}
+
+Bảng `quiz\_answer` lưu trữ đáp án cho câu hỏi.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & question\_id & bigint & Khóa ngoại, tham chiếu đến `quiz\\_question` \\
+        \hline
+        3 & answer\_text & text & Answer option text \\
+        \hline
+        4 & is\_correct & tinyint(1) & 1=correct option, 0=incorrect \\
+        \hline
+        5 & position & int & Option position \\
+        \hline
+        6 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        7 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        8 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        9 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        10 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        11 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `quiz\_answer`}
+    \label{tab:quiz_answer_detail}
+\end{table}
+
+Bảng `quiz\_attempt` lưu trữ lượt làm bài kiểm tra của người học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & quiz\_id & bigint & Khóa ngoại, tham chiếu đến `quiz` \\
+        \hline
+        3 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (attempt owner) \\
+        \hline
+        4 & started\_at & datetime & Attempt start time \\
+        \hline
+        5 & submitted\_at & datetime & Attempt submit time \\
+        \hline
+        6 & score & decimal(8,2) & Attempt score \\
+        \hline
+        7 & status & varchar(50) & Status: IN\_PROGRESS/SUBMITTED/GRADED \\
+        \hline
+        8 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        9 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        10 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        11 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        12 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        13 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `quiz\_attempt`}
+    \label{tab:quiz_attempt_detail}
+\end{table}
+
+Bảng `quiz\_attempt\_answer` lưu trữ câu trả lời trong một lượt làm bài.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & quiz\_attempt\_id & bigint & Khóa ngoại, tham chiếu đến `quiz\\_attempt` \\
+        \hline
+        3 & question\_id & bigint & Khóa ngoại, tham chiếu đến `quiz\\_question` \\
+        \hline
+        4 & answer\_id & bigint & Khóa ngoại, tham chiếu đến `quiz\\_answer` (selected option, if applicable) \\
+        \hline
+        5 & answer\_text & text & Free-text answer (if question\_type=TEXT) \\
+        \hline
+        6 & is\_correct & tinyint(1) & 1=correct, 0=incorrect (auto-graded if possible) \\
+        \hline
+        7 & points\_awarded & decimal(8,2) & Points awarded for this answer \\
+        \hline
+        8 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        9 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        10 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        11 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        12 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        13 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `quiz\_attempt\_answer`}
+    \label{tab:quiz_attempt_answer_detail}
+\end{table}
+
+Bảng `tag` lưu trữ thẻ (tag) cho tìm kiếm/khám phá.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & name & varchar(100) & Tag name (unique) \\
+        \hline
+        3 & slug & varchar(150) & SEO slug (unique if used) \\
+        \hline
+        4 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        5 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        6 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        7 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        8 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        9 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `tag`}
+    \label{tab:tag_detail}
+\end{table}
+
+Bảng `course\_tag` lưu trữ quan hệ giữa khóa học và thẻ.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        3 & tag\_id & bigint & Khóa ngoại, tham chiếu đến `tag` \\
+        \hline
+        4 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        5 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        6 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        7 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        8 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        9 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `course\_tag`}
+    \label{tab:course_tag_detail}
+\end{table}
+
+Bảng `question` lưu trữ câu hỏi trong mục Q&A.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        3 & lesson\_id & bigint & Khóa ngoại, tham chiếu đến `lesson` (optional; question related to a lesson) \\
+        \hline
+        4 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (asker) \\
+        \hline
+        5 & title & varchar(255) & Question title \\
+        \hline
+        6 & content & text & Question content \\
+        \hline
+        7 & status & varchar(50) & Status: OPEN/RESOLVED/CLOSED \\
+        \hline
+        8 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        9 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        10 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        11 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        12 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        13 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `question`}
+    \label{tab:question_detail}
+\end{table}
+
+Bảng `answer` lưu trữ câu trả lời cho câu hỏi Q&A.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & question\_id & bigint & Khóa ngoại, tham chiếu đến `question` \\
+        \hline
+        3 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (answerer) \\
+        \hline
+        4 & content & text & Answer content \\
+        \hline
+        5 & is\_accepted & tinyint(1) & 1=accepted answer, 0=not accepted \\
+        \hline
+        6 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        7 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        8 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        9 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        10 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        11 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `answer`}
+    \label{tab:answer_detail}
+\end{table}
+
+Bảng `question\_vote` lưu trữ lượt bình chọn cho câu hỏi.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & question\_id & bigint & Khóa ngoại, tham chiếu đến `question` \\
+        \hline
+        3 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (voter) \\
+        \hline
+        4 & vote\_type & varchar(10) & Vote type: UP/DOWN \\
+        \hline
+        5 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        6 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        7 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        8 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        9 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        10 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `question\_vote`}
+    \label{tab:question_vote_detail}
+\end{table}
+
+Bảng `order` lưu trữ đơn hàng mua khóa học.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (buyer) \\
+        \hline
+        3 & total\_amount\_cents & bigint & Total amount after discount (in cents) \\
+        \hline
+        4 & currency & varchar(10) & Currency code: VND/USD... \\
+        \hline
+        5 & status & varchar(50) & Status: PENDING/PAID/FAILED/CANCELLED/REFUNDED \\
+        \hline
+        6 & payment\_method & varchar(50) & Payment method: VNPAY/MOMO/STRIPE... \\
+        \hline
+        7 & paid\_at & datetime & Paid timestamp \\
+        \hline
+        8 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        9 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        10 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        11 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        12 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        13 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `order`}
+    \label{tab:order_detail}
+\end{table}
+
+Bảng `order\_item` lưu trữ chi tiết các khóa học trong đơn hàng.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & order\_id & bigint & Khóa ngoại, tham chiếu đến `order` \\
+        \hline
+        3 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` (purchased course) \\
+        \hline
+        4 & price\_cents & bigint & List price in cents \\
+        \hline
+        5 & discount\_cents & bigint & Discount amount in cents \\
+        \hline
+        6 & final\_price\_cents & bigint & Final price in cents \\
+        \hline
+        7 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        8 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        9 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        10 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        11 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        12 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `order\_item`}
+    \label{tab:order_item_detail}
+\end{table}
+
+Bảng `payment\_transaction` lưu trữ giao dịch thanh toán từ cổng thanh toán.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & order\_id & bigint & Khóa ngoại, tham chiếu đến `order` \\
+        \hline
+        3 & provider & varchar(50) & Payment provider: VNPAY/MOMO/STRIPE... \\
+        \hline
+        4 & provider\_txn\_id & varchar(255) & Transaction id from provider \\
+        \hline
+        5 & amount\_cents & bigint & Transaction amount in cents \\
+        \hline
+        6 & currency & varchar(10) & Currency code \\
+        \hline
+        7 & status & varchar(50) & Status: INIT/SUCCESS/FAILED \\
+        \hline
+        8 & raw\_response\_json & longtext & Raw provider response payload for audit/debug \\
+        \hline
+        9 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        10 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        11 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        12 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        13 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        14 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+        15 & txn\_ref & varchar(255) & VNPay TxnRef (unique per pay request) \\
+        \hline
+        16 & payment\_url & text & Generated payment URL \\
+        \hline
+        17 & expired\_at & datetime & Payment link expiration time \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `payment\_transaction`}
+    \label{tab:payment_transaction_detail}
+\end{table}
+
+Bảng `refund\_request` lưu trữ yêu cầu hoàn tiền.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & order\_item\_id & bigint & Khóa ngoại, tham chiếu đến `order\\_item` (refunded purchase item) \\
+        \hline
+        3 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (requester) \\
+        \hline
+        4 & reason & varchar(500) & Refund reason \\
+        \hline
+        5 & status & varchar(50) & Status: PENDING/APPROVED/REJECTED/PROCESSED \\
+        \hline
+        6 & requested\_at & datetime & Requested timestamp \\
+        \hline
+        7 & approved\_at & datetime & Approved timestamp \\
+        \hline
+        8 & processed\_at & datetime & Processed timestamp \\
+        \hline
+        9 & refund\_amount\_cents & bigint & Refund amount in cents \\
+        \hline
+        10 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        11 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        12 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        13 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        14 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        15 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `refund\_request`}
+    \label{tab:refund_request_detail}
+\end{table}
+
+Bảng `content\_report` lưu trữ báo cáo nội dung vi phạm.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & reporter\_user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (reporter) \\
+        \hline
+        3 & target\_type & varchar(50) & Target type: REVIEW/QUESTION/ANSWER/COURSE/LESSON \\
+        \hline
+        4 & target\_id & bigint & Target object id \\
+        \hline
+        5 & reason & varchar(500) & Report reason \\
+        \hline
+        6 & status & varchar(50) & Status: OPEN/IN\_REVIEW/RESOLVED/REJECTED \\
+        \hline
+        7 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        8 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        9 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        10 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        11 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        12 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `content\_report`}
+    \label{tab:content_report_detail}
+\end{table}
+
+Bảng `moderation\_action` lưu trữ hành động kiểm duyệt liên quan báo cáo.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & report\_id & bigint & Khóa ngoại, tham chiếu đến `content\\_report` \\
+        \hline
+        3 & moderator\_user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (moderator) \\
+        \hline
+        4 & action & varchar(50) & Action: APPROVE/REJECT/HIDE/BLOCK\_USER \\
+        \hline
+        5 & note & varchar(500) & Moderator note \\
+        \hline
+        6 & acted\_at & datetime & Action timestamp \\
+        \hline
+        7 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        8 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        9 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        10 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        11 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        12 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `moderation\_action`}
+    \label{tab:moderation_action_detail}
+\end{table}
+
+Bảng `document\_view` lưu trữ thống kê lượt xem tài liệu.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (viewer) \\
+        \hline
+        3 & uploaded\_file\_id & bigint & Khóa ngoại, tham chiếu đến `uploaded\\_file` (viewed document) \\
+        \hline
+        4 & view\_count & int & Aggregated view count \\
+        \hline
+        5 & last\_viewed\_at & datetime & Last viewed timestamp \\
+        \hline
+        6 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        7 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        8 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        9 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        10 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        11 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `document\_view`}
+    \label{tab:document_view_detail}
+\end{table}
+
+Bảng `cart` lưu trữ giỏ hàng của người dùng.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & user\_id & bigint & Khóa ngoại, tham chiếu đến `user` (cart owner) \\
+        \hline
+        3 & status & varchar(50) & Status: ACTIVE/CHECKED\_OUT \\
+        \hline
+        4 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        5 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        6 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        7 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        8 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        9 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `cart`}
+    \label{tab:cart_detail}
+\end{table}
+
+Bảng `cart\_item` lưu trữ các khóa học trong giỏ hàng.
+\begin{table}[H]
+    \small % Cỡ chữ nhỏ hơn
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|c|>{\raggedright\arraybackslash}p{3.5cm}|>{\raggedright\arraybackslash}p{3cm}|p{5cm}|}
+        \hline
+        \textbf{STT} & \textbf{Tên thuộc tính} & \textbf{Kiểu dữ liệu} & \textbf{Ghi chú} \\
+        \hline
+        1 & id & bigint & Khóa chính \\
+        \hline
+        2 & cart\_id & bigint & Khóa ngoại, tham chiếu đến `cart` \\
+        \hline
+        3 & course\_id & bigint & Khóa ngoại, tham chiếu đến `course` \\
+        \hline
+        4 & price\_cents & bigint & Snapshot price in VND \\
+        \hline
+        5 & final\_price\_cents & bigint & Final price in VND \\
+        \hline
+        6 & is\_active & tinyint(1) & Trạng thái hoạt động \\
+        \hline
+        7 & is\_deleted & tinyint(1) & Trạng thái xóa mềm \\
+        \hline
+        8 & created\_date & datetime & Thời gian tạo \\
+        \hline
+        9 & updated\_date & datetime & Thời gian cập nhật \\
+        \hline
+        10 & created\_user & varchar(255) & Người tạo \\
+        \hline
+        11 & updated\_user & varchar(255) & Người cập nhật \\
+        \hline
+    \end{tabular}
+    \caption{Mô tả chi tiết bảng `cart\_item`}
+    \label{tab:cart_item_detail}
+\end{table}

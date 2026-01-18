@@ -1,0 +1,346 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0" version="27.0.8">
+  <diagram name="Backend Package Diagram" id="backend-package-diagram">
+    <mxGraphModel dx="1723" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="main-app" value="Backend Application" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="50" y="50" width="1050" height="1500" as="geometry" />
+        </mxCell>
+        <mxCell id="core-package" value="Core" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="40" width="1000" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="app-module" value="AppModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-package" vertex="1">
+          <mxGeometry x="20" y="35" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="app-controller" value="AppController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-package" vertex="1">
+          <mxGeometry x="160" y="35" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="app-service" value="AppService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-package" vertex="1">
+          <mxGeometry x="300" y="35" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="main-ts" value="main.ts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-package" vertex="1">
+          <mxGeometry x="440" y="35" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-package" value="Authentication" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="180" width="1000" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-module" value="AuthModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="auth-package" vertex="1">
+          <mxGeometry x="20" y="35" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-controller" value="AuthController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="auth-package" vertex="1">
+          <mxGeometry x="140" y="35" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-service" value="AuthService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="auth-package" vertex="1">
+          <mxGeometry x="260" y="35" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-dtos" value="Auth DTOs" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="auth-package" vertex="1">
+          <mxGeometry x="20" y="80" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="login-dto" value="LoginDto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="auth-dtos" vertex="1">
+          <mxGeometry x="10" y="25" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="register-dto" value="RegisterDto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="auth-dtos" vertex="1">
+          <mxGeometry x="100" y="25" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-guards" value="Auth Guards" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="auth-package" vertex="1">
+          <mxGeometry x="240" y="80" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="jwt-auth-guard" value="JwtAuthGuard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="auth-guards" vertex="1">
+          <mxGeometry x="10" y="25" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="local-auth-guard" value="LocalAuthGuard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="auth-guards" vertex="1">
+          <mxGeometry x="110" y="25" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="passport-strategies" value="Passport Strategies" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="auth-package" vertex="1">
+          <mxGeometry x="480" y="80" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="jwt-strategy" value="JwtStrategy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="passport-strategies" vertex="1">
+          <mxGeometry x="10" y="25" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="local-strategy" value="LocalStrategy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="passport-strategies" vertex="1">
+          <mxGeometry x="100" y="25" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="business-package" value="Business Modules" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="380" width="1000" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="account-mgmt" value="Account Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="business-package" vertex="1">
+          <mxGeometry x="20" y="35" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="account-module" value="AccountModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="account-mgmt" vertex="1">
+          <mxGeometry x="5" y="25" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="account-controller" value="AccountController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="account-mgmt" vertex="1">
+          <mxGeometry x="90" y="25" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="account-service" value="AccountService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="account-mgmt" vertex="1">
+          <mxGeometry x="5" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="account-dtos" value="Account DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="account-mgmt" vertex="1">
+          <mxGeometry x="90" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="account-entities" value="Account Entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="account-mgmt" vertex="1">
+          <mxGeometry x="5" y="65" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="table-mgmt" value="Table Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="business-package" vertex="1">
+          <mxGeometry x="270" y="35" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="table-module" value="TableModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="table-mgmt" vertex="1">
+          <mxGeometry x="5" y="25" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="table-controller" value="TableController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="table-mgmt" vertex="1">
+          <mxGeometry x="90" y="25" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="table-service" value="TableService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="table-mgmt" vertex="1">
+          <mxGeometry x="5" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="table-dtos" value="Table DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="table-mgmt" vertex="1">
+          <mxGeometry x="90" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="table-entities" value="Table Entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="table-mgmt" vertex="1">
+          <mxGeometry x="5" y="65" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="dish-mgmt" value="Dish Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="business-package" vertex="1">
+          <mxGeometry x="520" y="35" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="dish-module" value="DishModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="dish-mgmt" vertex="1">
+          <mxGeometry x="5" y="25" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="dish-controller" value="DishController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="dish-mgmt" vertex="1">
+          <mxGeometry x="90" y="25" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="dish-service" value="DishService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="dish-mgmt" vertex="1">
+          <mxGeometry x="5" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="dish-dtos" value="Dish DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="dish-mgmt" vertex="1">
+          <mxGeometry x="90" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="dish-entities" value="Dish Entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="dish-mgmt" vertex="1">
+          <mxGeometry x="5" y="65" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="order-mgmt" value="Order Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="business-package" vertex="1">
+          <mxGeometry x="20" y="140" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="order-module" value="OrderModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="order-mgmt" vertex="1">
+          <mxGeometry x="5" y="25" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="order-controller" value="OrderController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="order-mgmt" vertex="1">
+          <mxGeometry x="90" y="25" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="order-service" value="OrderService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="order-mgmt" vertex="1">
+          <mxGeometry x="5" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="order-dtos" value="Order DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="order-mgmt" vertex="1">
+          <mxGeometry x="90" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="order-entities" value="Order Entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="order-mgmt" vertex="1">
+          <mxGeometry x="5" y="65" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-mgmt" value="Cart Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="business-package" vertex="1">
+          <mxGeometry x="270" y="140" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-module" value="CartModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-mgmt" vertex="1">
+          <mxGeometry x="5" y="25" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-controller" value="CartController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-mgmt" vertex="1">
+          <mxGeometry x="90" y="25" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-service" value="CartService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-mgmt" vertex="1">
+          <mxGeometry x="5" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-dtos" value="Cart DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-mgmt" vertex="1">
+          <mxGeometry x="90" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-entities" value="Cart Entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-mgmt" vertex="1">
+          <mxGeometry x="5" y="65" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-item-mgmt" value="Cart Item Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="business-package" vertex="1">
+          <mxGeometry x="520" y="140" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-item-module" value="CartItemModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-item-mgmt" vertex="1">
+          <mxGeometry x="5" y="25" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-item-controller" value="CartItemController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-item-mgmt" vertex="1">
+          <mxGeometry x="100" y="25" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-item-service" value="CartItemService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-item-mgmt" vertex="1">
+          <mxGeometry x="5" y="45" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-item-dtos" value="CartItem DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-item-mgmt" vertex="1">
+          <mxGeometry x="100" y="45" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="cart-item-entities" value="CartItem Entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="cart-item-mgmt" vertex="1">
+          <mxGeometry x="5" y="65" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="guest-mgmt" value="Guest Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="business-package" vertex="1">
+          <mxGeometry x="20" y="245" width="230" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="guest-module" value="GuestModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="guest-mgmt" vertex="1">
+          <mxGeometry x="5" y="25" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="guest-controller" value="GuestController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="guest-mgmt" vertex="1">
+          <mxGeometry x="90" y="25" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="guest-service" value="GuestService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="guest-mgmt" vertex="1">
+          <mxGeometry x="5" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="guest-dtos" value="Guest DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="guest-mgmt" vertex="1">
+          <mxGeometry x="90" y="45" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="guest-entities" value="Guest Entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="guest-mgmt" vertex="1">
+          <mxGeometry x="5" y="65" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="guest-auth-module" value="GuestAuthModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="guest-mgmt" vertex="1">
+          <mxGeometry x="100" y="65" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="transaction-mgmt" value="Transaction Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="business-package" vertex="1">
+          <mxGeometry x="270" y="245" width="230" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="transaction-module" value="TransactionModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="transaction-mgmt" vertex="1">
+          <mxGeometry x="5" y="25" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="transaction-controller" value="TransactionController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="transaction-mgmt" vertex="1">
+          <mxGeometry x="110" y="25" width="110" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="transaction-service" value="TransactionService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="transaction-mgmt" vertex="1">
+          <mxGeometry x="5" y="45" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="transaction-dtos" value="Transaction DTOs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="transaction-mgmt" vertex="1">
+          <mxGeometry x="110" y="45" width="100" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="transaction-entities" value="Transaction Entities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="transaction-mgmt" vertex="1">
+          <mxGeometry x="5" y="65" width="110" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="infrastructure-package" value="Infrastructure" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="1000" width="1000" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="database-package" value="Database" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="infrastructure-package" vertex="1">
+          <mxGeometry x="20" y="35" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="database-config" value="DatabaseConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="database-package" vertex="1">
+          <mxGeometry x="10" y="25" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="typeorm-module" value="TypeOrmModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="database-package" vertex="1">
+          <mxGeometry x="105" y="25" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="file-package" value="File Management" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="infrastructure-package" vertex="1">
+          <mxGeometry x="240" y="35" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="file-module" value="FileModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="file-package" vertex="1">
+          <mxGeometry x="10" y="25" width="70" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="file-controller" value="FileController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="file-package" vertex="1">
+          <mxGeometry x="85" y="25" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="multer-config" value="MulterConfig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="file-package" vertex="1">
+          <mxGeometry x="10" y="50" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="websocket-package" value="WebSocket" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="infrastructure-package" vertex="1">
+          <mxGeometry x="500" y="35" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="websocket-module" value="WebSocketModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="websocket-package" vertex="1">
+          <mxGeometry x="10" y="25" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="websocket-gateway" value="WebSocketGateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="websocket-package" vertex="1">
+          <mxGeometry x="115" y="25" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="config-package" value="Configuration" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="infrastructure-package" vertex="1">
+          <mxGeometry x="740" y="35" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="config-module" value="ConfigModule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="config-package" vertex="1">
+          <mxGeometry x="10" y="25" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="config-service" value="ConfigService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="config-package" vertex="1">
+          <mxGeometry x="100" y="25" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="utilities-package" value="Common Utilities" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="main-app" vertex="1">
+          <mxGeometry x="20" y="1200" width="1000" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="core-utilities" value="Core Utilities" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="utilities-package" vertex="1">
+          <mxGeometry x="20" y="35" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="transform-interceptor" value="TransformInterceptor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="core-utilities" vertex="1">
+          <mxGeometry x="10" y="25" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="decorators-package" value="Decorators" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="utilities-package" vertex="1">
+          <mxGeometry x="190" y="35" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="customize-decorator" value="CustomizeDecorator" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="decorators-package" vertex="1">
+          <mxGeometry x="10" y="25" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="helpers-package" value="Helpers" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="utilities-package" vertex="1">
+          <mxGeometry x="360" y="35" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="bcrypt-helper" value="BcryptHelper" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="helpers-package" vertex="1">
+          <mxGeometry x="10" y="25" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="enums-package" value="Enums" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="utilities-package" vertex="1">
+          <mxGeometry x="500" y="35" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="common-enums" value="CommonEnums" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="enums-package" vertex="1">
+          <mxGeometry x="10" y="25" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="assets-package" value="Static Assets" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="utilities-package" vertex="1">
+          <mxGeometry x="640" y="35" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="public-assets" value="PublicAssets" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="assets-package" vertex="1">
+          <mxGeometry x="10" y="25" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="images" value="Images" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="assets-package" vertex="1">
+          <mxGeometry x="100" y="25" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="external-deps" value="External Dependencies" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFACD;strokeColor=#DAA520;fontColor=#000000;" parent="1" vertex="1">
+          <mxGeometry x="50" y="1600" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="nestjs-framework" value="NestJS Framework" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-deps" vertex="1">
+          <mxGeometry x="20" y="35" width="100" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="typeorm" value="TypeORM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-deps" vertex="1">
+          <mxGeometry x="140" y="35" width="70" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="postgresql" value="PostgreSQL Database" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-deps" vertex="1">
+          <mxGeometry x="230" y="35" width="120" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="jwt-auth" value="JWT Authentication" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-deps" vertex="1">
+          <mxGeometry x="370" y="35" width="110" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="passport" value="Passport" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-deps" vertex="1">
+          <mxGeometry x="500" y="35" width="70" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="socketio" value="Socket.IO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-deps" vertex="1">
+          <mxGeometry x="590" y="35" width="70" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="multer" value="Multer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-deps" vertex="1">
+          <mxGeometry x="680" y="35" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="bcrypt" value="Bcrypt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFE0;strokeColor=#DAA520;fontColor=#000000;" parent="external-deps" vertex="1">
+          <mxGeometry x="760" y="35" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="app-to-auth" value="" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;strokeColor=#DAA520;" parent="1" source="app-module" target="auth-package" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="800" as="sourcePoint" />
+            <mxPoint x="650" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="typeorm-to-postgres" value="" style="endArrow=open;endFill=0;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;strokeColor=#DAA520;" parent="1" source="typeorm-module" target="external-deps" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="1400" as="sourcePoint" />
+            <mxPoint x="650" y="1350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="auth-to-jwt" value="" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.4;entryY=0;entryDx=0;entryDy=0;strokeColor=#DAA520;" parent="1" source="auth-service" target="external-deps" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="1400" as="sourcePoint" />
+            <mxPoint x="650" y="1350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cart-to-cartitem" value="" style="endArrow=open;endFill=0;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#DAA520;" parent="1" source="cart-mgmt" target="cart-item-mgmt" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="800" as="sourcePoint" />
+            <mxPoint x="650" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
